@@ -1,0 +1,3126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkinVault – Ma Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+/* ============================================================
+   style.css – SkinVault — Design premium gaming
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+
+/* ── Variables ── */
+:root {
+  --bg:        #07070d;
+  --bg2:       #0d0d16;
+  --bg3:       #12121e;
+  --bg4:       #181828;
+  --bg5:       #1e1e30;
+  --border:    rgba(255,255,255,0.06);
+  --border2:   rgba(255,255,255,0.12);
+  --text:      #eeeef8;
+  --text-muted:#5a5a72;
+  --text-dim:  #9090b0;
+
+  --mythic:    #ffd700;
+  --legendary: #ff8c00;
+  --epic:      #9b30ff;
+  --rare:      #1e90ff;
+  --uncommon:  #00c060;
+  --common:    #777788;
+
+  --fn-color:    #00d4ff;
+  --fn-glow:     rgba(0,212,255,0.18);
+  --lol-color:   #c89b3c;
+  --lol-glow:    rgba(200,155,60,0.18);
+  --tft-color:   #0bc4e3;
+  --tft-glow:    rgba(11,196,227,0.18);
+  --dbd-color:   #cc2222;
+  --dbd-glow:    rgba(204,34,34,0.18);
+  --valo-color:  #ff4655;
+  --valo-glow:   rgba(255,70,85,0.18);
+
+  --radius:    8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --ease:      cubic-bezier(0.4,0,0.2,1);
+  --trans:     0.22s var(--ease);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Fond animé subtil ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 40% at 10% 0%, rgba(0,212,255,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(155,48,255,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Layout ── */
+#app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════ */
+#sidebar {
+  width: 230px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+}
+
+/* Logo */
+.sidebar-logo {
+  padding: 30px 22px 24px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.sidebar-logo::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 22px; right: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+}
+.sidebar-logo h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  background: linear-gradient(135deg, #ffffff 0%, #8888bb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.sidebar-logo span {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Section labels */
+.sidebar-section {
+  padding: 18px 18px 6px;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.sidebar-nav { padding: 0 10px; }
+
+/* Nav items */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 13px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  transition: var(--trans);
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+.nav-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02));
+  opacity: 0;
+  transition: opacity var(--trans);
+}
+.nav-item:hover::before { opacity: 1; }
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+
+.nav-item.active {
+  background: var(--bg4);
+  color: var(--text);
+}
+
+/* Dots colorés */
+.nav-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: box-shadow var(--trans);
+}
+.nav-item[data-game="fortnite"] .nav-dot { background: var(--fn-color); }
+.nav-item[data-game="lol"]      .nav-dot { background: var(--lol-color); }
+.nav-item[data-game="tft"]      .nav-dot { background: var(--tft-color); }
+.nav-item[data-game="dbd"]      .nav-dot { background: var(--dbd-color); }
+.nav-item[data-game="valo"]     .nav-dot { background: var(--valo-color); }
+.nav-item[data-game="add"]      .nav-dot { background: #444466; }
+.nav-item[data-game="home"]     .nav-dot { background: #444466; }
+
+.nav-item.active[data-game="fortnite"] .nav-dot { box-shadow: 0 0 8px var(--fn-color), 0 0 16px var(--fn-color); }
+.nav-item.active[data-game="lol"]      .nav-dot { box-shadow: 0 0 8px var(--lol-color), 0 0 16px var(--lol-color); }
+.nav-item.active[data-game="tft"]      .nav-dot { box-shadow: 0 0 8px var(--tft-color), 0 0 16px var(--tft-color); }
+.nav-item.active[data-game="dbd"]      .nav-dot { box-shadow: 0 0 8px var(--dbd-color), 0 0 16px var(--dbd-color); }
+.nav-item.active[data-game="valo"]     .nav-dot { box-shadow: 0 0 8px var(--valo-color), 0 0 16px var(--valo-color); }
+
+/* Active glow border */
+.nav-item.active[data-game="fortnite"] { border-color: rgba(0,212,255,0.2);  background: linear-gradient(90deg, rgba(0,212,255,0.06), transparent); }
+.nav-item.active[data-game="lol"]      { border-color: rgba(200,155,60,0.2); background: linear-gradient(90deg, rgba(200,155,60,0.06), transparent); }
+.nav-item.active[data-game="tft"]      { border-color: rgba(11,196,227,0.2); background: linear-gradient(90deg, rgba(11,196,227,0.06), transparent); }
+.nav-item.active[data-game="dbd"]      { border-color: rgba(204,34,34,0.2);  background: linear-gradient(90deg, rgba(204,34,34,0.06), transparent); }
+.nav-item.active[data-game="valo"]     { border-color: rgba(255,70,85,0.2);  background: linear-gradient(90deg, rgba(255,70,85,0.06), transparent); }
+
+/* Sidebar bottom */
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 14px 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ══════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════ */
+#main {
+  margin-left: 230px;
+  flex: 1;
+  padding: 36px 40px;
+  min-height: 100vh;
+}
+
+/* ── Page header ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0;
+  width: 120px; height: 1px;
+}
+.page-header.fn-page::after   { background: linear-gradient(90deg, var(--fn-color), transparent); }
+.page-header.lol-page::after  { background: linear-gradient(90deg, var(--lol-color), transparent); }
+.page-header.tft-page::after  { background: linear-gradient(90deg, var(--tft-color), transparent); }
+.page-header.dbd-page::after  { background: linear-gradient(90deg, var(--dbd-color), transparent); }
+.page-header.valo-page::after { background: linear-gradient(90deg, var(--valo-color), transparent); }
+
+.page-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+.fn-accent   { color: var(--fn-color);   text-shadow: 0 0 40px rgba(0,212,255,0.5); }
+.lol-accent  { color: var(--lol-color);  text-shadow: 0 0 40px rgba(200,155,60,0.5); }
+.tft-accent  { color: var(--tft-color);  text-shadow: 0 0 40px rgba(11,196,227,0.5); }
+.dbd-accent  { color: var(--dbd-color);  text-shadow: 0 0 40px rgba(204,34,34,0.5); }
+.valo-accent { color: var(--valo-color); text-shadow: 0 0 40px rgba(255,70,85,0.5); }
+
+.count-badge {
+  font-size: 0.72rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.12em;
+}
+
+/* ══════════════════════════════════════
+   GRILLE & CARDS
+══════════════════════════════════════ */
+.skins-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: 16px;
+}
+
+/* ── Skin Card ── */
+.skin-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), border-color 0.28s var(--ease);
+  position: relative;
+}
+.skin-card:hover {
+  transform: translateY(-6px) scale(1.01);
+}
+
+/* Glow rareté */
+.skin-card[data-rarity="Mythic"]    { border-color: rgba(255,215,0,0.25);  }
+.skin-card[data-rarity="Legendary"] { border-color: rgba(255,140,0,0.22);  }
+.skin-card[data-rarity="Epic"]      { border-color: rgba(155,48,255,0.25); }
+.skin-card[data-rarity="Rare"]      { border-color: rgba(30,144,255,0.22); }
+.skin-card[data-rarity="Uncommon"]  { border-color: rgba(0,192,96,0.22);   }
+.skin-card[data-rarity="Common"]    { border-color: rgba(119,119,136,0.15);}
+
+.skin-card[data-rarity="Mythic"]:hover    { box-shadow: 0 12px 40px rgba(255,215,0,0.22),  0 0 0 1px rgba(255,215,0,0.4); }
+.skin-card[data-rarity="Legendary"]:hover { box-shadow: 0 12px 40px rgba(255,140,0,0.22),  0 0 0 1px rgba(255,140,0,0.4); }
+.skin-card[data-rarity="Epic"]:hover      { box-shadow: 0 12px 40px rgba(155,48,255,0.22), 0 0 0 1px rgba(155,48,255,0.4); }
+.skin-card[data-rarity="Rare"]:hover      { box-shadow: 0 12px 40px rgba(30,144,255,0.22), 0 0 0 1px rgba(30,144,255,0.4); }
+.skin-card[data-rarity="Uncommon"]:hover  { box-shadow: 0 12px 40px rgba(0,192,96,0.22),   0 0 0 1px rgba(0,192,96,0.4); }
+.skin-card[data-rarity="Common"]:hover    { box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+
+/* Image */
+.skin-img-wrap {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg3) 0%, var(--bg4) 100%);
+  position: relative;
+}
+.skin-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
+  display: block;
+}
+.skin-card:hover .skin-img-wrap img { transform: scale(1.08); }
+.skin-img-wrap .no-img {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.8rem;
+  color: var(--bg5);
+}
+
+/* Dégradé rareté en bas de l'image */
+.skin-img-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(0deg, rgba(7,7,13,0.85) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Barre de rareté */
+.rarity-bar {
+  height: 2px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+.rarity-bar.Mythic    { background: linear-gradient(90deg, var(--mythic), rgba(255,215,0,0.2)); }
+.rarity-bar.Legendary { background: linear-gradient(90deg, var(--legendary), rgba(255,140,0,0.2)); }
+.rarity-bar.Epic      { background: linear-gradient(90deg, var(--epic), rgba(155,48,255,0.2)); }
+.rarity-bar.Rare      { background: linear-gradient(90deg, var(--rare), rgba(30,144,255,0.2)); }
+.rarity-bar.Uncommon  { background: linear-gradient(90deg, var(--uncommon), rgba(0,192,96,0.2)); }
+.rarity-bar.Common    { background: var(--common); opacity: 0.4; }
+
+/* Infos skin */
+.skin-info {
+  padding: 11px 13px 13px;
+  background: linear-gradient(0deg, var(--bg2) 0%, transparent 100%);
+}
+.skin-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+.skin-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+  gap: 6px;
+}
+.skin-rarity-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.skin-rarity-label.Mythic    { color: var(--mythic); }
+.skin-rarity-label.Legendary { color: var(--legendary); }
+.skin-rarity-label.Epic      { color: var(--epic); }
+.skin-rarity-label.Rare      { color: var(--rare); }
+.skin-rarity-label.Uncommon  { color: var(--uncommon); }
+.skin-rarity-label.Common    { color: var(--common); }
+
+.skin-series-badge {
+  font-size: 0.58rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
+/* Boutons edit/delete */
+.card-actions {
+  position: absolute;
+  top: 8px; right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity var(--trans);
+  z-index: 10;
+}
+.skin-card:hover .card-actions { opacity: 1; }
+.card-btn {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(12px);
+  transition: var(--trans);
+}
+.card-btn-edit   { background: rgba(255,255,255,0.12); color: #fff; }
+.card-btn-delete { background: rgba(204,34,34,0.35);   color: #ffaaaa; }
+.card-btn:hover  { transform: scale(1.12); }
+
+/* ══════════════════════════════════════
+   TABS
+══════════════════════════════════════ */
+.tabs {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 28px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px;
+  width: fit-content;
+}
+.tab {
+  padding: 8px 22px;
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transition: var(--trans);
+  border: none;
+  background: none;
+}
+.tab.active {
+  background: var(--bg5);
+  color: var(--text);
+  box-shadow: 0 1px 8px rgba(0,0,0,0.3);
+}
+.tab:hover:not(.active) { color: var(--text-dim); }
+
+/* ══════════════════════════════════════
+   CHAMPION / ARME SECTIONS
+══════════════════════════════════════ */
+.champion-section { margin-bottom: 40px; }
+.champion-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.champion-avatar {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border2);
+  flex-shrink: 0;
+}
+.champion-avatar.no-img {
+  background: var(--bg4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  color: var(--text-muted);
+}
+.champion-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.champion-skin-count { color: var(--text-muted); font-size: 0.78rem; margin-top: 2px; }
+
+/* Chromas hover */
+.chromas-hover {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(0deg, rgba(7,7,13,0.95) 0%, transparent 100%);
+  padding: 14px 10px 10px;
+  transform: translateY(100%);
+  transition: transform 0.3s var(--ease);
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  z-index: 5;
+}
+.skin-card:hover .chromas-hover { transform: translateY(0); }
+.chroma-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.25);
+  cursor: pointer;
+  transition: transform var(--trans);
+  flex-shrink: 0;
+}
+.chroma-dot:hover { transform: scale(1.3); }
+
+/* TFT */
+.tft-level { display: flex; gap: 2px; margin-top: 4px; }
+.tft-star  { color: #ffd700; font-size: 0.72rem; }
+.tft-type-badge {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tft-color);
+  margin-top: 3px;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════
+   MODAL
+══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s var(--ease);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 740px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.93) translateY(20px);
+  transition: transform 0.28s var(--ease);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+.modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+  background: var(--bg2);
+  z-index: 2;
+  backdrop-filter: blur(20px);
+}
+.modal-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+.modal-close {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: var(--trans);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--bg5); color: var(--text); }
+.modal-body { padding: 28px; }
+
+.modal-main-img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: var(--radius);
+  background: var(--bg3);
+  margin-bottom: 22px;
+}
+.modal-badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.modal-badge {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.modal-badge.rarity.Mythic    { background: rgba(255,215,0,0.12);  color: var(--mythic);    border: 1px solid rgba(255,215,0,0.35); }
+.modal-badge.rarity.Legendary { background: rgba(255,140,0,0.12);  color: var(--legendary); border: 1px solid rgba(255,140,0,0.35); }
+.modal-badge.rarity.Epic      { background: rgba(155,48,255,0.12); color: var(--epic);      border: 1px solid rgba(155,48,255,0.35); }
+.modal-badge.rarity.Rare      { background: rgba(30,144,255,0.12); color: var(--rare);      border: 1px solid rgba(30,144,255,0.35); }
+.modal-badge.rarity.Uncommon  { background: rgba(0,192,96,0.12);   color: var(--uncommon);  border: 1px solid rgba(0,192,96,0.35); }
+.modal-badge.rarity.Common    { background: rgba(119,119,136,0.1); color: var(--common);    border: 1px solid rgba(119,119,136,0.2); }
+.modal-badge.series { background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--border2); }
+
+.variant-section { margin-bottom: 24px; }
+.variant-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.variant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+}
+.variant-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-align: center;
+  transition: var(--trans);
+}
+.variant-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.variant-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.variant-card .variant-name {
+  font-size: 0.68rem;
+  padding: 6px 5px;
+  color: var(--text-dim);
+}
+
+/* ══════════════════════════════════════
+   FORMULAIRES
+══════════════════════════════════════ */
+.form-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 26px 28px;
+  margin-bottom: 20px;
+}
+.form-section-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-row.single  { grid-template-columns: 1fr; }
+.form-row.triple  { grid-template-columns: 1fr 1fr 1fr; }
+.form-group { display: flex; flex-direction: column; gap: 7px; }
+
+label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color var(--trans), box-shadow var(--trans);
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(255,255,255,0.3);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+}
+select option { background: var(--bg3); }
+
+/* Image picker */
+.img-picker {
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius);
+  padding: 22px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--trans), background var(--trans);
+  position: relative;
+  overflow: hidden;
+  background: var(--bg3);
+}
+.img-picker:hover { border-color: rgba(255,255,255,0.25); background: var(--bg4); }
+.img-picker input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+}
+.img-picker-label { font-size: 0.78rem; color: var(--text-muted); pointer-events: none; }
+.img-picker-preview {
+  width: 80px; height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin: 0 auto 10px;
+  display: block;
+  border: 1px solid var(--border2);
+}
+.img-picker-preview.hidden { display: none; }
+
+/* Chips variantes */
+.variant-list-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.variant-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 5px 11px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+.variant-chip img { width: 22px; height: 22px; object-fit: cover; border-radius: 50%; }
+.variant-chip-remove {
+  border: none; background: none;
+  color: var(--text-muted);
+  cursor: pointer; font-size: 0.9rem;
+  padding: 0 2px;
+  transition: color var(--trans);
+  line-height: 1;
+}
+.variant-chip-remove:hover { color: #ff5555; }
+
+/* ══════════════════════════════════════
+   BOUTONS
+══════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.07em;
+  transition: var(--trans);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.btn-danger  { background: rgba(204,34,34,0.18); border: 1px solid rgba(204,34,34,0.35); color: #ff7777; }
+.btn-danger:hover  { background: rgba(204,34,34,0.3); }
+.btn-sm      { padding: 7px 15px; font-size: 0.82rem; }
+.btn-ghost   { background: transparent; border: 1px solid var(--border2); color: var(--text-muted); }
+.btn-ghost:hover { background: var(--bg3); color: var(--text); }
+.btn-row     { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 22px; }
+
+/* ══════════════════════════════════════
+   SEARCH & FILTERS
+══════════════════════════════════════ */
+.search-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.search-input-wrap { position: relative; flex: 1; max-width: 340px; }
+.search-input-wrap input { padding-left: 38px; }
+.search-icon {
+  position: absolute;
+  left: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.filter-bar { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 22px; }
+.filter-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.73rem;
+  cursor: pointer;
+  transition: var(--trans);
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 500;
+}
+.filter-btn:hover  { background: var(--bg3); color: var(--text-dim); border-color: var(--border2); }
+.filter-btn.active { background: var(--bg4); color: var(--text); border-color: var(--border2); }
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+#toast {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 13px 20px;
+  font-size: 0.88rem;
+  color: var(--text);
+  z-index: 9999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s var(--ease);
+  max-width: 300px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+#toast.success { border-color: rgba(0,192,96,0.4); }
+#toast.error   { border-color: rgba(204,34,34,0.4); }
+
+/* ══════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 70px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  gap: 14px;
+  grid-column: 1 / -1;
+}
+.empty-state .icon { font-size: 3.5rem; opacity: 0.5; }
+.empty-state p { font-size: 0.9rem; line-height: 1.6; }
+.empty-state strong { color: var(--text-dim); }
+
+/* ══════════════════════════════════════
+   HOME PAGE
+══════════════════════════════════════ */
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.game-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), border-color 0.28s var(--ease);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+}
+.game-card:hover { transform: translateY(-5px); }
+
+.game-card.fn  { border-color: rgba(0,212,255,0.18);  }
+.game-card.lol { border-color: rgba(200,155,60,0.18); }
+.game-card.tft { border-color: rgba(11,196,227,0.18); }
+.game-card.dbd { border-color: rgba(204,34,34,0.18);  }
+.game-card.valo{ border-color: rgba(255,70,85,0.18);  }
+
+.game-card.fn::before  { background: linear-gradient(90deg, transparent, var(--fn-color), transparent); opacity: 0.4; }
+.game-card.lol::before { background: linear-gradient(90deg, transparent, var(--lol-color), transparent); opacity: 0.4; }
+.game-card.tft::before { background: linear-gradient(90deg, transparent, var(--tft-color), transparent); opacity: 0.4; }
+.game-card.dbd::before { background: linear-gradient(90deg, transparent, var(--dbd-color), transparent); opacity: 0.4; }
+.game-card.valo::before{ background: linear-gradient(90deg, transparent, var(--valo-color), transparent); opacity: 0.4; }
+
+.game-card:hover.fn  { box-shadow: 0 10px 40px var(--fn-glow);   border-color: rgba(0,212,255,0.35); }
+.game-card:hover.lol { box-shadow: 0 10px 40px var(--lol-glow);  border-color: rgba(200,155,60,0.35); }
+.game-card:hover.tft { box-shadow: 0 10px 40px var(--tft-glow);  border-color: rgba(11,196,227,0.35); }
+.game-card:hover.dbd { box-shadow: 0 10px 40px var(--dbd-glow);  border-color: rgba(204,34,34,0.35); }
+.game-card:hover.valo{ box-shadow: 0 10px 40px var(--valo-glow); border-color: rgba(255,70,85,0.35); }
+
+.game-card-icon { font-size: 2.2rem; }
+.game-card-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.game-card.fn  .game-card-name { color: var(--fn-color);   }
+.game-card.lol .game-card-name { color: var(--lol-color);  }
+.game-card.tft .game-card-name { color: var(--tft-color);  }
+.game-card.dbd .game-card-name { color: var(--dbd-color);  }
+.game-card.valo .game-card-name{ color: var(--valo-color); }
+
+.game-card-count { font-size: 0.8rem; color: var(--text-muted); }
+
+/* Stats home */
+.home-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.stat-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  flex: 1;
+  min-width: 120px;
+}
+.stat-number {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+.stat-label { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 5px; }
+
+/* HR séparateur */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+
+/* ══════════════════════════════════════
+   SCROLLBAR
+══════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+  #sidebar { width: 200px; }
+  #main { margin-left: 200px; padding: 24px 20px; }
+}
+@media (max-width: 680px) {
+  #sidebar { transform: translateX(-200px); transition: transform 0.3s; }
+  #main { margin-left: 0; padding: 16px; }
+  .skins-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  .form-row { grid-template-columns: 1fr; }
+  .home-grid { grid-template-columns: 1fr 1fr; }
+}
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <h1>SKINVAULT</h1>
+      <span>Ma Collection</span>
+    </div>
+    <div class="sidebar-section">Collection</div>
+    <nav class="sidebar-nav">
+      <div class="nav-item" data-game="home" onclick="navigate('home')">
+        <div class="nav-dot" style="background:#555"></div>
+        Accueil
+      </div>
+      <div class="nav-item" data-game="fortnite" onclick="navigate('fortnite')">
+        <div class="nav-dot"></div>
+        Fortnite
+      </div>
+      <div class="nav-item" data-game="lol" onclick="navigate('lol')">
+        <div class="nav-dot"></div>
+        League of Legends
+      </div>
+      <div class="nav-item" data-game="tft" onclick="navigate('tft')">
+        <div class="nav-dot"></div>
+        TFT
+      </div>
+      <div class="nav-item" data-game="dbd" onclick="navigate('dbd')">
+        <div class="nav-dot"></div>
+        Dead by Daylight
+      </div>
+      <div class="nav-item" data-game="valo" onclick="navigate('valo')">
+        <div class="nav-dot"></div>
+        Valorant
+      </div>
+    </nav>
+    <div class="sidebar-section">Gestion</div>
+    <nav class="sidebar-nav">
+      <div class="nav-item" data-game="add" onclick="navigate('add')">
+        <div class="nav-dot"></div>
+        ➕ Ajouter
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="btn btn-ghost btn-sm" onclick="exportData()">⬇ Exporter</button>
+      <label class="btn btn-ghost btn-sm" style="cursor:pointer;justify-content:center;">
+        ⬆ Importer
+        <input type="file" accept=".json" style="display:none" onchange="handleImport(event)">
+      </label>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div id="page-content"></div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Détail</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ============================================================
+//  data.js  –  toute ta collection est stockée ici
+//  Tu peux l'éditer à la main ou utiliser l'interface
+// ============================================================
+
+const DB_KEY = 'skinvault_data';
+
+const DEFAULT_DATA = {
+  fortnite: {
+    series: ["Icon Series", "Marvel Series", "DC Series", "Gaming Legends", "Star Wars", "Lego", "Collab"],
+    rarities: ["Mythic", "Legendary", "Epic", "Rare", "Uncommon", "Common"],
+    skins: []
+    // Exemple de skin :
+    // {
+    //   id: "fn_001",
+    //   name: "Skull Trooper",
+    //   rarity: "Epic",
+    //   series: null,
+    //   image: "images/fortnite/skull_trooper.png",
+    //   variants: {
+    //     back_bling: [],        // skins d'accessoire de dos
+    //     pickaxe: [],           // pioche
+    //     glider: [],            // planeur
+    //     contrail: [],          // trainée
+    //     guitar: [],            // guitare
+    //     bass: [],              // basse
+    //     keytar: [],            // keytar
+    //     drums: [],             // batterie
+    //     mic: []                // micro
+    //   }
+    // }
+  },
+
+  lol: {
+    champions: [],
+    // Exemple de champion :
+    // {
+    //   id: "lol_champ_001",
+    //   name: "Jinx",
+    //   image: "images/lol/jinx_default.png",
+    //   skins: []
+    //   // Exemple de skin dans skins[] :
+    //   // {
+    //   //   id: "lol_skin_001",
+    //   //   name: "Star Guardian Jinx",
+    //   //   image: "images/lol/jinx_stargardian.png",
+    //   //   chromas: []
+    //   //   // Exemple de chroma :
+    //   //   // { id: "chroma_001", name: "Ruby", color: "#ff2244", image: "images/lol/jinx_sg_ruby.png" }
+    //   // }
+    // }
+  },
+
+  tft: {
+    skins: []
+    // Exemple de skin TFT :
+    // {
+    //   id: "tft_001",
+    //   name: "Pengu",
+    //   image: "images/tft/pengu.png",
+    //   type: "little_legend",  // little_legend | portal | arena | boom | tactician
+    //   level: 1,               // 1, 2 ou 3 (seulement pour little_legend)
+    //   variants: []            // autres niveaux ou variantes
+    // }
+  },
+
+  dbd: {
+    survivors: [],
+    killers: []
+    // Exemple de survivant/tueur :
+    // {
+    //   id: "dbd_s_001",
+    //   name: "Meg Thomas",
+    //   image: "images/dbd/meg_default.png",
+    //   skins: []
+    //   // Exemple de skin :
+    //   // { id: "dbd_sk_001", name: "Sporty Spice", image: "images/dbd/meg_sporty.png" }
+    // }
+  },
+
+  valo: {
+    weapons: [],
+    buddies: []
+    // Exemple d'arme :
+    // {
+    //   id: "valo_w_001",
+    //   name: "Phantom",
+    //   image: "images/valo/phantom_default.png",
+    //   skins: []
+    //   // { id: "valo_sk_001", name: "Prime Phantom", image: "images/valo/phantom_prime.png" }
+    // }
+    // Exemple de buddy :
+    // { id: "valo_b_001", name: "Radianite Bobby", image: "images/valo/buddy_bobby.png" }
+  }
+};
+
+// ============================================================
+//  Fonctions de gestion des données (localStorage + export)
+// ============================================================
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(DB_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    const saved = JSON.parse(raw);
+    // Merge pour garder les nouvelles clés si on met à jour le code
+    return deepMergeDefaults(DEFAULT_DATA, saved);
+  } catch(e) {
+    console.warn('Erreur chargement data, reset:', e);
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+}
+
+function deepMergeDefaults(defaults, saved) {
+  const result = JSON.parse(JSON.stringify(saved));
+  for (const key of Object.keys(defaults)) {
+    if (!(key in result)) result[key] = JSON.parse(JSON.stringify(defaults[key]));
+  }
+  return result;
+}
+
+function saveData(data) {
+  localStorage.setItem(DB_KEY, JSON.stringify(data));
+}
+
+function exportData() {
+  const data = loadData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `skinvault_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        saveData(data);
+        resolve(data);
+      } catch(err) {
+        reject(new Error('Fichier JSON invalide'));
+      }
+    };
+    reader.readAsText(file);
+  });
+}
+
+function generateId(prefix) {
+  return prefix + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+}
+
+// pages/home.js
+
+function renderHome() {
+  const db = loadData();
+
+  const fnCount   = db.fortnite.skins.length;
+  const lolCount  = db.lol.champions.reduce((a,c) => a + c.skins.length, 0);
+  const tftCount  = db.tft.skins.length;
+  const dbdCount  = db.dbd.survivors.reduce((a,c)=>a+c.skins.length,0)
+                  + db.dbd.killers.reduce((a,c)=>a+c.skins.length,0);
+  const valoCount = db.valo.weapons.reduce((a,w)=>a+w.skins.length,0)
+                  + db.valo.buddies.length;
+  const total     = fnCount + lolCount + tftCount + dbdCount + valoCount;
+  const games     = [
+    { key:'fortnite', cls:'fn',   name:'Fortnite',          count:fnCount,   icon:'⚡' },
+    { key:'lol',      cls:'lol',  name:'League of Legends',  count:lolCount,  icon:'⚔️' },
+    { key:'tft',      cls:'tft',  name:'TFT',                count:tftCount,  icon:'🎲' },
+    { key:'dbd',      cls:'dbd',  name:'Dead by Daylight',   count:dbdCount,  icon:'🔪' },
+    { key:'valo',     cls:'valo', name:'Valorant',           count:valoCount, icon:'🎯' },
+  ];
+
+  return `
+    <div class="page-header">
+      <div>
+        <div class="page-title" style="color:var(--text)">MA COLLECTION</div>
+        <div style="color:var(--text-muted);font-size:0.82rem;margin-top:5px;letter-spacing:0.1em">
+          SKINVAULT · BLOODY
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="navigate('add')">➕ Ajouter un skin</button>
+    </div>
+
+    <div class="home-stats">
+      <div class="stat-block">
+        <div class="stat-number">${total}</div>
+        <div class="stat-label">Skins au total</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number">${games.filter(g=>g.count>0).length}</div>
+        <div class="stat-label">Jeux trackés</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number">${db.lol.champions.length}</div>
+        <div class="stat-label">Champions LoL</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-number">${db.dbd.survivors.length + db.dbd.killers.length}</div>
+        <div class="stat-label">Persos DBD</div>
+      </div>
+    </div>
+
+    <div class="home-grid">
+      ${games.map(g => `
+        <div class="game-card ${g.cls}" onclick="navigate('${g.key}')">
+          <div class="game-card-icon">${g.icon}</div>
+          <div class="game-card-name">${g.name}</div>
+          <div class="game-card-count">${g.count} skin${g.count!==1?'s':''}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// pages/fortnite.js
+
+const FN_VARIANT_LABELS = {
+  back_bling: "Accessoire de dos",
+  pickaxe:    "Pioche",
+  glider:     "Planeur",
+  contrail:   "Traînée",
+  guitar:     "Guitare",
+  bass:       "Basse",
+  keytar:     "Keytar",
+  drums:      "Batterie",
+  mic:        "Micro",
+};
+
+function renderFortnite() {
+  const db = loadData();
+  const skins = db.fortnite.skins;
+
+  const rarities = ['Mythic','Legendary','Epic','Rare','Uncommon','Common'];
+
+  return `
+    <div class="page-header">
+      <div class="page-title fn-accent">FORTNITE</div>
+      <span class="count-badge">${skins.length} skins</span>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Rechercher un skin…" id="fn-search" oninput="fnFilter()">
+      </div>
+    </div>
+
+    <div class="filter-bar" id="fn-rarity-filter">
+      <button class="filter-btn active" data-rarity="all" onclick="fnRarityFilter(this,'all')">Tous</button>
+      ${rarities.map(r => `
+        <button class="filter-btn" data-rarity="${r}" onclick="fnRarityFilter(this,'${r}')"
+          style="--c:var(--${r.toLowerCase()})">
+          <span style="color:var(--${r.toLowerCase()})">${r}</span>
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="skins-grid" id="fn-grid">
+      ${skins.length === 0
+        ? `<div class="empty-state" style="grid-column:1/-1">
+             <div class="icon">⚡</div>
+             <p>Aucun skin Fortnite.<br>Ajoute-en depuis la page <strong>Ajouter</strong>.</p>
+           </div>`
+        : skins.map(s => fnSkinCard(s)).join('')
+      }
+    </div>
+  `;
+}
+
+function fnSkinCard(s) {
+  const imgSrc = getImage(s.image);
+  const hasVariants = s.variants && Object.values(s.variants).some(v => v && v.length > 0);
+
+  return `
+    <div class="skin-card" data-rarity="${escHtml(s.rarity)}" data-name="${escHtml(s.name.toLowerCase())}"
+         onclick="fnOpenModal('${escHtml(s.id)}')">
+      <div class="rarity-bar ${escHtml(s.rarity)}"></div>
+      <div class="skin-img-wrap">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${escHtml(s.name)}" loading="lazy">`
+          : `<div class="no-img">⚡</div>`}
+      </div>
+      <div class="skin-info">
+        <div class="skin-name">${escHtml(s.name)}</div>
+        <div class="skin-meta">
+          <span class="skin-rarity-label ${escHtml(s.rarity)}">${escHtml(s.rarity)}</span>
+          ${s.series ? `<span class="skin-series-badge">${escHtml(s.series)}</span>` : ''}
+        </div>
+        ${hasVariants ? `<div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px">+ variantes</div>` : ''}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit"   onclick="fnEditSkin('${escHtml(s.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('fortnite','${escHtml(s.id)}')">🗑</button>
+      </div>
+    </div>
+  `;
+}
+
+function fnOpenModal(id) {
+  const db = loadData();
+  const s = db.fortnite.skins.find(x => x.id === id);
+  if (!s) return;
+
+  const imgSrc = getImage(s.image);
+
+  let variantsHTML = '';
+  if (s.variants) {
+    for (const [key, label] of Object.entries(FN_VARIANT_LABELS)) {
+      const items = s.variants[key] || [];
+      if (items.length === 0) continue;
+      variantsHTML += `
+        <div class="variant-section">
+          <div class="variant-label">${label}</div>
+          <div class="variant-grid">
+            ${items.map(v => {
+              const vsrc = getImage(v.image);
+              return `
+                <div class="variant-card">
+                  ${vsrc
+                    ? `<img src="${vsrc}" alt="${escHtml(v.name)}" loading="lazy">`
+                    : `<div style="aspect-ratio:1;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:1.5rem">⚡</div>`}
+                  <div class="variant-name">${escHtml(v.name)}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  const body = `
+    ${imgSrc ? `<img src="${imgSrc}" alt="${escHtml(s.name)}" class="modal-main-img">` : ''}
+    <div class="modal-badges">
+      <span class="modal-badge rarity ${escHtml(s.rarity)}">${escHtml(s.rarity)}</span>
+      ${s.series ? `<span class="modal-badge series">🏷 ${escHtml(s.series)}</span>` : ''}
+    </div>
+    ${variantsHTML || `<p style="color:var(--text-muted);font-size:0.85rem">Aucune variante enregistrée.</p>`}
+  `;
+
+  openModal(s.name, body);
+}
+
+function fnFilter() {
+  const q = document.getElementById('fn-search').value.toLowerCase();
+  const activeRarity = document.querySelector('#fn-rarity-filter .filter-btn.active')?.dataset.rarity || 'all';
+  fnApplyFilter(q, activeRarity);
+}
+
+function fnRarityFilter(btn, rarity) {
+  document.querySelectorAll('#fn-rarity-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const q = document.getElementById('fn-search')?.value.toLowerCase() || '';
+  fnApplyFilter(q, rarity);
+}
+
+function fnApplyFilter(q, rarity) {
+  document.querySelectorAll('#fn-grid .skin-card').forEach(card => {
+    const name = card.dataset.name || '';
+    const r    = card.dataset.rarity || '';
+    const matchQ = !q || name.includes(q);
+    const matchR = rarity === 'all' || r === rarity;
+    card.style.display = (matchQ && matchR) ? '' : 'none';
+  });
+}
+
+function fnEditSkin(id) {
+  navigate('add');
+  // Pré-remplissage après init
+  setTimeout(() => {
+    document.getElementById('add-game-select').value = 'fortnite';
+    document.getElementById('add-game-select').dispatchEvent(new Event('change'));
+    setTimeout(() => prefillFnSkin(id), 50);
+  }, 50);
+}
+
+function prefillFnSkin(id) {
+  const db = loadData();
+  const s = db.fortnite.skins.find(x => x.id === id);
+  if (!s) return;
+
+  const nameEl   = document.getElementById('fn-skin-name');
+  const rarityEl = document.getElementById('fn-skin-rarity');
+  const seriesEl = document.getElementById('fn-skin-series');
+  if (nameEl)   nameEl.value   = s.name;
+  if (rarityEl) rarityEl.value = s.rarity;
+  if (seriesEl) seriesEl.value = s.series || '';
+
+  // Stocker l'id en édition
+  const form = document.getElementById('fn-skin-form');
+  if (form) form.dataset.editId = id;
+
+  // Variantes
+  if (s.variants) {
+    for (const key of Object.keys(FN_VARIANT_LABELS)) {
+      window[`_fnVariants_${key}`] = JSON.parse(JSON.stringify(s.variants[key] || []));
+      renderFnVariantChips(key);
+    }
+  }
+
+  showToast('Skin chargé pour modification', 'success');
+}
+
+// pages/lol.js
+
+function renderLoL() {
+  const db = loadData();
+  const champs = db.lol.champions;
+  const totalSkins = champs.reduce((a, c) => a + c.skins.length, 0);
+
+  return `
+    <div class="page-header">
+      <div class="page-title lol-accent">LEAGUE OF LEGENDS</div>
+      <span class="count-badge">${champs.length} champions · ${totalSkins} skins</span>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Rechercher un champion ou skin…" id="lol-search" oninput="lolFilter()">
+      </div>
+    </div>
+
+    <div id="lol-content">
+      ${champs.length === 0
+        ? `<div class="empty-state">
+             <div class="icon">⚔️</div>
+             <p>Aucun champion enregistré.<br>Ajoute-en depuis la page <strong>Ajouter</strong>.</p>
+           </div>`
+        : champs.map(c => lolChampSection(c)).join('')}
+    </div>
+  `;
+}
+
+function lolChampSection(champ) {
+  const imgSrc = getImage(champ.image);
+  return `
+    <div class="champion-section" data-champ="${escHtml(champ.name.toLowerCase())}">
+      <div class="champion-header">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${escHtml(champ.name)}" class="champion-avatar">`
+          : `<div class="champion-avatar no-img">👤</div>`}
+        <div>
+          <div class="champion-name">${escHtml(champ.name)}</div>
+          <div class="champion-skin-count">${champ.skins.length} skins</div>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="lolEditChamp('${escHtml(champ.id)}')">✏ Modifier</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSkin('lol-champ','${escHtml(champ.id)}')">🗑</button>
+        </div>
+      </div>
+
+      <div class="skins-grid">
+        ${champ.skins.length === 0
+          ? `<p style="color:var(--text-muted); font-size:0.85rem; grid-column:1/-1">Aucun skin pour ce champion.</p>`
+          : champ.skins.map(s => lolSkinCard(s, champ.id)).join('')}
+      </div>
+    </div>
+    <hr style="border:none; border-top:1px solid var(--border); margin: 28px 0;">
+  `;
+}
+
+function lolSkinCard(skin, champId) {
+  const imgSrc = getImage(skin.image);
+  const hasChromas = skin.chromas && skin.chromas.length > 0;
+
+  return `
+    <div class="skin-card" data-name="${escHtml(skin.name.toLowerCase())}" style="position:relative">
+      <div class="rarity-bar" style="background:var(--lol-color); opacity:0.5"></div>
+      <div class="skin-img-wrap">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${escHtml(skin.name)}" loading="lazy">`
+          : `<div class="no-img">⚔️</div>`}
+        ${hasChromas ? `
+          <div class="chromas-hover">
+            ${skin.chromas.map(c => {
+              const style = c.color
+                ? `background:${escHtml(c.color)}`
+                : (getImage(c.image) ? `background-image:url(${getImage(c.image)});background-size:cover` : 'background:#444');
+              return `<div class="chroma-dot" title="${escHtml(c.name)}" style="${style}"></div>`;
+            }).join('')}
+          </div>
+        ` : ''}
+      </div>
+      <div class="skin-info">
+        <div class="skin-name">${escHtml(skin.name)}</div>
+        ${hasChromas ? `<div style="font-size:0.65rem;color:var(--lol-color);margin-top:4px">${skin.chromas.length} chroma${skin.chromas.length>1?'s':''}</div>` : ''}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit"   onclick="lolEditSkin('${escHtml(champId)}','${escHtml(skin.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('lol','${escHtml(skin.id)}',{champId:'${escHtml(champId)}'})">🗑</button>
+      </div>
+    </div>
+  `;
+}
+
+function lolFilter() {
+  const q = document.getElementById('lol-search').value.toLowerCase();
+  document.querySelectorAll('#lol-content .champion-section').forEach(section => {
+    const champName = section.dataset.champ || '';
+    const cards = section.querySelectorAll('.skin-card');
+    let champMatch = !q || champName.includes(q);
+    let skinMatch = false;
+    cards.forEach(card => {
+      const match = !q || card.dataset.name?.includes(q) || champName.includes(q);
+      card.style.display = match ? '' : 'none';
+      if (match) skinMatch = true;
+    });
+    section.style.display = (champMatch || skinMatch) ? '' : 'none';
+  });
+}
+
+function lolEditChamp(id) {
+  navigate('add');
+  setTimeout(() => {
+    document.getElementById('add-game-select').value = 'lol';
+    document.getElementById('add-game-select').dispatchEvent(new Event('change'));
+    setTimeout(() => {
+      document.getElementById('lol-add-tab-champ')?.click();
+      setTimeout(() => prefillLolChamp(id), 50);
+    }, 50);
+  }, 50);
+}
+
+function lolEditSkin(champId, skinId) {
+  navigate('add');
+  setTimeout(() => {
+    document.getElementById('add-game-select').value = 'lol';
+    document.getElementById('add-game-select').dispatchEvent(new Event('change'));
+    setTimeout(() => {
+      document.getElementById('lol-add-tab-skin')?.click();
+      setTimeout(() => prefillLolSkin(champId, skinId), 50);
+    }, 50);
+  }, 50);
+}
+
+function prefillLolChamp(id) {
+  const db = loadData();
+  const c = db.lol.champions.find(x => x.id === id);
+  if (!c) return;
+  const nameEl = document.getElementById('lol-champ-name');
+  if (nameEl) nameEl.value = c.name;
+  const form = document.getElementById('lol-champ-form');
+  if (form) form.dataset.editId = id;
+  showToast('Champion chargé pour modification');
+}
+
+function prefillLolSkin(champId, skinId) {
+  const db = loadData();
+  const champ = db.lol.champions.find(c => c.id === champId);
+  if (!champ) return;
+  const skin = champ.skins.find(s => s.id === skinId);
+  if (!skin) return;
+
+  const nameEl  = document.getElementById('lol-skin-name');
+  const champEl = document.getElementById('lol-skin-champ');
+  if (nameEl)  nameEl.value  = skin.name;
+  if (champEl) champEl.value = champId;
+
+  window._lolChromas = JSON.parse(JSON.stringify(skin.chromas || []));
+  renderLolChromaChips();
+
+  const form = document.getElementById('lol-skin-form');
+  if (form) { form.dataset.editId = skinId; form.dataset.editChampId = champId; }
+  showToast('Skin chargé pour modification');
+}
+
+// pages/tft.js
+
+const TFT_TYPES = {
+  little_legend: "Bestiole",
+  portal:        "Portail",
+  arena:         "Map",
+  boom:          "Tirée",
+  tactician:     "Tacticien",
+};
+
+function renderTFT() {
+  const db = loadData();
+  const skins = db.tft.skins;
+
+  const types = Object.entries(TFT_TYPES);
+
+  return `
+    <div class="page-header">
+      <div class="page-title tft-accent">TFT</div>
+      <span class="count-badge">${skins.length} skins</span>
+    </div>
+
+    <div class="filter-bar" id="tft-type-filter">
+      <button class="filter-btn active" data-type="all" onclick="tftTypeFilter(this,'all')">Tous</button>
+      ${types.map(([k,v]) =>
+        `<button class="filter-btn" data-type="${k}" onclick="tftTypeFilter(this,'${k}')">${v}</button>`
+      ).join('')}
+    </div>
+
+    <div class="skins-grid" id="tft-grid">
+      ${skins.length === 0
+        ? `<div class="empty-state" style="grid-column:1/-1">
+             <div class="icon">🎲</div>
+             <p>Aucun skin TFT.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p>
+           </div>`
+        : skins.map(s => tftSkinCard(s)).join('')}
+    </div>
+  `;
+}
+
+function tftSkinCard(s) {
+  const imgSrc = getImage(s.image);
+  const typeLabel = TFT_TYPES[s.type] || s.type;
+  const stars = s.type === 'little_legend' && s.level
+    ? '⭐'.repeat(Math.min(s.level, 3))
+    : '';
+
+  return `
+    <div class="skin-card" data-type="${escHtml(s.type||'')}">
+      <div class="rarity-bar" style="background:var(--tft-color); opacity:0.6"></div>
+      <div class="skin-img-wrap">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${escHtml(s.name)}" loading="lazy">`
+          : `<div class="no-img">🎲</div>`}
+      </div>
+      <div class="skin-info">
+        <div class="skin-name">${escHtml(s.name)}</div>
+        <div class="tft-type-badge">${typeLabel}</div>
+        ${stars ? `<div class="tft-level">${stars.split('').map(x=>`<span class="tft-star">${x}</span>`).join('')}</div>` : ''}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit"   onclick="tftEditSkin('${escHtml(s.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('tft','${escHtml(s.id)}')">🗑</button>
+      </div>
+    </div>
+  `;
+}
+
+function tftTypeFilter(btn, type) {
+  document.querySelectorAll('#tft-type-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#tft-grid .skin-card').forEach(card => {
+    card.style.display = (type === 'all' || card.dataset.type === type) ? '' : 'none';
+  });
+}
+
+function tftEditSkin(id) {
+  navigate('add');
+  setTimeout(() => {
+    document.getElementById('add-game-select').value = 'tft';
+    document.getElementById('add-game-select').dispatchEvent(new Event('change'));
+    setTimeout(() => prefillTftSkin(id), 50);
+  }, 50);
+}
+
+function prefillTftSkin(id) {
+  const db = loadData();
+  const s = db.tft.skins.find(x => x.id === id);
+  if (!s) return;
+  const n = document.getElementById('tft-skin-name'); if(n) n.value = s.name;
+  const t = document.getElementById('tft-skin-type'); if(t) t.value = s.type;
+  const l = document.getElementById('tft-skin-level'); if(l) l.value = s.level || 1;
+  document.getElementById('tft-level-row')?.style.setProperty('display', s.type === 'little_legend' ? '' : 'none');
+  const form = document.getElementById('tft-skin-form'); if(form) form.dataset.editId = id;
+  showToast('Skin TFT chargé pour modification');
+}
+
+// pages/dbd.js
+
+let _dbdTab = 'survivors';
+
+function renderDBD() {
+  const db = loadData();
+
+  return `
+    <div class="page-header">
+      <div class="page-title dbd-accent">DEAD BY DAYLIGHT</div>
+      <span class="count-badge">
+        ${db.dbd.survivors.length} survivants · ${db.dbd.killers.length} tueurs
+      </span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab ${_dbdTab==='survivors'?'active':''}" onclick="dbdSwitchTab('survivors')">Survivants</button>
+      <button class="tab ${_dbdTab==='killers'?'active':''}"   onclick="dbdSwitchTab('killers')">Tueurs</button>
+    </div>
+
+    <div id="dbd-tab-content">
+      ${renderDBDTab(_dbdTab)}
+    </div>
+  `;
+}
+
+function dbdSwitchTab(tab) {
+  _dbdTab = tab;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.textContent.toLowerCase().includes(tab === 'survivors' ? 'surv' : 'tueur'));
+  });
+  document.getElementById('dbd-tab-content').innerHTML = renderDBDTab(tab);
+}
+
+function renderDBDTab(tab) {
+  const db = loadData();
+  const chars = tab === 'survivors' ? db.dbd.survivors : db.dbd.killers;
+  const skinGame = tab === 'survivors' ? 'dbd-survivor' : 'dbd-killer';
+  const skinSkinGame = tab === 'survivors' ? 'dbd-survivor-skin' : 'dbd-killer-skin';
+
+  if (chars.length === 0) return `
+    <div class="empty-state">
+      <div class="icon">🔪</div>
+      <p>Aucun ${tab === 'survivors' ? 'survivant' : 'tueur'} enregistré.</p>
+    </div>`;
+
+  return chars.map(char => {
+    const imgSrc = getImage(char.image);
+    return `
+      <div class="champion-section">
+        <div class="champion-header">
+          ${imgSrc
+            ? `<img src="${imgSrc}" alt="${escHtml(char.name)}" class="champion-avatar">`
+            : `<div class="champion-avatar no-img">👤</div>`}
+          <div>
+            <div class="champion-name">${escHtml(char.name)}</div>
+            <div class="champion-skin-count">${char.skins.length} skin${char.skins.length!==1?'s':''}</div>
+          </div>
+          <div style="margin-left:auto; display:flex; gap:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="dbdEditChar('${escHtml(tab)}','${escHtml(char.id)}')">✏ Modifier</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSkin('${skinGame}','${escHtml(char.id)}')">🗑 Supprimer</button>
+          </div>
+        </div>
+
+        <div class="skins-grid">
+          ${char.skins.length === 0
+            ? `<p style="color:var(--text-muted); font-size:0.85rem; grid-column:1/-1">Aucun skin.</p>`
+            : char.skins.map(s => {
+                const ssrc = getImage(s.image);
+                return `
+                  <div class="skin-card" style="cursor:default">
+                    <div class="rarity-bar" style="background:var(--dbd-color); opacity:0.6"></div>
+                    <div class="skin-img-wrap">
+                      ${ssrc ? `<img src="${ssrc}" alt="${escHtml(s.name)}" loading="lazy">` : `<div class="no-img">🔪</div>`}
+                    </div>
+                    <div class="skin-info">
+                      <div class="skin-name">${escHtml(s.name)}</div>
+                    </div>
+                    <div class="card-actions" onclick="event.stopPropagation()">
+                      <button class="card-btn card-btn-delete" onclick="deleteSkin('${skinSkinGame}','${escHtml(s.id)}',{charId:'${escHtml(char.id)}'})">🗑</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+        </div>
+      </div>
+      <hr style="border:none; border-top:1px solid var(--border); margin: 24px 0;">
+    `;
+  }).join('');
+}
+
+function dbdEditChar(tab, id) {
+  navigate('add');
+  setTimeout(() => {
+    document.getElementById('add-game-select').value = 'dbd';
+    document.getElementById('add-game-select').dispatchEvent(new Event('change'));
+    setTimeout(() => prefillDbdChar(tab, id), 80);
+  }, 50);
+}
+
+function prefillDbdChar(tab, id) {
+  const db = loadData();
+  const list = tab === 'survivors' ? db.dbd.survivors : db.dbd.killers;
+  const char = list.find(c => c.id === id);
+  if (!char) return;
+
+  const typeEl = document.getElementById('dbd-char-type');
+  const nameEl = document.getElementById('dbd-char-name');
+  if (typeEl) typeEl.value = tab === 'survivors' ? 'survivor' : 'killer';
+  if (nameEl) nameEl.value = char.name;
+
+  const form = document.getElementById('dbd-char-form');
+  if (form) form.dataset.editId = id;
+  showToast('Personnage chargé pour modification');
+}
+
+// pages/valo.js
+
+let _valoTab = 'weapons';
+
+function renderValo() {
+  const db = loadData();
+  const totalSkins = db.valo.weapons.reduce((a,w)=>a+w.skins.length,0);
+
+  return `
+    <div class="page-header">
+      <div class="page-title valo-accent">VALORANT</div>
+      <span class="count-badge">${db.valo.weapons.length} armes · ${db.valo.buddies.length} buddies · ${totalSkins} skins</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab ${_valoTab==='weapons'?'active':''}"  onclick="valoSwitchTab('weapons')">Armes</button>
+      <button class="tab ${_valoTab==='buddies'?'active':''}"  onclick="valoSwitchTab('buddies')">Buddies</button>
+    </div>
+
+    <div id="valo-tab-content">
+      ${renderValoTab(_valoTab)}
+    </div>
+  `;
+}
+
+function valoSwitchTab(tab) {
+  _valoTab = tab;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active',
+      (tab==='weapons' && t.textContent==='Armes') ||
+      (tab==='buddies' && t.textContent==='Buddies'));
+  });
+  document.getElementById('valo-tab-content').innerHTML = renderValoTab(tab);
+}
+
+function renderValoTab(tab) {
+  const db = loadData();
+
+  if (tab === 'buddies') {
+    if (db.valo.buddies.length === 0) return `
+      <div class="empty-state"><div class="icon">🎯</div><p>Aucun buddy enregistré.</p></div>`;
+    return `<div class="skins-grid">${db.valo.buddies.map(b => {
+      const src = getImage(b.image);
+      return `
+        <div class="skin-card" style="cursor:default">
+          <div class="rarity-bar" style="background:var(--valo-color);opacity:0.6"></div>
+          <div class="skin-img-wrap">
+            ${src ? `<img src="${src}" alt="${escHtml(b.name)}" loading="lazy">` : `<div class="no-img">🎯</div>`}
+          </div>
+          <div class="skin-info"><div class="skin-name">${escHtml(b.name)}</div></div>
+          <div class="card-actions" onclick="event.stopPropagation()">
+            <button class="card-btn card-btn-delete" onclick="deleteSkin('valo-buddy','${escHtml(b.id)}')">🗑</button>
+          </div>
+        </div>`;
+    }).join('')}</div>`;
+  }
+
+  // Weapons tab
+  const weapons = db.valo.weapons;
+  if (weapons.length === 0) return `
+    <div class="empty-state"><div class="icon">🎯</div><p>Aucune arme enregistrée.</p></div>`;
+
+  return weapons.map(w => {
+    const imgSrc = getImage(w.image);
+    return `
+      <div class="champion-section">
+        <div class="champion-header">
+          ${imgSrc
+            ? `<img src="${imgSrc}" alt="${escHtml(w.name)}" class="champion-avatar" style="border-radius:var(--radius)">`
+            : `<div class="champion-avatar no-img">🔫</div>`}
+          <div>
+            <div class="champion-name">${escHtml(w.name)}</div>
+            <div class="champion-skin-count">${w.skins.length} skin${w.skins.length!==1?'s':''}</div>
+          </div>
+          <div style="margin-left:auto; display:flex; gap:6px;">
+            <button class="btn btn-danger btn-sm" onclick="deleteSkin('valo-weapon','${escHtml(w.id)}')">🗑 Supprimer</button>
+          </div>
+        </div>
+
+        <div class="skins-grid">
+          ${w.skins.length === 0
+            ? `<p style="color:var(--text-muted); font-size:0.85rem; grid-column:1/-1">Aucun skin.</p>`
+            : w.skins.map(s => {
+                const ssrc = getImage(s.image);
+                return `
+                  <div class="skin-card" style="cursor:default">
+                    <div class="rarity-bar" style="background:var(--valo-color);opacity:0.6"></div>
+                    <div class="skin-img-wrap">
+                      ${ssrc ? `<img src="${ssrc}" alt="${escHtml(s.name)}" loading="lazy">` : `<div class="no-img">🎯</div>`}
+                    </div>
+                    <div class="skin-info"><div class="skin-name">${escHtml(s.name)}</div></div>
+                    <div class="card-actions" onclick="event.stopPropagation()">
+                      <button class="card-btn card-btn-delete" onclick="deleteSkin('valo-weapon-skin','${escHtml(s.id)}',{weaponId:'${escHtml(w.id)}'})">🗑</button>
+                    </div>
+                  </div>`;
+              }).join('')}
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;">
+    `;
+  }).join('');
+}
+
+// pages/add.js
+// Formulaires d'ajout/modification pour tous les jeux
+
+// ── État temporaire des variantes/chromas ─────────────────────
+// Fortnite – une liste par type de variante
+const FN_VARIANT_KEYS = ['back_bling','pickaxe','glider','contrail','guitar','bass','keytar','drums','mic'];
+const FN_VARIANT_LABELS_ADD = {
+  back_bling:"Accessoire de dos", pickaxe:"Pioche", glider:"Planeur",
+  contrail:"Traînée", guitar:"Guitare", bass:"Basse",
+  keytar:"Keytar", drums:"Batterie", mic:"Micro"
+};
+
+FN_VARIANT_KEYS.forEach(k => { window[`_fnVariants_${k}`] = []; });
+window._lolChromas = [];
+
+// ── Rendu principal ───────────────────────────────────────────
+function renderAdd() {
+  return `
+    <div class="page-header">
+      <div class="page-title" style="color:var(--text)">AJOUTER UN SKIN</div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-group">
+        <label>Jeu</label>
+        <select id="add-game-select" onchange="addGameChanged()">
+          <option value="">-- Choisir un jeu --</option>
+          <option value="fortnite">Fortnite</option>
+          <option value="lol">League of Legends</option>
+          <option value="tft">TFT</option>
+          <option value="dbd">Dead by Daylight</option>
+          <option value="valo">Valorant</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="add-form-container"></div>
+  `;
+}
+
+function addGameChanged() {
+  const game = document.getElementById('add-game-select').value;
+  const container = document.getElementById('add-form-container');
+  // Reset variantes
+  FN_VARIANT_KEYS.forEach(k => { window[`_fnVariants_${k}`] = []; });
+  window._lolChromas = [];
+
+  switch(game) {
+    case 'fortnite': container.innerHTML = renderFnForm();  initFnForm();  break;
+    case 'lol':      container.innerHTML = renderLolForm(); initLolForm(); break;
+    case 'tft':      container.innerHTML = renderTftForm(); initTftForm(); break;
+    case 'dbd':      container.innerHTML = renderDbdForm(); initDbdForm(); break;
+    case 'valo':     container.innerHTML = renderValoForm(); initValoForm(); break;
+    default:         container.innerHTML = '';
+  }
+}
+
+function initAddPage() {
+  // Rien de spécial à l'init globale
+}
+
+// ═══════════════════════════════════════════════════
+//  FORTNITE
+// ═══════════════════════════════════════════════════
+function renderFnForm() {
+  const db = loadData();
+  const seriesOptions = db.fortnite.series.map(s => `<option value="${escHtml(s)}">${escHtml(s)}</option>`).join('');
+
+  return `
+    <div class="form-section">
+      <div class="form-section-title">⚡ Skin Fortnite</div>
+      <form id="fn-skin-form" onsubmit="saveFnSkin(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom du skin *</label>
+            <input type="text" id="fn-skin-name" placeholder="ex: Skull Trooper" required>
+          </div>
+          <div class="form-group">
+            <label>Rareté *</label>
+            <select id="fn-skin-rarity" required>
+              <option value="">-- Rareté --</option>
+              <option value="Mythic">Mythic</option>
+              <option value="Legendary">Legendary</option>
+              <option value="Epic">Epic</option>
+              <option value="Rare">Rare</option>
+              <option value="Uncommon">Uncommon</option>
+              <option value="Common">Common</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Série (optionnel)</label>
+            <select id="fn-skin-series">
+              <option value="">Aucune série</option>
+              ${seriesOptions}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ajouter une nouvelle série</label>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="fn-new-series" placeholder="Nom de la série">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addFnSeries()">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Image principale</label>
+            <div class="img-picker" id="fn-img-picker">
+              <img class="img-picker-preview hidden" id="fn-img-preview">
+              <div class="img-picker-label">📁 Clique pour choisir une image</div>
+              <input type="file" accept="image/*" id="fn-skin-img" onchange="previewImg('fn-img-preview','fn-img-picker',this)">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section-title" style="margin-top:24px">Variantes</div>
+        ${FN_VARIANT_KEYS.map(key => `
+          <div class="variant-section" style="margin-bottom:20px">
+            <div class="variant-label">${FN_VARIANT_LABELS_ADD[key]}</div>
+            <div style="display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px;align-items:end;margin-bottom:8px">
+              <div class="form-group" style="margin:0">
+                <label>Nom</label>
+                <input type="text" id="fn-var-name-${key}" placeholder="ex: Rose">
+              </div>
+              <div></div>
+              <div class="form-group" style="margin:0">
+                <label>Image</label>
+                <div class="img-picker" style="padding:10px">
+                  <div class="img-picker-label" style="font-size:0.7rem">📁 Image</div>
+                  <input type="file" accept="image/*" id="fn-var-img-${key}"
+                    onchange="previewImg('fn-var-preview-${key}','',this,true)">
+                </div>
+                <img id="fn-var-preview-${key}" class="hidden" style="width:40px;height:40px;object-fit:cover;border-radius:4px;margin-top:4px">
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addFnVariant('${key}')">+ Ajouter</button>
+            </div>
+            <div class="variant-list-preview" id="fn-variants-${key}"></div>
+          </div>
+        `).join('')}
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer le skin</button>
+          <button type="button" class="btn btn-ghost" onclick="resetFnForm()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function initFnForm() {
+  FN_VARIANT_KEYS.forEach(k => renderFnVariantChips(k));
+}
+
+function addFnSeries() {
+  const val = document.getElementById('fn-new-series').value.trim();
+  if (!val) return;
+  const db = loadData();
+  if (!db.fortnite.series.includes(val)) {
+    db.fortnite.series.push(val);
+    saveData(db);
+    DB = db;
+  }
+  const sel = document.getElementById('fn-skin-series');
+  const opt = document.createElement('option');
+  opt.value = val; opt.textContent = val;
+  sel.appendChild(opt);
+  sel.value = val;
+  document.getElementById('fn-new-series').value = '';
+  showToast('Série ajoutée ✓');
+}
+
+function addFnVariant(key) {
+  const name = document.getElementById(`fn-var-name-${key}`)?.value.trim();
+  if (!name) { showToast('Donne un nom à la variante', 'error'); return; }
+  const fileInput = document.getElementById(`fn-var-img-${key}`);
+  const file = fileInput?.files[0];
+
+  const varId = generateId('fnv');
+  storeImage(varId, file).then(() => {
+    window[`_fnVariants_${key}`].push({ id: varId, name, image: file ? varId : null });
+    renderFnVariantChips(key);
+    document.getElementById(`fn-var-name-${key}`).value = '';
+    if (fileInput) fileInput.value = '';
+    const prev = document.getElementById(`fn-var-preview-${key}`);
+    if (prev) { prev.src=''; prev.classList.add('hidden'); }
+  });
+}
+
+function renderFnVariantChips(key) {
+  const container = document.getElementById(`fn-variants-${key}`);
+  if (!container) return;
+  const list = window[`_fnVariants_${key}`] || [];
+  container.innerHTML = list.map((v, i) => `
+    <div class="variant-chip">
+      ${getImage(v.image) ? `<img src="${getImage(v.image)}" alt="">` : ''}
+      ${escHtml(v.name)}
+      <button type="button" class="variant-chip-remove" onclick="removeFnVariant('${key}',${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeFnVariant(key, i) {
+  window[`_fnVariants_${key}`].splice(i, 1);
+  renderFnVariantChips(key);
+}
+
+async function saveFnSkin(e) {
+  e.preventDefault();
+  const form  = document.getElementById('fn-skin-form');
+  const name  = document.getElementById('fn-skin-name').value.trim();
+  const rar   = document.getElementById('fn-skin-rarity').value;
+  const series= document.getElementById('fn-skin-series').value;
+  const file  = document.getElementById('fn-skin-img').files[0];
+  const editId= form.dataset.editId;
+
+  if (!name || !rar) { showToast('Remplis les champs obligatoires', 'error'); return; }
+
+  const db = loadData();
+  let imgId;
+
+  if (editId) {
+    const existing = db.fortnite.skins.find(s => s.id === editId);
+    imgId = existing?.image || generateId('fnimg');
+  } else {
+    imgId = generateId('fnimg');
+  }
+
+  if (file) await storeImage(imgId, file);
+  else if (!editId) imgId = null;
+
+  const variants = {};
+  for (const key of FN_VARIANT_KEYS) {
+    variants[key] = window[`_fnVariants_${key}`] || [];
+  }
+
+  if (editId) {
+    const idx = db.fortnite.skins.findIndex(s => s.id === editId);
+    if (idx !== -1) {
+      db.fortnite.skins[idx] = { ...db.fortnite.skins[idx], name, rarity: rar, series: series||null, image: imgId||db.fortnite.skins[idx].image, variants };
+    }
+  } else {
+    db.fortnite.skins.push({ id: generateId('fn'), name, rarity: rar, series: series||null, image: imgId, variants });
+  }
+
+  saveData(db); DB = db;
+  showToast(editId ? 'Skin modifié ✓' : 'Skin ajouté ✓');
+  resetFnForm();
+  delete form.dataset.editId;
+}
+
+function resetFnForm() {
+  document.getElementById('fn-skin-form')?.reset();
+  FN_VARIANT_KEYS.forEach(k => { window[`_fnVariants_${k}`] = []; renderFnVariantChips(k); });
+  ['fn-img-preview'].forEach(id => { const el=document.getElementById(id); if(el){el.src='';el.classList.add('hidden');} });
+  const form = document.getElementById('fn-skin-form');
+  if (form) delete form.dataset.editId;
+}
+
+// ═══════════════════════════════════════════════════
+//  LEAGUE OF LEGENDS
+// ═══════════════════════════════════════════════════
+function renderLolForm() {
+  const db = loadData();
+  const champOptions = db.lol.champions.map(c =>
+    `<option value="${escHtml(c.id)}">${escHtml(c.name)}</option>`
+  ).join('');
+
+  return `
+    <!-- Onglets champion / skin -->
+    <div class="tabs" style="margin-bottom:0">
+      <button type="button" class="tab active" id="lol-add-tab-champ" onclick="lolSwitchAddTab('champ')">+ Champion</button>
+      <button type="button" class="tab"        id="lol-add-tab-skin"  onclick="lolSwitchAddTab('skin')">+ Skin</button>
+    </div>
+
+    <!-- Formulaire Champion -->
+    <div class="form-section" id="lol-form-champ">
+      <div class="form-section-title">⚔️ Ajouter / Modifier un Champion</div>
+      <form id="lol-champ-form" onsubmit="saveLolChamp(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom du champion *</label>
+            <input type="text" id="lol-champ-name" placeholder="ex: Jinx" required>
+          </div>
+          <div class="form-group">
+            <label>Image (portrait)</label>
+            <div class="img-picker">
+              <img class="img-picker-preview hidden" id="lol-champ-img-preview">
+              <div class="img-picker-label">📁 Choisir image</div>
+              <input type="file" accept="image/*" id="lol-champ-img"
+                onchange="previewImg('lol-champ-img-preview','',this)">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="resetLolChampForm()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Formulaire Skin -->
+    <div class="form-section" id="lol-form-skin" style="display:none">
+      <div class="form-section-title">⚔️ Ajouter / Modifier un Skin</div>
+      <form id="lol-skin-form" onsubmit="saveLolSkin(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom du skin *</label>
+            <input type="text" id="lol-skin-name" placeholder="ex: Star Guardian Jinx" required>
+          </div>
+          <div class="form-group">
+            <label>Champion *</label>
+            <select id="lol-skin-champ" required>
+              <option value="">-- Choisir --</option>
+              ${champOptions}
+            </select>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Image du skin</label>
+            <div class="img-picker">
+              <img class="img-picker-preview hidden" id="lol-skin-img-preview">
+              <div class="img-picker-label">📁 Choisir image</div>
+              <input type="file" accept="image/*" id="lol-skin-img"
+                onchange="previewImg('lol-skin-img-preview','',this)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Chromas -->
+        <div class="form-section-title" style="margin-top:20px">Chromas</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;align-items:end;margin-bottom:8px">
+          <div class="form-group" style="margin:0">
+            <label>Nom du chroma</label>
+            <input type="text" id="lol-chroma-name" placeholder="ex: Ruby">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Couleur</label>
+            <input type="color" id="lol-chroma-color" value="#ff0000"
+              style="height:42px;padding:4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Image (optionnel)</label>
+            <div class="img-picker" style="padding:8px">
+              <div class="img-picker-label" style="font-size:0.7rem">📁</div>
+              <input type="file" accept="image/*" id="lol-chroma-img">
+            </div>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" style="align-self:end" onclick="addLolChroma()">+ Ajouter</button>
+        </div>
+        <div class="variant-list-preview" id="lol-chromas-list"></div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="resetLolSkinForm()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function initLolForm() {
+  renderLolChromaChips();
+}
+
+function lolSwitchAddTab(tab) {
+  document.getElementById('lol-add-tab-champ').classList.toggle('active', tab==='champ');
+  document.getElementById('lol-add-tab-skin').classList.toggle('active',  tab==='skin');
+  document.getElementById('lol-form-champ').style.display = tab==='champ' ? '' : 'none';
+  document.getElementById('lol-form-skin').style.display  = tab==='skin'  ? '' : 'none';
+}
+
+async function saveLolChamp(e) {
+  e.preventDefault();
+  const form   = document.getElementById('lol-champ-form');
+  const name   = document.getElementById('lol-champ-name').value.trim();
+  const file   = document.getElementById('lol-champ-img').files[0];
+  const editId = form.dataset.editId;
+  if (!name) { showToast('Donne un nom au champion', 'error'); return; }
+
+  const db = loadData();
+  if (editId) {
+    const champ = db.lol.champions.find(c => c.id === editId);
+    if (champ) {
+      champ.name = name;
+      if (file) await storeImage(champ.image || editId, file);
+    }
+  } else {
+    const imgId = generateId('lolc');
+    if (file) await storeImage(imgId, file);
+    db.lol.champions.push({ id: generateId('lolchamp'), name, image: file ? imgId : null, skins: [] });
+  }
+
+  saveData(db); DB = db;
+  showToast(editId ? 'Champion modifié ✓' : 'Champion ajouté ✓');
+  resetLolChampForm();
+  delete form.dataset.editId;
+  // Recharger pour mettre à jour la liste des champions dans le select
+  document.getElementById('add-game-select').dispatchEvent(new Event('change'));
+}
+
+function resetLolChampForm() {
+  document.getElementById('lol-champ-form')?.reset();
+  const prev = document.getElementById('lol-champ-img-preview');
+  if (prev) { prev.src=''; prev.classList.add('hidden'); }
+}
+
+async function addLolChroma() {
+  const name  = document.getElementById('lol-chroma-name').value.trim();
+  const color = document.getElementById('lol-chroma-color').value;
+  const file  = document.getElementById('lol-chroma-img').files[0];
+  if (!name) { showToast('Donne un nom au chroma', 'error'); return; }
+
+  const id = generateId('chroma');
+  if (file) await storeImage(id, file);
+  window._lolChromas.push({ id, name, color, image: file ? id : null });
+  renderLolChromaChips();
+  document.getElementById('lol-chroma-name').value = '';
+  document.getElementById('lol-chroma-img').value  = '';
+}
+
+function renderLolChromaChips() {
+  const container = document.getElementById('lol-chromas-list');
+  if (!container) return;
+  container.innerHTML = window._lolChromas.map((c, i) => `
+    <div class="variant-chip">
+      <div class="chroma-dot" style="background:${escHtml(c.color)};width:20px;height:20px;flex-shrink:0"></div>
+      ${escHtml(c.name)}
+      <button type="button" class="variant-chip-remove" onclick="removeLolChroma(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeLolChroma(i) {
+  window._lolChromas.splice(i, 1);
+  renderLolChromaChips();
+}
+
+async function saveLolSkin(e) {
+  e.preventDefault();
+  const form    = document.getElementById('lol-skin-form');
+  const name    = document.getElementById('lol-skin-name').value.trim();
+  const champId = document.getElementById('lol-skin-champ').value;
+  const file    = document.getElementById('lol-skin-img').files[0];
+  const editId  = form.dataset.editId;
+  const editChampId = form.dataset.editChampId;
+  if (!name || !champId) { showToast('Remplis tous les champs', 'error'); return; }
+
+  const db = loadData();
+  const champ = db.lol.champions.find(c => c.id === champId);
+  if (!champ) { showToast('Champion introuvable', 'error'); return; }
+
+  if (editId) {
+    // Peut avoir changé de champion
+    const oldChamp = db.lol.champions.find(c => c.id === editChampId);
+    const skin = oldChamp?.skins.find(s => s.id === editId);
+    if (skin) {
+      if (file) await storeImage(skin.image || editId, file);
+      skin.name = name;
+      skin.chromas = [...window._lolChromas];
+      // Si changement de champ
+      if (editChampId !== champId) {
+        oldChamp.skins = oldChamp.skins.filter(s => s.id !== editId);
+        champ.skins.push(skin);
+      }
+    }
+  } else {
+    const imgId = generateId('lols');
+    if (file) await storeImage(imgId, file);
+    champ.skins.push({ id: generateId('lolskin'), name, image: file ? imgId : null, chromas: [...window._lolChromas] });
+  }
+
+  saveData(db); DB = db;
+  window._lolChromas = [];
+  showToast(editId ? 'Skin modifié ✓' : 'Skin ajouté ✓');
+  resetLolSkinForm();
+  delete form.dataset.editId;
+  delete form.dataset.editChampId;
+}
+
+function resetLolSkinForm() {
+  document.getElementById('lol-skin-form')?.reset();
+  window._lolChromas = [];
+  renderLolChromaChips();
+  const prev = document.getElementById('lol-skin-img-preview');
+  if (prev) { prev.src=''; prev.classList.add('hidden'); }
+}
+
+// ═══════════════════════════════════════════════════
+//  TFT
+// ═══════════════════════════════════════════════════
+function renderTftForm() {
+  return `
+    <div class="form-section">
+      <div class="form-section-title">🎲 Skin TFT</div>
+      <form id="tft-skin-form" onsubmit="saveTftSkin(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom *</label>
+            <input type="text" id="tft-skin-name" placeholder="ex: Pengu" required>
+          </div>
+          <div class="form-group">
+            <label>Type *</label>
+            <select id="tft-skin-type" required onchange="tftTypeChanged()">
+              <option value="">-- Type --</option>
+              <option value="little_legend">Bestiole (Little Legend)</option>
+              <option value="portal">Portail</option>
+              <option value="arena">Map / Arène</option>
+              <option value="boom">Tirée (Boom)</option>
+              <option value="tactician">Tacticien</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row" id="tft-level-row" style="display:none">
+          <div class="form-group">
+            <label>Niveau de la bestiole (1–3)</label>
+            <select id="tft-skin-level">
+              <option value="1">⭐ Niveau 1</option>
+              <option value="2">⭐⭐ Niveau 2</option>
+              <option value="3">⭐⭐⭐ Niveau 3</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Image</label>
+            <div class="img-picker">
+              <img class="img-picker-preview hidden" id="tft-img-preview">
+              <div class="img-picker-label">📁 Choisir image</div>
+              <input type="file" accept="image/*" id="tft-skin-img"
+                onchange="previewImg('tft-img-preview','',this)">
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="resetTftForm()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function initTftForm() {}
+
+function tftTypeChanged() {
+  const type = document.getElementById('tft-skin-type').value;
+  document.getElementById('tft-level-row').style.display = type === 'little_legend' ? '' : 'none';
+}
+
+async function saveTftSkin(e) {
+  e.preventDefault();
+  const form   = document.getElementById('tft-skin-form');
+  const name   = document.getElementById('tft-skin-name').value.trim();
+  const type   = document.getElementById('tft-skin-type').value;
+  const level  = parseInt(document.getElementById('tft-skin-level')?.value || '1');
+  const file   = document.getElementById('tft-skin-img').files[0];
+  const editId = form.dataset.editId;
+  if (!name || !type) { showToast('Remplis les champs obligatoires', 'error'); return; }
+
+  const db = loadData();
+  if (editId) {
+    const skin = db.tft.skins.find(s => s.id === editId);
+    if (skin) {
+      skin.name = name; skin.type = type; skin.level = level;
+      if (file) await storeImage(skin.image || editId, file);
+    }
+  } else {
+    const imgId = generateId('tftimg');
+    if (file) await storeImage(imgId, file);
+    db.tft.skins.push({ id: generateId('tft'), name, type, level, image: file ? imgId : null });
+  }
+
+  saveData(db); DB = db;
+  showToast(editId ? 'Skin TFT modifié ✓' : 'Skin TFT ajouté ✓');
+  resetTftForm();
+  delete form.dataset.editId;
+}
+
+function resetTftForm() {
+  document.getElementById('tft-skin-form')?.reset();
+  document.getElementById('tft-level-row').style.display = 'none';
+  const prev = document.getElementById('tft-img-preview');
+  if (prev) { prev.src=''; prev.classList.add('hidden'); }
+}
+
+// ═══════════════════════════════════════════════════
+//  DBD
+// ═══════════════════════════════════════════════════
+function renderDbdForm() {
+  const db = loadData();
+  const survivors = db.dbd.survivors.map(c => `<option value="${escHtml(c.id)}">${escHtml(c.name)}</option>`).join('');
+  const killers   = db.dbd.killers.map(c =>   `<option value="${escHtml(c.id)}">${escHtml(c.name)}</option>`).join('');
+
+  return `
+    <div class="tabs" style="margin-bottom:0">
+      <button type="button" class="tab active" id="dbd-tab-char" onclick="dbdSwitchAddTab('char')">+ Personnage</button>
+      <button type="button" class="tab"        id="dbd-tab-skin" onclick="dbdSwitchAddTab('skin')">+ Skin</button>
+    </div>
+
+    <!-- Formulaire Personnage -->
+    <div class="form-section" id="dbd-form-char">
+      <div class="form-section-title">🔪 Ajouter un Personnage DBD</div>
+      <form id="dbd-char-form" onsubmit="saveDbdChar(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Type *</label>
+            <select id="dbd-char-type" required>
+              <option value="">-- Type --</option>
+              <option value="survivor">Survivant</option>
+              <option value="killer">Tueur</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Nom *</label>
+            <input type="text" id="dbd-char-name" placeholder="ex: Meg Thomas" required>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Image (portrait par défaut)</label>
+            <div class="img-picker">
+              <img class="img-picker-preview hidden" id="dbd-char-img-preview">
+              <div class="img-picker-label">📁 Choisir image</div>
+              <input type="file" accept="image/*" id="dbd-char-img"
+                onchange="previewImg('dbd-char-img-preview','',this)">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="resetDbdCharForm()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Formulaire Skin -->
+    <div class="form-section" id="dbd-form-skin" style="display:none">
+      <div class="form-section-title">🔪 Ajouter un Skin DBD</div>
+      <form id="dbd-skin-form" onsubmit="saveDbdSkin(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Personnage (Survivant) *</label>
+            <select id="dbd-skin-survivor">
+              <option value="">-- Survivant --</option>
+              ${survivors}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Personnage (Tueur) *</label>
+            <select id="dbd-skin-killer">
+              <option value="">-- Tueur --</option>
+              ${killers}
+            </select>
+          </div>
+        </div>
+        <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:12px">Choisis l'un ou l'autre.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom du skin *</label>
+            <input type="text" id="dbd-skin-name" placeholder="ex: Sporty Spice" required>
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <div class="img-picker">
+              <img class="img-picker-preview hidden" id="dbd-skin-img-preview">
+              <div class="img-picker-label">📁 Choisir image</div>
+              <input type="file" accept="image/*" id="dbd-skin-img"
+                onchange="previewImg('dbd-skin-img-preview','',this)">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="resetDbdSkinForm()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function initDbdForm() {}
+
+function dbdSwitchAddTab(tab) {
+  document.getElementById('dbd-tab-char').classList.toggle('active', tab==='char');
+  document.getElementById('dbd-tab-skin').classList.toggle('active', tab==='skin');
+  document.getElementById('dbd-form-char').style.display = tab==='char' ? '' : 'none';
+  document.getElementById('dbd-form-skin').style.display = tab==='skin' ? '' : 'none';
+}
+
+async function saveDbdChar(e) {
+  e.preventDefault();
+  const form   = document.getElementById('dbd-char-form');
+  const type   = document.getElementById('dbd-char-type').value;
+  const name   = document.getElementById('dbd-char-name').value.trim();
+  const file   = document.getElementById('dbd-char-img').files[0];
+  const editId = form.dataset.editId;
+  if (!type || !name) { showToast('Remplis les champs', 'error'); return; }
+
+  const db   = loadData();
+  const list = type === 'survivor' ? db.dbd.survivors : db.dbd.killers;
+
+  if (editId) {
+    const char = list.find(c => c.id === editId);
+    if (char) { char.name = name; if (file) await storeImage(char.image || editId, file); }
+  } else {
+    const imgId = generateId('dbdimg');
+    if (file) await storeImage(imgId, file);
+    list.push({ id: generateId('dbd'), name, image: file ? imgId : null, skins: [] });
+  }
+
+  saveData(db); DB = db;
+  showToast(editId ? 'Personnage modifié ✓' : 'Personnage ajouté ✓');
+  resetDbdCharForm();
+  delete form.dataset.editId;
+  // Recharger pour mettre à jour les selects
+  document.getElementById('add-game-select').dispatchEvent(new Event('change'));
+}
+
+function resetDbdCharForm() {
+  document.getElementById('dbd-char-form')?.reset();
+  const prev = document.getElementById('dbd-char-img-preview');
+  if (prev) { prev.src=''; prev.classList.add('hidden'); }
+}
+
+async function saveDbdSkin(e) {
+  e.preventDefault();
+  const survId = document.getElementById('dbd-skin-survivor').value;
+  const killId = document.getElementById('dbd-skin-killer').value;
+  const name   = document.getElementById('dbd-skin-name').value.trim();
+  const file   = document.getElementById('dbd-skin-img').files[0];
+
+  if (!name || (!survId && !killId)) { showToast('Choisis un personnage et donne un nom', 'error'); return; }
+
+  const db     = loadData();
+  const charId = survId || killId;
+  const list   = survId ? db.dbd.survivors : db.dbd.killers;
+  const char   = list.find(c => c.id === charId);
+  if (!char) { showToast('Personnage introuvable', 'error'); return; }
+
+  const imgId = generateId('dbdskin');
+  if (file) await storeImage(imgId, file);
+  char.skins.push({ id: generateId('dbdsk'), name, image: file ? imgId : null });
+
+  saveData(db); DB = db;
+  showToast('Skin DBD ajouté ✓');
+  resetDbdSkinForm();
+}
+
+function resetDbdSkinForm() {
+  document.getElementById('dbd-skin-form')?.reset();
+  const prev = document.getElementById('dbd-skin-img-preview');
+  if (prev) { prev.src=''; prev.classList.add('hidden'); }
+}
+
+// ═══════════════════════════════════════════════════
+//  VALORANT
+// ═══════════════════════════════════════════════════
+function renderValoForm() {
+  const db = loadData();
+  const weaponOptions = db.valo.weapons.map(w =>
+    `<option value="${escHtml(w.id)}">${escHtml(w.name)}</option>`
+  ).join('');
+
+  return `
+    <div class="tabs" style="margin-bottom:0">
+      <button type="button" class="tab active" id="valo-tab-weapon" onclick="valoSwitchAddTab('weapon')">+ Arme</button>
+      <button type="button" class="tab"        id="valo-tab-wski"   onclick="valoSwitchAddTab('wski')">+ Skin d'arme</button>
+      <button type="button" class="tab"        id="valo-tab-buddy"  onclick="valoSwitchAddTab('buddy')">+ Buddy</button>
+    </div>
+
+    <!-- Ajouter arme -->
+    <div class="form-section" id="valo-form-weapon">
+      <div class="form-section-title">🎯 Ajouter une Arme</div>
+      <form id="valo-weapon-form" onsubmit="saveValoWeapon(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom de l'arme *</label>
+            <input type="text" id="valo-weapon-name" placeholder="ex: Phantom" required>
+          </div>
+          <div class="form-group">
+            <label>Image de l'arme</label>
+            <div class="img-picker">
+              <img class="img-picker-preview hidden" id="valo-weapon-img-preview">
+              <div class="img-picker-label">📁 Choisir image</div>
+              <input type="file" accept="image/*" id="valo-weapon-img"
+                onchange="previewImg('valo-weapon-img-preview','',this)">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="resetValoWeaponForm()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Ajouter skin d'arme -->
+    <div class="form-section" id="valo-form-wski" style="display:none">
+      <div class="form-section-title">🎯 Ajouter un Skin d'Arme</div>
+      <form id="valo-wski-form" onsubmit="saveValoWeaponSkin(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Arme *</label>
+            <select id="valo-wski-weapon" required>
+              <option value="">-- Arme --</option>
+              ${weaponOptions}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Nom du skin *</label>
+            <input type="text" id="valo-wski-name" placeholder="ex: Prime Phantom" required>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Image</label>
+            <div class="img-picker">
+              <img class="img-picker-preview hidden" id="valo-wski-img-preview">
+              <div class="img-picker-label">📁 Choisir image</div>
+              <input type="file" accept="image/*" id="valo-wski-img"
+                onchange="previewImg('valo-wski-img-preview','',this)">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Ajouter buddy -->
+    <div class="form-section" id="valo-form-buddy" style="display:none">
+      <div class="form-section-title">🎯 Ajouter un Buddy</div>
+      <form id="valo-buddy-form" onsubmit="saveValoBuddy(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom du buddy *</label>
+            <input type="text" id="valo-buddy-name" placeholder="ex: Radianite Bobby" required>
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <div class="img-picker">
+              <img class="img-picker-preview hidden" id="valo-buddy-img-preview">
+              <div class="img-picker-label">📁 Choisir image</div>
+              <input type="file" accept="image/*" id="valo-buddy-img"
+                onchange="previewImg('valo-buddy-img-preview','',this)">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="resetValoBuddyForm()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function initValoForm() {}
+
+function valoSwitchAddTab(tab) {
+  ['weapon','wski','buddy'].forEach(t => {
+    document.getElementById(`valo-tab-${t}`)?.classList.toggle('active', t===tab);
+    document.getElementById(`valo-form-${t}`)?.style.setProperty('display', t===tab ? '' : 'none');
+  });
+}
+
+async function saveValoWeapon(e) {
+  e.preventDefault();
+  const name = document.getElementById('valo-weapon-name').value.trim();
+  const file = document.getElementById('valo-weapon-img').files[0];
+  if (!name) { showToast('Donne un nom à l\'arme', 'error'); return; }
+
+  const db = loadData();
+  const imgId = generateId('valow');
+  if (file) await storeImage(imgId, file);
+  db.valo.weapons.push({ id: generateId('valoweapon'), name, image: file ? imgId : null, skins: [] });
+  saveData(db); DB = db;
+  showToast('Arme ajoutée ✓');
+  resetValoWeaponForm();
+  document.getElementById('add-game-select').dispatchEvent(new Event('change'));
+}
+
+function resetValoWeaponForm() {
+  document.getElementById('valo-weapon-form')?.reset();
+  const p = document.getElementById('valo-weapon-img-preview');
+  if (p) { p.src=''; p.classList.add('hidden'); }
+}
+
+async function saveValoWeaponSkin(e) {
+  e.preventDefault();
+  const weaponId = document.getElementById('valo-wski-weapon').value;
+  const name     = document.getElementById('valo-wski-name').value.trim();
+  const file     = document.getElementById('valo-wski-img').files[0];
+  if (!weaponId || !name) { showToast('Remplis tous les champs', 'error'); return; }
+
+  const db = loadData();
+  const weapon = db.valo.weapons.find(w => w.id === weaponId);
+  if (!weapon) { showToast('Arme introuvable', 'error'); return; }
+
+  const imgId = generateId('valows');
+  if (file) await storeImage(imgId, file);
+  weapon.skins.push({ id: generateId('valoski'), name, image: file ? imgId : null });
+  saveData(db); DB = db;
+  showToast('Skin Valorant ajouté ✓');
+  document.getElementById('valo-wski-form').reset();
+  const p = document.getElementById('valo-wski-img-preview');
+  if (p) { p.src=''; p.classList.add('hidden'); }
+}
+
+async function saveValoBuddy(e) {
+  e.preventDefault();
+  const name = document.getElementById('valo-buddy-name').value.trim();
+  const file = document.getElementById('valo-buddy-img').files[0];
+  if (!name) { showToast('Donne un nom au buddy', 'error'); return; }
+
+  const db = loadData();
+  const imgId = generateId('valob');
+  if (file) await storeImage(imgId, file);
+  db.valo.buddies.push({ id: generateId('valobuddy'), name, image: file ? imgId : null });
+  saveData(db); DB = db;
+  showToast('Buddy ajouté ✓');
+  resetValoBuddyForm();
+}
+
+function resetValoBuddyForm() {
+  document.getElementById('valo-buddy-form')?.reset();
+  const p = document.getElementById('valo-buddy-img-preview');
+  if (p) { p.src=''; p.classList.add('hidden'); }
+}
+
+// ═══════════════════════════════════════════════════
+//  Utilitaire aperçu image
+// ═══════════════════════════════════════════════════
+function previewImg(previewId, pickerId, input, small = false) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const preview = document.getElementById(previewId);
+    if (preview) {
+      preview.src = e.target.result;
+      preview.classList.remove('hidden');
+      if (small) { preview.style.width='40px'; preview.style.height='40px'; }
+      else preview.style = '';
+    }
+    if (pickerId) {
+      const label = document.querySelector(`#${pickerId} .img-picker-label`);
+      if (label) label.textContent = '✓ Image sélectionnée';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============================================================
+//  app.js – Navigation, Modal, Toast, Images
+// ============================================================
+
+let DB = loadData();
+let currentPage = 'home';
+
+// ── Navigation ──────────────────────────────────────────────
+function navigate(page) {
+  currentPage = page;
+
+  // Mise à jour sidebar
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.game === page);
+  });
+
+  // Rendu de la page
+  const content = document.getElementById('page-content');
+  switch(page) {
+    case 'home':     content.innerHTML = renderHome();     break;
+    case 'fortnite': content.innerHTML = renderFortnite(); break;
+    case 'lol':      content.innerHTML = renderLoL();      break;
+    case 'tft':      content.innerHTML = renderTFT();      break;
+    case 'dbd':      content.innerHTML = renderDBD();      break;
+    case 'valo':     content.innerHTML = renderValo();     break;
+    case 'add':      content.innerHTML = renderAdd();
+                     initAddPage();                        break;
+    default:         content.innerHTML = '<p>Page non trouvée.</p>';
+  }
+}
+
+// ── Refresh page courante ────────────────────────────────────
+function refresh() {
+  DB = loadData();
+  navigate(currentPage);
+}
+
+// ── Modal ────────────────────────────────────────────────────
+function openModal(title, bodyHTML) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = bodyHTML;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnBg(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// ── Toast ────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `show ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+}
+
+// ── Gestion images ───────────────────────────────────────────
+// Les images sont stockées en base64 dans localStorage
+// Clé : img_<id>
+
+function storeImage(id, file) {
+  return new Promise((resolve) => {
+    if (!file) { resolve(null); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      localStorage.setItem('img_' + id, e.target.result);
+      resolve(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function getImage(id) {
+  if (!id) return null;
+  // Si c'est déjà une data URL ou une URL http
+  if (id.startsWith('data:') || id.startsWith('http')) return id;
+  // Sinon c'est une clé localStorage
+  return localStorage.getItem('img_' + id) || null;
+}
+
+function deleteImage(id) {
+  if (id && !id.startsWith('data:') && !id.startsWith('http')) {
+    localStorage.removeItem('img_' + id);
+  }
+}
+
+// Helper pour afficher une image (retourne du HTML)
+function imgTag(id, alt, cls = '') {
+  const src = getImage(id);
+  if (src) return `<img src="${src}" alt="${escHtml(alt)}" class="${cls}" loading="lazy">`;
+  return `<div class="no-img ${cls}">🎮</div>`;
+}
+
+// ── Supprimer un skin ────────────────────────────────────────
+function deleteSkin(game, id, extra = {}) {
+  if (!confirm('Supprimer ce skin ?')) return;
+  DB = loadData();
+
+  if (game === 'fortnite') {
+    const idx = DB.fortnite.skins.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      const skin = DB.fortnite.skins[idx];
+      deleteImage(skin.image);
+      DB.fortnite.skins.splice(idx, 1);
+    }
+  }
+  else if (game === 'lol') {
+    const { champId } = extra;
+    const champ = DB.lol.champions.find(c => c.id === champId);
+    if (champ) {
+      const idx = champ.skins.findIndex(s => s.id === id);
+      if (idx !== -1) { deleteImage(champ.skins[idx].image); champ.skins.splice(idx, 1); }
+    }
+  }
+  else if (game === 'lol-champ') {
+    const idx = DB.lol.champions.findIndex(c => c.id === id);
+    if (idx !== -1) {
+      const c = DB.lol.champions[idx];
+      deleteImage(c.image);
+      c.skins.forEach(s => deleteImage(s.image));
+      DB.lol.champions.splice(idx, 1);
+    }
+  }
+  else if (game === 'tft') {
+    const idx = DB.tft.skins.findIndex(s => s.id === id);
+    if (idx !== -1) { deleteImage(DB.tft.skins[idx].image); DB.tft.skins.splice(idx, 1); }
+  }
+  else if (game === 'dbd-survivor') {
+    const idx = DB.dbd.survivors.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      DB.dbd.survivors[idx].skins.forEach(s => deleteImage(s.image));
+      deleteImage(DB.dbd.survivors[idx].image);
+      DB.dbd.survivors.splice(idx, 1);
+    }
+  }
+  else if (game === 'dbd-killer') {
+    const idx = DB.dbd.killers.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      DB.dbd.killers[idx].skins.forEach(s => deleteImage(s.image));
+      deleteImage(DB.dbd.killers[idx].image);
+      DB.dbd.killers.splice(idx, 1);
+    }
+  }
+  else if (game === 'dbd-survivor-skin') {
+    const { charId } = extra;
+    const char = DB.dbd.survivors.find(c => c.id === charId);
+    if (char) { const i = char.skins.findIndex(s=>s.id===id); if(i!==-1){deleteImage(char.skins[i].image);char.skins.splice(i,1);}}
+  }
+  else if (game === 'dbd-killer-skin') {
+    const { charId } = extra;
+    const char = DB.dbd.killers.find(c => c.id === charId);
+    if (char) { const i = char.skins.findIndex(s=>s.id===id); if(i!==-1){deleteImage(char.skins[i].image);char.skins.splice(i,1);}}
+  }
+  else if (game === 'valo-weapon') {
+    const idx = DB.valo.weapons.findIndex(w => w.id === id);
+    if (idx !== -1) {
+      DB.valo.weapons[idx].skins.forEach(s => deleteImage(s.image));
+      deleteImage(DB.valo.weapons[idx].image);
+      DB.valo.weapons.splice(idx, 1);
+    }
+  }
+  else if (game === 'valo-weapon-skin') {
+    const { weaponId } = extra;
+    const weapon = DB.valo.weapons.find(w => w.id === weaponId);
+    if (weapon) { const i = weapon.skins.findIndex(s=>s.id===id); if(i!==-1){deleteImage(weapon.skins[i].image);weapon.skins.splice(i,1);}}
+  }
+  else if (game === 'valo-buddy') {
+    const idx = DB.valo.buddies.findIndex(b => b.id === id);
+    if (idx !== -1) { deleteImage(DB.valo.buddies[idx].image); DB.valo.buddies.splice(idx, 1); }
+  }
+
+  saveData(DB);
+  showToast('Supprimé ✓', 'success');
+  refresh();
+}
+
+// ── Import ───────────────────────────────────────────────────
+async function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    await importData(file);
+    DB = loadData();
+    showToast('Import réussi ✓', 'success');
+    refresh();
+  } catch(e) {
+    showToast('Erreur import : ' + e.message, 'error');
+  }
+  event.target.value = '';
+}
+
+// ── Utilitaires HTML ─────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function rarityColor(r) {
+  const map = { Mythic:'--mythic', Legendary:'--legendary', Epic:'--epic', Rare:'--rare', Uncommon:'--uncommon', Common:'--common' };
+  return map[r] || '--text-muted';
+}
+
+// ── Init ─────────────────────────────────────────────────────
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+navigate('home');
+</script>
+</body>
+</html>
