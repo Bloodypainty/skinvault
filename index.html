@@ -978,12 +978,27 @@ function _showLolResults(list){
 }
 
 function _lolResultCard(role,champ,skin){
+  // Si le skin a des chromas, on en choisit un au hasard
+  const hasChromas = skin && skin.chromas && skin.chromas.length > 0;
+  const chroma = hasChromas ? rand(skin.chromas) : null;
+
+  const chromaSection = hasChromas ? `
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+      <div style="font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--lol);margin-bottom:8px;font-weight:600">🎨 Chroma suggéré</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:22px;height:22px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.25);${chroma.color?`background:${esc(chroma.color)}`:chroma.image?`background:url(${esc(chroma.image)}) center/cover`:'background:#555'}"></div>
+        <span style="font-size:.82rem;color:var(--text)">${esc(chroma.name)}</span>
+        <span style="font-size:.7rem;color:var(--text-muted)">(${skin.chromas.length} dispo)</span>
+      </div>
+    </div>` : '';
+
   return `<div class="rand-result-card">
     ${skin?.image?`<img src="${esc(skin.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:champ.image?`<img src="${esc(champ.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">⚔️</div>`}
     <div class="rand-result-info">
       <div class="rand-result-cat">${role?esc(role):(champ.roles||[]).join(' · ')||'Champion'}</div>
       <div class="rand-result-name">${esc(champ.name)}</div>
       <div class="rand-result-sub">${skin?esc(skin.name):'Skin de base'}</div>
+      ${chromaSection}
     </div>
   </div>`;
 }
