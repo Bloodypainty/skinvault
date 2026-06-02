@@ -815,37 +815,75 @@ function doRandFN(){
 // — LoL randomizer
 function renderRandLoL(){
   return `
-    <div class="lol-rand-step" id="lol-step-1">
-      <div class="lol-rand-step-title"><div class="step-num">1</div>Choisis 2 rôles</div>
-      <div class="lol-roles-grid">
-        ${LOL_ROLES.map(r=>`<button class="lol-role-btn" onclick="lolRandSelectRole('${r}')">${r}</button>`).join('')}
+    <div class="lol-rand-step">
+      <div class="lol-rand-step-title"><div class="step-num">✦</div>Mode de randomization</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="lol-role-btn selected" id="lol-mode-full" onclick="lolSetMode('full')">🎲 Complet (Rôles + Champs + Skins)</button>
+        <button class="lol-role-btn" id="lol-mode-co" onclick="lolSetMode('co')">👤 Champion + Skin seulement</button>
       </div>
-      <div style="color:var(--text-muted);font-size:.8rem;margin-top:10px" id="lol-role-hint">Sélectionne exactement 2 rôles</div>
     </div>
-    <div class="lol-rand-step" id="lol-step-2" style="display:none">
-      <div class="lol-rand-step-title"><div class="step-num">2</div>Choisis 2 champions par rôle <span id="lol-step2-label" style="color:var(--lol);margin-left:6px"></span></div>
-      <div id="lol-champ-pick"></div>
+    <div id="lol-full-block">
+      <div class="lol-rand-step" id="lol-step-1">
+        <div class="lol-rand-step-title"><div class="step-num">1</div>Choisis 2 rôles</div>
+        <div class="lol-roles-grid">
+          ${LOL_ROLES.map(r=>`<button class="lol-role-btn" id="lolrole-${r}" onclick="lolRandSelectRole('${r}')">${r}</button>`).join('')}
+        </div>
+        <div style="color:var(--text-muted);font-size:.8rem;margin-top:10px" id="lol-role-hint">Sélectionne exactement 2 rôles</div>
+      </div>
+      <div class="lol-rand-step" id="lol-step-2" style="display:none">
+        <div class="lol-rand-step-title"><div class="step-num">2</div>Choisis 2 champions par rôle <span id="lol-step2-label" style="color:var(--lol);margin-left:6px"></span></div>
+        <div id="lol-champ-pick"></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;margin:24px 0;flex-wrap:wrap">
+        <button class="rand-btn" onclick="doRandLoLFull()">🎲 Randomizer les skins !</button>
+        <button class="rand-btn" style="background:linear-gradient(135deg,rgba(200,155,60,.2),rgba(200,155,60,.1));border-color:rgba(200,155,60,.4);font-size:.95rem" onclick="doRandLoLAuto()">⚡ Tout auto</button>
+      </div>
     </div>
-    <div style="display:flex;justify-content:center;margin:24px 0">
-      <button class="rand-btn" onclick="doRandLoL()">🎲 Randomizer les skins !</button>
+    <div id="lol-co-block" style="display:none">
+      <div class="lol-rand-step">
+        <div class="lol-rand-step-title"><div class="step-num">1</div>Filtre par rôle (optionnel)</div>
+        <div class="lol-roles-grid">
+          <button class="lol-role-btn selected" id="co-all" onclick="lolCoRole('all')">Tous</button>
+          ${LOL_ROLES.map(r=>`<button class="lol-role-btn" id="co-${r}" onclick="lolCoRole('${r}')">${r}</button>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;margin:24px 0">
+        <button class="rand-btn" onclick="doRandLoLCO()">🎲 Randomizer !</button>
+      </div>
     </div>
     <div class="lol-rand-result-grid" id="lol-rand-results"></div>`;
+}
+
+let _lolMode='full', _lolCoRoleFilter='all';
+
+function lolSetMode(m){
+  _lolMode=m;
+  document.getElementById('lol-mode-full').classList.toggle('selected',m==='full');
+  document.getElementById('lol-mode-co').classList.toggle('selected',m==='co');
+  document.getElementById('lol-full-block').style.display=m==='full'?'':'none';
+  document.getElementById('lol-co-block').style.display=m==='co'?'':'none';
+}
+
+function lolCoRole(role){
+  _lolCoRoleFilter=role;
+  document.querySelectorAll('[id^="co-"]').forEach(b=>b.classList.remove('selected'));
+  document.getElementById(`co-${role}`)?.classList.add('selected');
 }
 
 function lolRandSelectRole(role){
   const idx=_lolSelRoles.indexOf(role);
   if(idx===-1){
-    if(_lolSelRoles.length>=2){showToast('Tu peux sélectionner max 2 rôles','error');return;}
+    if(_lolSelRoles.length>=2){showToast('Max 2 rôles','error');return;}
     _lolSelRoles.push(role);
   } else { _lolSelRoles.splice(idx,1); }
-  document.querySelectorAll('.lol-role-btn').forEach(b=>b.classList.toggle('selected',_lolSelRoles.includes(b.textContent)));
+  LOL_ROLES.forEach(r=>{document.getElementById(`lolrole-${r}`)?.classList.toggle('selected',_lolSelRoles.includes(r));});
   const hint=document.getElementById('lol-role-hint');
   if(_lolSelRoles.length===2){
-    if(hint) hint.textContent='✓ 2 rôles sélectionnés — choisis maintenant tes champions';
+    if(hint) hint.textContent='✓ 2 rôles — choisis tes champions ci-dessous';
     document.getElementById('lol-step-2').style.display='';
     renderLolChampPick();
   } else {
-    if(hint) hint.textContent=`${_lolSelRoles.length}/2 rôle${_lolSelRoles.length>1?'s':''} sélectionné${_lolSelRoles.length>1?'s':''}`;
+    if(hint) hint.textContent=`${_lolSelRoles.length}/2 rôles`;
     document.getElementById('lol-step-2').style.display='none';
   }
 }
@@ -854,57 +892,79 @@ function renderLolChampPick(){
   const db=loadData();
   const label=document.getElementById('lol-step2-label');
   if(label) label.textContent=`(${_lolSelRoles.join(' & ')})`;
-  const container=document.getElementById('lol-champ-pick');
-  if(!container) return;
+  const container=document.getElementById('lol-champ-pick'); if(!container) return;
   let html='';
   for(const role of _lolSelRoles){
     const champs=db.lol.champions.filter(c=>(c.roles||[]).includes(role));
-    html+=`<div style="margin-bottom:18px">
-      <div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--lol);margin-bottom:10px;font-weight:600">${role} — choisis 2 champions</div>
-      ${champs.length===0?`<p style="color:var(--text-muted);font-size:.83rem">Aucun champion avec le rôle ${role}. Ajoute des champions avec ce rôle.</p>`:`
-      <div class="lol-champ-select-grid">
-        ${champs.map(c=>`
-          <div class="lol-champ-btn" data-role="${role}" data-id="${esc(c.id)}" onclick="lolRandPickChamp(this,'${role}','${esc(c.id)}')">
-            ${c.image?`<img src="${esc(c.image)}" onerror="this.style.display='none'">`:`<div style="width:44px;height:44px;border-radius:50%;background:var(--bg4);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem">👤</div>`}
-            ${esc(c.name)}
-          </div>`).join('')}
-      </div>`}
-    </div>`;
+    html+=`<div style="margin-bottom:18px"><div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--lol);margin-bottom:10px;font-weight:600">${role} — choisis 2 champions</div>
+      ${champs.length===0?`<p style="color:var(--text-muted);font-size:.83rem">Aucun champion avec ce rôle.</p>`:`
+      <div class="lol-champ-select-grid">${champs.map(c=>`
+        <div class="lol-champ-btn" data-role="${role}" data-id="${esc(c.id)}" onclick="lolPickChamp(this,'${role}','${esc(c.id)}')">
+          ${c.image?`<img src="${esc(c.image)}" onerror="this.style.display='none'">`:`<div style="width:44px;height:44px;border-radius:50%;background:var(--bg4);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem">👤</div>`}
+          ${esc(c.name)}</div>`).join('')}
+      </div>`}</div>`;
   }
   container.innerHTML=html;
 }
 
-function lolRandPickChamp(btn, role, id){
+function lolPickChamp(btn,role,id){
   const already=_lolSelChamps.find(x=>x.id===id);
-  if(already){ _lolSelChamps=_lolSelChamps.filter(x=>x.id!==id); btn.classList.remove('selected'); return; }
-  const sameRole=_lolSelChamps.filter(x=>x.role===role);
-  if(sameRole.length>=2){ showToast('Max 2 champions par rôle','error'); return; }
-  _lolSelChamps.push({role,id});
-  btn.classList.add('selected');
+  if(already){_lolSelChamps=_lolSelChamps.filter(x=>x.id!==id);btn.classList.remove('selected');return;}
+  if(_lolSelChamps.filter(x=>x.role===role).length>=2){showToast('Max 2 champs par rôle','error');return;}
+  _lolSelChamps.push({role,id}); btn.classList.add('selected');
 }
 
-function doRandLoL(){
+function doRandLoLFull(){
+  if(_lolSelRoles.length<2){showToast('Choisis 2 rôles','error');return;}
+  if(_lolSelChamps.length===0){showToast('Choisis des champions','error');return;}
+  _showLolResults(_lolSelChamps);
+}
+
+function doRandLoLAuto(){
+  if(_lolSelRoles.length<2){showToast('Choisis 2 rôles d abord','error');return;}
   const db=loadData();
-  if(_lolSelChamps.length===0){showToast('Sélectionne des champions d\'abord','error');return;}
-  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn.classList.remove('spinning'),600);
-  const results=_lolSelChamps.map(({role,id})=>{
-    const champ=db.lol.champions.find(c=>c.id===id);
-    if(!champ) return null;
-    const skinWithImg=champ.skins.filter(s=>s.image||true);
-    const skin=skinWithImg.length?rand(skinWithImg):null;
+  const sel=[];
+  for(const role of _lolSelRoles){
+    const pool=db.lol.champions.filter(c=>(c.roles||[]).includes(role));
+    if(!pool.length){showToast(`Aucun champion pour le rôle ${role}`,'error');return;}
+    [...pool].sort(()=>Math.random()-.5).slice(0,2).forEach(c=>sel.push({role,id:c.id}));
+  }
+  _showLolResults(sel);
+}
+
+function doRandLoLCO(){
+  const db=loadData();
+  const pool=_lolCoRoleFilter==='all'?db.lol.champions:db.lol.champions.filter(c=>(c.roles||[]).includes(_lolCoRoleFilter));
+  if(!pool.length){showToast('Aucun champion','error');return;}
+  const champ=rand(pool);
+  const skin=champ.skins.length?rand(champ.skins):null;
+  document.getElementById('lol-rand-results').innerHTML=_lolResultCard('',champ,skin);
+  document.querySelector('.rand-btn').classList.add('spinning');
+  setTimeout(()=>document.querySelector('.rand-btn')?.classList.remove('spinning'),600);
+}
+
+function _showLolResults(list){
+  const db=loadData();
+  document.querySelector('.rand-btn').classList.add('spinning');
+  setTimeout(()=>document.querySelector('.rand-btn')?.classList.remove('spinning'),600);
+  const results=list.map(({role,id})=>{
+    const champ=db.lol.champions.find(c=>c.id===id); if(!champ) return null;
+    const skin=champ.skins.length?rand(champ.skins):null;
     return {role,champ,skin};
   }).filter(Boolean);
-  const c=document.getElementById('lol-rand-results');
-  if(!results.length){c.innerHTML=`<div class="empty-state"><div class="icon">😅</div><p>Aucun résultat.</p></div>`;return;}
-  c.innerHTML=results.map(({role,champ,skin})=>`
-    <div class="rand-result-card">
-      ${skin?.image?`<img src="${esc(skin.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:champ.image?`<img src="${esc(champ.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">⚔️</div>`}
-      <div class="rand-result-info">
-        <div class="rand-result-cat">${esc(role)}</div>
-        <div class="rand-result-name">${esc(champ.name)}</div>
-        <div class="rand-result-sub">${skin?esc(skin.name):'Skin de base'}</div>
-      </div>
-    </div>`).join('');
+  if(!results.length){document.getElementById('lol-rand-results').innerHTML=`<div class="empty-state"><div class="icon">😅</div><p>Aucun résultat.</p></div>`;return;}
+  document.getElementById('lol-rand-results').innerHTML=results.map(({role,champ,skin})=>_lolResultCard(role,champ,skin)).join('');
+}
+
+function _lolResultCard(role,champ,skin){
+  return `<div class="rand-result-card">
+    ${skin?.image?`<img src="${esc(skin.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:champ.image?`<img src="${esc(champ.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">⚔️</div>`}
+    <div class="rand-result-info">
+      <div class="rand-result-cat">${role?esc(role):(champ.roles||[]).join(' · ')||'Champion'}</div>
+      <div class="rand-result-name">${esc(champ.name)}</div>
+      <div class="rand-result-sub">${skin?esc(skin.name):'Skin de base'}</div>
+    </div>
+  </div>`;
 }
 
 // — TFT randomizer
@@ -977,42 +1037,62 @@ function doRandDBD(){
 function renderRandValo(){
   return `
     <div class="lol-rand-step">
-      <div class="lol-rand-step-title"><div class="step-num">1</div>Choisir le type</div>
-      <div class="filter-bar">
-        <button class="filter-btn active" data-valo="all" onclick="valoRandFilter(this,'all')">Tous</button>
-        <button class="filter-btn" data-valo="weapon" onclick="valoRandFilter(this,'weapon')">Armes</button>
-        <button class="filter-btn" data-valo="buddy" onclick="valoRandFilter(this,'buddy')">Buddies</button>
+      <div class="lol-rand-step-title"><div class="step-num">1</div>Mode</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="lol-role-btn selected" id="valo-mode-all" onclick="valoRandMode('all')">🔫 Un skin par arme</button>
+        <button class="lol-role-btn" id="valo-mode-one" onclick="valoRandMode('one')">🎲 1 skin aléatoire</button>
+        <button class="lol-role-btn" id="valo-mode-buddy" onclick="valoRandMode('buddy')">🎯 Buddy seulement</button>
       </div>
     </div>
-    <div style="display:flex;justify-content:center;margin:24px 0"><button class="rand-btn" onclick="doRandValo()">🎲 Randomizer !</button></div>
+    <div style="display:flex;justify-content:center;margin:24px 0">
+      <button class="rand-btn" onclick="doRandValo()">🎲 Randomizer !</button>
+    </div>
     <div class="rand-results" id="valo-rand-results"></div>`;
 }
-let _valoRandType='all';
-function valoRandFilter(btn,type){_valoRandType=type;document.querySelectorAll('[data-valo]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+let _valoRandMode2='all';
+function valoRandMode(m){
+  _valoRandMode2=m;
+  ['all','one','buddy'].forEach(x=>document.getElementById(`valo-mode-${x}`)?.classList.toggle('selected',x===m));
+}
 function doRandValo(){
   const db=loadData();
-  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn.classList.remove('spinning'),600);
-  let results=[];
-  if(_valoRandType!=='buddy'){
+  document.querySelector('.rand-btn').classList.add('spinning');
+  setTimeout(()=>document.querySelector('.rand-btn')?.classList.remove('spinning'),600);
+  const c=document.getElementById('valo-rand-results');
+
+  if(_valoRandMode2==='all'){
+    // Un skin aléatoire pour CHAQUE arme qui a des skins
+    const results=db.valo.weapons.filter(w=>w.skins.length>0).map(w=>({weapon:w,skin:rand(w.skins)}));
+    if(!results.length){showToast('Aucun skin Valorant','error');return;}
+    c.innerHTML=results.map(({weapon,skin})=>`
+      <div class="rand-result-card">
+        ${skin.image?`<img src="${esc(skin.image)}" class="rand-result-img landscape" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">🔫</div>`}
+        <div class="rand-result-info">
+          <div class="rand-result-cat">${esc(weapon.name)}</div>
+          <div class="rand-result-name">${esc(skin.name)}</div>
+        </div>
+      </div>`).join('');
+  }
+  else if(_valoRandMode2==='one'){
     const pool=[];
     db.valo.weapons.forEach(w=>w.skins.forEach(s=>pool.push({weapon:w,skin:s})));
-    if(pool.length) results.push({type:'weapon',data:rand(pool)});
+    if(!pool.length){showToast('Aucun skin Valorant','error');return;}
+    const {weapon,skin}=rand(pool);
+    c.innerHTML=`<div class="rand-result-card">
+      ${skin.image?`<img src="${esc(skin.image)}" class="rand-result-img landscape" loading="lazy">`:`<div class="rand-result-img no-img-big">🔫</div>`}
+      <div class="rand-result-info"><div class="rand-result-cat">${esc(weapon.name)}</div><div class="rand-result-name">${esc(skin.name)}</div></div>
+    </div>`;
   }
-  if(_valoRandType!=='weapon'){
-    if(db.valo.buddies.length) results.push({type:'buddy',data:rand(db.valo.buddies)});
+  else {
+    if(!db.valo.buddies.length){showToast('Aucun buddy','error');return;}
+    const b=rand(db.valo.buddies);
+    c.innerHTML=`<div class="rand-result-card">
+      ${b.image?`<img src="${esc(b.image)}" class="rand-result-img" loading="lazy">`:`<div class="rand-result-img no-img-big">🎯</div>`}
+      <div class="rand-result-info"><div class="rand-result-cat">Buddy</div><div class="rand-result-name">${esc(b.name)}</div></div>
+    </div>`;
   }
-  if(!results.length){showToast('Aucun skin Valorant','error');return;}
-  document.getElementById('valo-rand-results').innerHTML=results.map(r=>`
-    <div class="rand-result-card">
-      ${r.type==='weapon'?
-        (r.data.skin.image?`<img src="${esc(r.data.skin.image)}" class="rand-result-img landscape" loading="lazy">`:`<div class="rand-result-img no-img-big">🔫</div>`):
-        (r.data.image?`<img src="${esc(r.data.image)}" class="rand-result-img" loading="lazy">`:`<div class="rand-result-img no-img-big">🎯</div>`)}
-      <div class="rand-result-info">
-        <div class="rand-result-cat">${r.type==='weapon'?esc(r.data.weapon.name):'Buddy'}</div>
-        <div class="rand-result-name">${r.type==='weapon'?esc(r.data.skin.name):esc(r.data.name)}</div>
-      </div>
-    </div>`).join('');
 }
+
 
 // ═══════════════════════════════════════════════════════
 //  ADD PAGE
@@ -1040,7 +1120,7 @@ function addGameChanged(){
   const game=document.getElementById('add-game-select').value;
   const c=document.getElementById('add-form-container');
   switch(game){
-    case 'fortnite': c.innerHTML=renderAddFN(); break;
+    case 'fortnite': c.innerHTML=renderAddFN(); setTimeout(_populateFNSkinSelect,50); break;
     case 'lol':      c.innerHTML=renderAddLoL(); break;
     case 'tft':      c.innerHTML=renderAddTFT(); break;
     case 'dbd':      c.innerHTML=renderAddDBD(); break;
@@ -1105,7 +1185,58 @@ function renderAddFN(){
           <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
         </div>
       </form>
+    </div>
+
+    <!-- Section variantes FN -->
+    <div class="form-section">
+      <div class="form-section-title">🔗 Ajouter une variante à un Skin existant</div>
+      <p style="color:var(--text-muted);font-size:.83rem;margin-bottom:16px">Les variantes sont affichées dans le détail du skin (accessoire de dos assorti, version colorée, etc.)</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Skin parent (catégorie Skin)</label>
+          <select id="fn-var-parent">
+            <option value="">-- Choisir un skin --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nom de la variante *</label>
+          <input type="text" id="fn-var-name" placeholder="ex: Version Fantôme">
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group">
+          <label>URL image de la variante</label>
+          <div class="img-url-wrap">
+            <input type="url" id="fn-var-img" placeholder="https://..." oninput="previewUrl('fn-var-img','fn-var-preview')">
+            <img id="fn-var-preview" class="img-url-preview" alt="Aperçu">
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" onclick="saveFNVariant()">➕ Ajouter la variante</button>
+      </div>
     </div>`;
+}
+function _populateFNSkinSelect(){
+  const db=loadData();
+  const sel=document.getElementById('fn-var-parent'); if(!sel) return;
+  const skins=db.fortnite.items['skin']||[];
+  sel.innerHTML='<option value="">-- Choisir un skin --</option>'+skins.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
+}
+function saveFNVariant(){
+  const parentId=document.getElementById('fn-var-parent')?.value;
+  const name=document.getElementById('fn-var-name')?.value.trim();
+  const image=document.getElementById('fn-var-img')?.value.trim();
+  if(!parentId||!name){showToast('Choisis un skin et donne un nom','error');return;}
+  const db=loadData();
+  const skin=(db.fortnite.items['skin']||[]).find(s=>s.id===parentId);
+  if(!skin){showToast('Skin introuvable','error');return;}
+  if(!skin.variants) skin.variants=[];
+  skin.variants.push({id:generateId('fnv'),name,image:image||null});
+  saveData(db); showToast('Variante ajoutée ✓');
+  document.getElementById('fn-var-name').value='';
+  document.getElementById('fn-var-img').value='';
+  document.getElementById('fn-var-preview').classList.remove('show');
 }
 function addFNSeries(){
   const val=document.getElementById('fn-new-series')?.value.trim(); if(!val) return;
