@@ -835,9 +835,11 @@ function renderRandLoL(){
         <div id="lol-champ-pick"></div>
       </div>
       <div style="display:flex;justify-content:center;gap:12px;margin:24px 0;flex-wrap:wrap">
-        <button class="rand-btn" onclick="doRandLoLFull()">🎲 Randomizer les skins !</button>
-        <button class="rand-btn" style="background:linear-gradient(135deg,rgba(200,155,60,.2),rgba(200,155,60,.1));border-color:rgba(200,155,60,.4);font-size:.95rem" onclick="doRandLoLAuto()">⚡ Tout auto</button>
+        <button class="rand-btn" onclick="doRandLoLFull()">🎲 Randomizer (avec mes choix)</button>
       </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:0 0 24px">
+      <button class="rand-btn" style="background:linear-gradient(135deg,rgba(200,155,60,.2),rgba(200,155,60,.1));border-color:rgba(200,155,60,.4)" onclick="doRandLoLAuto()">⚡ Tout auto — sans rien choisir !</button>
     </div>
     <div id="lol-co-block" style="display:none">
       <div class="lol-rand-step">
@@ -921,13 +923,32 @@ function doRandLoLFull(){
 }
 
 function doRandLoLAuto(){
-  if(_lolSelRoles.length<2){showToast('Choisis 2 rôles d abord','error');return;}
+  // Tout auto : on pioche 2 rôles aléatoires parmi ceux qui ont des champions, puis 2 champs par rôle
   const db=loadData();
+  if(!db.lol.champions.length){showToast('Aucun champion enregistré','error');return;}
+
+  // Trouver les rôles qui ont au moins 1 champion
+  const rolesDispos=LOL_ROLES.filter(r=>db.lol.champions.some(c=>(c.roles||[]).includes(r)));
+
+  let roles;
+  if(rolesDispos.length===0){
+    // Pas de rôles assignés — on prend juste 4 champs au hasard toutes catégories
+    const shuffled=[...db.lol.champions].sort(()=>Math.random()-.5).slice(0,4);
+    const sel=shuffled.map(c=>({role:'Random',id:c.id}));
+    _showLolResults(sel);
+    return;
+  } else if(rolesDispos.length===1){
+    roles=[rolesDispos[0],rolesDispos[0]];
+  } else {
+    // Mélanger et prendre 2 rôles aléatoires
+    roles=[...rolesDispos].sort(()=>Math.random()-.5).slice(0,2);
+  }
+
   const sel=[];
-  for(const role of _lolSelRoles){
+  for(const role of roles){
     const pool=db.lol.champions.filter(c=>(c.roles||[]).includes(role));
-    if(!pool.length){showToast(`Aucun champion pour le rôle ${role}`,'error');return;}
-    [...pool].sort(()=>Math.random()-.5).slice(0,2).forEach(c=>sel.push({role,id:c.id}));
+    const picked=[...pool].sort(()=>Math.random()-.5).slice(0,2);
+    picked.forEach(c=>sel.push({role,id:c.id}));
   }
   _showLolResults(sel);
 }
