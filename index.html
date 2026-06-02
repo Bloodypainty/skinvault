@@ -556,14 +556,72 @@ function renderFnGrid(cat, items) {
   const list=items[cat]||[];
   if(!list.length) return `<div class="empty-state"><div class="icon">${FN_CATS[cat]?.icon||'🎮'}</div><p>Aucun ${FN_CATS[cat]?.label||cat}.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p></div>`;
   return list.map(s=>`
-    <div class="skin-card" data-rarity="${esc(s.rarity||'')}" data-name="${esc((s.name||'').toLowerCase())}">
+    <div class="skin-card" data-rarity="${esc(s.rarity||'')}" data-name="${esc((s.name||'').toLowerCase())}"
+      onclick="${cat==='skin'?`fnOpenModal(\'${esc(s.id)}\')`:'void(0)'}">
       <div class="rarity-bar ${esc(s.rarity||'')}"></div>
-      <div class="skin-img-wrap">${s.image?`<img src="${esc(s.image)}" alt="${esc(s.name)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'no-img\\'>🎮</div>'">`:`<div class="no-img">${FN_CATS[cat]?.icon||'🎮'}</div>`}</div>
-      <div class="skin-info"><div class="skin-name">${esc(s.name)}</div><div class="skin-meta"><span class="skin-rarity-label ${esc(s.rarity||'')}">${esc(s.rarity||'')}</span>${s.series?`<span class="skin-series-badge">${esc(s.series)}</span>`:''}</div></div>
+      <div class="skin-img-wrap">${s.image?`<img src="${esc(s.image)}" alt="${esc(s.name)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'no-img\'>🎮</div>'">`:`<div class="no-img">${FN_CATS[cat]?.icon||'🎮'}</div>`}</div>
+      <div class="skin-info">
+        <div class="skin-name">${esc(s.name)}</div>
+        <div class="skin-meta"><span class="skin-rarity-label ${esc(s.rarity||'')}">${esc(s.rarity||'')}</span>${s.series?`<span class="skin-series-badge">${esc(s.series)}</span>`:''}</div>
+        ${cat==='skin'&&s.variants&&s.variants.length?`<div style="font-size:.63rem;color:var(--fn);margin-top:3px">${s.variants.length} variante${s.variants.length>1?'s':''}</div>`:''}
+      </div>
       <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="fnEditItem('${esc(cat)}','${esc(s.id)}')">✏</button>
         <button class="card-btn card-btn-delete" onclick="deleteSkin('fn','${esc(s.id)}',{cat:'${esc(cat)}'})">🗑</button>
       </div>
     </div>`).join('');
+}
+
+function fnOpenModal(id) {
+  const db=loadData();
+  const s=(db.fortnite.items['skin']||[]).find(x=>x.id===id);
+  if(!s) return;
+  const variants=s.variants||[];
+  const varHTML = variants.length===0
+    ? `<p style="color:var(--text-muted);font-size:.85rem">Aucune variante.<br>Tu peux en ajouter depuis <strong>Ajouter → Fortnite</strong>.</p>`
+    : `<div class="variant-grid">${variants.map(v=>`
+        <div class="variant-card">
+          ${v.image?`<img src="${esc(v.image)}" loading="lazy" onerror="this.style.display='none'">`:`<div style="aspect-ratio:1;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:1.5rem">⚡</div>`}
+          <div class="vname">${esc(v.name)}</div>
+        </div>`).join('')}
+      </div>`;
+  openModal(s.name, `
+    ${s.image?`<img src="${esc(s.image)}" class="modal-main-img" onerror="this.style.display='none'">`:''}
+    <div class="modal-badges">
+      ${s.rarity?`<span class="modal-badge rarity ${esc(s.rarity)}">${esc(s.rarity)}</span>`:''}
+      ${s.series?`<span class="modal-badge series">🏷 ${esc(s.series)}</span>`:''}
+    </div>
+    <div class="variant-label" style="margin-top:4px">Variantes</div>
+    ${varHTML}
+  `);
+}
+
+function fnEditItem(cat, id) {
+  navigate('add');
+  setTimeout(()=>{
+    document.getElementById('add-game-select').value='fortnite';
+    addGameChanged();
+    setTimeout(()=>{
+      const db=loadData();
+      const s=(db.fortnite.items[cat]||[]).find(x=>x.id===id);
+      if(!s) return;
+      const catEl=document.getElementById('fn-cat');
+      const nameEl=document.getElementById('fn-name');
+      const rarEl=document.getElementById('fn-rarity');
+      const serEl=document.getElementById('fn-series');
+      const imgEl=document.getElementById('fn-img-url');
+      const prev=document.getElementById('fn-img-preview');
+      if(catEl) catEl.value=cat;
+      if(nameEl) nameEl.value=s.name;
+      if(rarEl) rarEl.value=s.rarity||'';
+      if(serEl) serEl.value=s.series||'';
+      if(imgEl) imgEl.value=s.image||'';
+      if(prev&&s.image){prev.src=s.image;prev.classList.add('show');}
+      const form=document.querySelector('#add-form-container form');
+      if(form){form.dataset.editId=id; form.dataset.editCat=cat;}
+      showToast('Item chargé pour modification');
+    },120);
+  },60);
 }
 function fnFilter() {
   const q=document.getElementById('fn-search')?.value.toLowerCase()||'';
@@ -1292,9 +1350,29 @@ function saveFNItem(e){
   const image=document.getElementById('fn-img-url').value.trim();
   if(!name) return;
   const db=loadData();
-  if(!db.fortnite.items[cat]) db.fortnite.items[cat]=[];
-  db.fortnite.items[cat].push({id:generateId('fn'),name,rarity,series:series||null,image:image||null});
-  saveData(db); showToast('Item Fortnite ajouté ✓'); addGameChanged();
+  const form=e.target;
+  const editId=form.dataset.editId;
+  const editCat=form.dataset.editCat;
+  if(editId&&editCat){
+    // Mode édition
+    const list=db.fortnite.items[editCat]||[];
+    const idx=list.findIndex(x=>x.id===editId);
+    if(idx!==-1){
+      const old=list[idx];
+      list[idx]={...old,name,rarity,series:series||null,image:image||old.image};
+      // Si changement de catégorie
+      if(editCat!==cat){
+        list.splice(idx,1);
+        if(!db.fortnite.items[cat]) db.fortnite.items[cat]=[];
+        db.fortnite.items[cat].push({...old,name,rarity,series:series||null,image:image||old.image});
+      }
+    }
+    saveData(db); showToast('Item modifié ✓'); addGameChanged();
+  } else {
+    if(!db.fortnite.items[cat]) db.fortnite.items[cat]=[];
+    db.fortnite.items[cat].push({id:generateId('fn'),name,rarity,series:series||null,image:image||null,variants:[]});
+    saveData(db); showToast('Item Fortnite ajouté ✓'); addGameChanged();
+  }
 }
 
 // ── LoL Add
