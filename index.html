@@ -315,6 +315,50 @@ select option{background:var(--bg3)}
 #lightbox-img{max-width:min(500px,88vw);max-height:80vh;object-fit:contain;border-radius:14px;box-shadow:0 40px 100px rgba(0,0,0,.9);border:1px solid rgba(255,255,255,.12);display:block;transform:scale(.92);transition:transform .25s cubic-bezier(0.4,0,0.2,1)}
 .lightbox-overlay.open #lightbox-img{transform:scale(1)}
 .lightbox-name{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;letter-spacing:.08em;color:rgba(255,255,255,.9);background:rgba(0,0,0,.5);padding:6px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.1);white-space:nowrap}
+
+/* ── Festival ── */
+:root{--festival:#ff6b35}
+.festival-accent{color:var(--festival);text-shadow:0 0 40px rgba(255,107,53,.5)}
+
+.nav-item.active[data-game=festival]{border-color:rgba(255,107,53,.2);background:linear-gradient(90deg,rgba(255,107,53,.07),transparent)}
+
+/* Tableau festival */
+.festival-table-wrap{overflow-x:auto;border-radius:var(--rl);border:1px solid var(--border)}
+.festival-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.festival-table th{background:var(--bg3);padding:10px 14px;text-align:left;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.08em;font-size:.75rem;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap}
+.festival-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:middle}
+.festival-table tr:last-child td{border-bottom:none}
+.festival-table tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
+.festival-table .diff-badge{padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.diff-easy{background:rgba(0,192,96,.12);color:#00c060;border:1px solid rgba(0,192,96,.3)}
+.diff-medium{background:rgba(255,200,0,.12);color:#ffc800;border:1px solid rgba(255,200,0,.3)}
+.diff-hard{background:rgba(255,107,53,.12);color:#ff6b35;border:1px solid rgba(255,107,53,.3)}
+.diff-expert{background:rgba(155,48,255,.12);color:var(--epic);border:1px solid rgba(155,48,255,.3)}
+.done100-yes{color:#00c060;font-size:1rem}
+.done100-no{color:var(--text-muted);font-size:1rem}
+.festival-stat-bar{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.festival-stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px 20px;flex:1;min-width:100px;text-align:center}
+.festival-stat-num{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--festival)}
+.festival-stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin-top:3px}
+
+/* Festival skin checkbox */
+.fn-festival-toggle{display:flex;align-items:center;gap:6px;margin-top:5px;cursor:pointer;user-select:none}
+.fn-festival-toggle input{display:none}
+.fn-festival-pill{font-size:.6rem;padding:2px 8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-muted);transition:.2s;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.06em}
+.fn-festival-toggle input:checked+.fn-festival-pill{background:rgba(255,107,53,.15);border-color:rgba(255,107,53,.5);color:var(--festival)}
+
+/* ── Star Stable ── */
+.ss-accent{color:#7ec8e3;text-shadow:0 0 40px rgba(126,200,227,.5)}
+.nav-item.active[data-game=starstable]{border-color:rgba(126,200,227,.2);background:linear-gradient(90deg,rgba(126,200,227,.07),transparent)}
+.nav-item.active[data-game=starstable] .nav-dot{box-shadow:0 0 10px #7ec8e3}
+.ss-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rx);overflow:hidden;cursor:pointer;transition:transform .28s,box-shadow .28s,border-color .28s}
+.ss-card:hover{transform:translateY(-6px) scale(1.01);border-color:rgba(126,200,227,.35);box-shadow:0 12px 40px rgba(126,200,227,.15)}
+.ss-card-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:linear-gradient(135deg,var(--bg3),var(--bg4))}
+.ss-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:3rem}
+.ss-card-info{padding:11px 13px 13px}
+.ss-card-name{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.95rem;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ss-card-breed{font-size:.68rem;color:var(--text-muted);margin-top:3px}
+.ss-card-coat{font-size:.65rem;color:#7ec8e3;margin-top:2px}
 </style>
 </head>
 <body>
@@ -332,13 +376,15 @@ select option{background:var(--bg3)}
       <div class="nav-item" data-game="tft" onclick="navigate('tft')"><div class="nav-dot"></div>TFT</div>
       <div class="nav-item" data-game="dbd" onclick="navigate('dbd')"><div class="nav-dot"></div>Dead by Daylight</div>
       <div class="nav-item" data-game="valo" onclick="navigate('valo')"><div class="nav-dot"></div>Valorant</div>
+      <div class="nav-item" data-game="festival" onclick="navigate('festival')"><div class="nav-dot" style="background:#ff6b35"></div>🎸 FN Festival</div>
+      <div class="nav-item" data-game="starstable" onclick="navigate('starstable')"><div class="nav-dot" style="background:#7ec8e3"></div>🐴 Star Stable</div>
     </nav>
     <div class="sidebar-section">Outils</div>
     <nav class="sidebar-nav">
       <div class="nav-item" data-game="random" onclick="navigate('random')"><div class="nav-dot"></div>🎲 Randomizer</div>
       <div class="nav-item" data-game="add" onclick="navigate('add')"><div class="nav-dot"></div>➕ Ajouter</div>
     </nav>
-    <div class="sidebar-bottom">
+        <div class="sidebar-bottom">
       <button class="btn btn-ghost btn-sm" onclick="exportData()">⬇ Exporter</button>
       <label class="btn btn-ghost btn-sm" style="cursor:pointer;justify-content:center;">⬆ Importer<input type="file" accept=".json" style="display:none" onchange="handleImport(event)"></label>
     </div>
@@ -412,7 +458,13 @@ const DEFAULT_DATA = {
   lol:  { champions: [] },
   tft:  { skins: [] },
   dbd:  { survivors: [], killers: [] },
-  valo: { weapons: [], buddies: [] }
+  valo: { weapons: [], buddies: [] },
+  starstable: { horses: [] },
+  festival: {
+    songs: [],
+    // { id, name, instrument, difficulty, done100, points, notes }
+    instruments: ["Guitare","Basse","Batterie","Clavier","Micro","Pro Guitare","Pro Basse"]
+  }
 };
 
 function loadData() {
@@ -466,8 +518,10 @@ function navigate(page) {
     case 'tft':     c.innerHTML = renderTFT();  break;
     case 'dbd':     c.innerHTML = renderDBD();  break;
     case 'valo':    c.innerHTML = renderValo(); break;
-    case 'random':  c.innerHTML = renderRandom(); initRandom(); break;
-    case 'add':     c.innerHTML = renderAdd(); break;
+    case 'festival':    c.innerHTML = renderFestival(); break;
+    case 'starstable':  c.innerHTML = renderStarStable(); break;
+    case 'random':      c.innerHTML = renderRandom(); initRandom(); break;
+    case 'add':         c.innerHTML = renderAdd(); break;
     default: c.innerHTML='<p>404</p>';
   }
 }
@@ -530,6 +584,8 @@ function deleteSkin(game, id, extra={}) {
   else if(game==='valo-weapon') { DB.valo.weapons=DB.valo.weapons.filter(w=>w.id!==id); }
   else if(game==='valo-wskin') { const {wid}=extra; const w=DB.valo.weapons.find(x=>x.id===wid); if(w) w.skins=w.skins.filter(s=>s.id!==id); }
   else if(game==='valo-buddy') { DB.valo.buddies=DB.valo.buddies.filter(b=>b.id!==id); }
+  else if(game==='ss-horse') { DB.starstable.horses=DB.starstable.horses.filter(h=>h.id!==id); }
+
   saveData(DB); showToast('Supprimé ✓'); refresh();
 }
 
@@ -553,10 +609,21 @@ function renderHome() {
       <div class="stat-block"><div class="stat-number">${db.valo.weapons.length}</div><div class="stat-label">Armes Valo</div></div>
     </div>
     <div class="home-grid">
-      ${[{k:'fortnite',c:'fn',n:'Fortnite',i:'⚡',cnt:fnTotal},{k:'lol',c:'lol',n:'League of Legends',i:'⚔️',cnt:lolTotal},{k:'tft',c:'tft',n:'TFT',i:'🎲',cnt:tftTotal},{k:'dbd',c:'dbd',n:'Dead by Daylight',i:'🔪',cnt:dbdTotal},{k:'valo',c:'valo',n:'Valorant',i:'🎯',cnt:valoTotal}].map(g=>`
-        <div class="game-card ${g.c}" onclick="navigate('${g.k}')"><div class="game-card-icon">${g.i}</div><div class="game-card-name">${g.n}</div><div class="game-card-count">${g.cnt} skin${g.cnt!==1?'s':''}</div></div>
-      `).join('')}
-      <div class="game-card rand" onclick="navigate('random')"><div class="game-card-icon">🎲</div><div class="game-card-name">Randomizer</div><div class="game-card-count">Choix aléatoire</div></div>
+      ${[
+        {k:'fortnite',c:'fn',n:'Fortnite',i:'⚡',cnt:fnTotal},
+        {k:'lol',c:'lol',n:'League of Legends',i:'⚔️',cnt:lolTotal},
+        {k:'tft',c:'tft',n:'TFT',i:'🎲',cnt:tftTotal},
+        {k:'dbd',c:'dbd',n:'Dead by Daylight',i:'🔪',cnt:dbdTotal},
+        {k:'valo',c:'valo',n:'Valorant',i:'🎯',cnt:valoTotal},
+        {k:'festival',c:'fn',n:'FN Festival',i:'🎸',cnt:db.festival?.songs?.length||0},
+        {k:'starstable',c:'tft',n:'Star Stable',i:'🐴',cnt:db.starstable?.horses?.length||0},
+        {k:'random',c:'rand',n:'Randomizer',i:'🎲',cnt:null},
+      ].map(g=>`
+        <div class="game-card ${g.c}" onclick="navigate('${g.k}')">
+          <div class="game-card-icon">${g.i}</div>
+          <div class="game-card-name">${g.n}</div>
+          <div class="game-card-count">${g.cnt===null?'Choix aléatoire':g.cnt+' skin'+(g.cnt!==1?'s':'')}</div>
+        </div>`).join('')}
     </div>`;
 }
 
@@ -804,27 +871,95 @@ function lolFilter() {
 // ═══════════════════════════════════════════════════════
 //  TFT
 // ═══════════════════════════════════════════════════════
-const TFT_TYPES={little_legend:'Bestiole',portal:'Portail',arena:'Map',boom:'Tirée',tactician:'Tacticien'};
+const TFT_TYPES={tactician:'Tacticien',portal:'Portail',arena:'Arène',boom:'Explosion',chibi:'Chibi / Unbound'};
+const TFT_RARITIES=['Default','Epic','Legendary','Mythic'];
+const TFT_RARITY_COLORS={Default:'#888',Epic:'#9b30ff',Legendary:'#ff8c00',Mythic:'#ffd700'};
+const TFT_RARITY_GLOW={Default:'rgba(136,136,136,0.2)',Epic:'rgba(155,48,255,0.2)',Legendary:'rgba(255,140,0,0.2)',Mythic:'rgba(255,215,0,0.25)'};
 function renderTFT() {
   const db=loadData();
+  const skins=db.tft.skins;
   return `
-    <div class="page-header tft-page"><div class="page-title tft-accent">TFT</div><span class="count-badge">${db.tft.skins.length} skins</span></div>
-    <div class="filter-bar" id="tft-filter">
+    <div class="page-header tft-page"><div class="page-title tft-accent">TFT</div><span class="count-badge">${skins.length} skins</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px" id="tft-type-filter">
       ${['all',...Object.keys(TFT_TYPES)].map((t,i)=>`<button class="filter-btn ${i===0?'active':''}" data-type="${t}" onclick="tftFilter(this,'${t}')">${t==='all'?'Tous':TFT_TYPES[t]}</button>`).join('')}
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px" id="tft-rar-filter">
+      ${['all',...TFT_RARITIES].map((r,i)=>`<button class="filter-btn ${i===0?'active':''}" data-rar="${r}" onclick="tftRarFilter(this,'${r}')" ${r!=='all'?`style="color:${TFT_RARITY_COLORS[r]}"`:''}>${r==='all'?'Toutes raretés':r}</button>`).join('')}
+    </div>
     <div class="skins-grid" id="tft-grid">
-      ${db.tft.skins.length===0?`<div class="empty-state"><div class="icon">🎲</div><p>Aucun skin TFT.</p></div>`:db.tft.skins.map(s=>`
-        <div class="skin-card" data-type="${esc(s.type||'')}">
-          <div class="rarity-bar" style="background:var(--tft);opacity:.6"></div>
-          <div class="skin-img-wrap">${s.image?`<img src="${esc(s.image)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="no-img">🎲</div>`}</div>
-          <div class="skin-info"><div class="skin-name">${esc(s.name)}</div><div class="tft-type-badge">${TFT_TYPES[s.type]||s.type}</div>${s.type==='little_legend'&&s.level?`<div class="tft-level">${'⭐'.repeat(Math.min(s.level,3)).split('').map(x=>`<span class="tft-star">${x}</span>`).join('')}</div>`:''}</div>
-          <div class="card-actions" onclick="event.stopPropagation()"><button class="card-btn card-btn-delete" onclick="deleteSkin('tft','${esc(s.id)}')">🗑</button></div>
-        </div>`).join('')}
+      ${skins.length===0?`<div class="empty-state"><div class="icon">🎲</div><p>Aucun skin TFT.</p></div>`:skins.map(s=>tftCard(s)).join('')}
     </div>`;
 }
+
+function tftCard(s) {
+  const col = TFT_RARITY_COLORS[s.rarity]||'var(--tft-color)';
+  const glow = TFT_RARITY_GLOW[s.rarity]||'rgba(11,196,227,0.12)';
+  const typeLabel = TFT_TYPES[s.type]||s.type;
+  const isChibi = s.type==='chibi';
+
+  // Étoiles : tacticien + boom = 1-3 étoiles, chibi = symbole ✦, autres = aucune
+  let starsHTML = '';
+  if((s.type==='tactician'||s.type==='boom') && s.level && s.level>0) {
+    starsHTML = `<div class="tft-level">${Array.from({length:Math.min(s.level,3)}).map(()=>'<span class="tft-star">⭐</span>').join('')}</div>`;
+  } else if(isChibi) {
+    starsHTML = `<div style="font-size:.7rem;color:#a78bfa;margin-top:3px">✦ Chibi / Unbound</div>`;
+  }
+
+  return `
+    <div class="skin-card" data-type="${esc(s.type||'')}" data-rar="${esc(s.rarity||'')}"
+         style="border-color:${col}33;--hover-glow:${glow}" onclick="tftOpenDetail('${esc(s.id)}')">
+      <div class="rarity-bar" style="background:linear-gradient(90deg,${col},${col}33)"></div>
+      <div class="skin-img-wrap">
+        ${s.image?`<img src="${esc(s.image)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="no-img">🎲</div>`}
+      </div>
+      <div class="skin-info">
+        <div class="skin-name">${esc(s.name)}</div>
+        <div class="skin-meta">
+          <span class="tft-type-badge" style="color:${col}">${typeLabel}</span>
+          ${s.rarity&&s.rarity!=='Default'?`<span style="font-size:.6rem;font-weight:700;color:${col}">${esc(s.rarity)}</span>`:''}
+        </div>
+        ${starsHTML}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="tftEditSkin('${esc(s.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('tft','${esc(s.id)}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+function tftOpenDetail(id) {
+  const db=loadData();
+  const s=db.tft.skins.find(x=>x.id===id); if(!s) return;
+  const col=TFT_RARITY_COLORS[s.rarity]||'var(--tft-color)';
+  openModal(s.name, `
+    ${s.image?`<img src="${esc(s.image)}" style="width:100%;max-height:360px;object-fit:contain;border-radius:var(--rl);background:var(--bg3);margin-bottom:20px;cursor:zoom-in" onclick="openLightbox('${esc(s.image)}','${esc(s.name)}')">`:''}
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${s.rarity?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${col};border:1px solid ${col}55;background:${col}15">${esc(s.rarity)}</span>`:''}
+      ${s.type?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:600;color:var(--text-dim);border:1px solid var(--border2);background:var(--bg3)">${TFT_TYPES[s.type]||s.type}</span>`:''}
+      ${(s.type==='tactician'||s.type==='boom')&&s.level?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;color:var(--text-dim);border:1px solid var(--border)">Niveau ${s.level}</span>`:''}
+      ${s.type==='chibi'?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;color:#a78bfa;border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.1)">✦ Chibi / Unbound</span>`:''}
+    </div>
+  `);
+}
+
 function tftFilter(btn,type){
-  document.querySelectorAll('#tft-filter .filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-  document.querySelectorAll('#tft-grid .skin-card').forEach(c=>{c.style.display=(type==='all'||c.dataset.type===type)?'':'none';});
+  document.querySelectorAll('#tft-type-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const activeRar=document.querySelector('#tft-rar-filter .filter-btn.active')?.dataset.rar||'all';
+  tftApplyFilters(type,activeRar);
+}
+function tftRarFilter(btn,rar){
+  document.querySelectorAll('#tft-rar-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const activeType=document.querySelector('#tft-type-filter .filter-btn.active')?.dataset.type||'all';
+  tftApplyFilters(activeType,rar);
+}
+function tftApplyFilters(type,rar){
+  document.querySelectorAll('#tft-grid .skin-card').forEach(c=>{
+    const mt=(type==='all'||c.dataset.type===type);
+    const mr=(rar==='all'||c.dataset.rar===rar);
+    c.style.display=(mt&&mr)?'':'none';
+  });
 }
 
 // ═══════════════════════════════════════════════════════
@@ -905,6 +1040,289 @@ function renderValoTab(tab){
 let _randTab='fortnite';
 let _lolRandStep=1, _lolSelRoles=[], _lolSelChamps=[];
 
+
+// ════════════════════════════════════════════════
+//  FORTNITE FESTIVAL
+// ════════════════════════════════════════════════
+const FEST_INSTRUMENTS = ["Chant","Guitare","Basse","Batterie","Clavier","Pro Guitare","Pro Basse"];
+const FEST_DIFFS = [
+  {key:"easy",   label:"Facile", short:"F", color:"#00c060"},
+  {key:"medium", label:"Moyen",  short:"M", color:"#ffc800"},
+  {key:"hard",   label:"Difficile", short:"D", color:"#ff6b35"},
+  {key:"expert", label:"Expert", short:"E", color:"var(--epic)"},
+];
+
+function renderFestival() {
+  const db = loadData();
+  const songs = db.festival?.songs || [];
+  const total = songs.length;
+  const done100 = songs.filter(s=>s.done100_by_instrument && Object.values(s.done100_by_instrument).some(v=>v)).length;
+
+  return `
+    <div class="page-header fn-page" style="--fn-color:#ff6b35">
+      <div>
+        <div class="page-title" style="color:#ff6b35;text-shadow:0 0 40px rgba(255,107,53,.5)">FN FESTIVAL</div>
+        <div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">Ma progression musicale</div>
+      </div>
+      <button class="btn btn-primary" onclick="festOpenAdd()">➕ Ajouter un album</button>
+    </div>
+
+    <div class="festival-stat-bar">
+      <div class="festival-stat"><div class="festival-stat-num">${total}</div><div class="festival-stat-label">Albums</div></div>
+      <div class="festival-stat"><div class="festival-stat-num" style="color:#00c060">${songs.reduce((a,s)=>a+Object.values(s.done100_by_instrument||{}).filter(Boolean).length,0)}</div><div class="festival-stat-label">100% obtenus</div></div>
+      <div class="festival-stat"><div class="festival-stat-num" style="color:var(--epic)">${songs.reduce((a,s)=>a+Object.values(s.done100_by_instrument||{}).filter(v=>v==='E').length,0)}</div><div class="festival-stat-label">Expert 100%</div></div>
+    </div>
+
+    ${total===0
+      ? `<div class="empty-state"><div class="icon">🎸</div><p>Aucun album. Ajoute-en avec le bouton ci-dessus.</p></div>`
+      : `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px" id="fest-grid">
+          ${songs.map(s=>festAlbumCard(s)).join('')}
+        </div>`
+    }
+  `;
+}
+
+function festAlbumCard(s) {
+  const instruments = FEST_INSTRUMENTS;
+  const diffs = FEST_DIFFS;
+  // Résumé rapide : combien de 100% sur cet album
+  const done = Object.values(s.done100_by_instrument||{}).filter(Boolean).length;
+  const total = instruments.length * diffs.length;
+
+  return `
+    <div class="skin-card" style="cursor:pointer" onclick="festOpenDetail('${esc(s.id)}')">
+      <div class="rarity-bar" style="background:linear-gradient(90deg,#ff6b35,rgba(255,107,53,.2))"></div>
+      <div class="skin-img-wrap">
+        ${s.image
+          ? `<img src="${esc(s.image)}" loading="lazy" onerror="this.style.display='none'">`
+          : `<div class="no-img" style="font-size:3rem;flex-direction:column;gap:8px">🎵<span style="font-size:.7rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;letter-spacing:.08em">${esc(s.artist||'')}</span></div>`}
+      </div>
+      <div class="skin-info">
+        <div class="skin-name">${esc(s.name)}</div>
+        <div style="font-size:.68rem;color:var(--text-muted);margin-top:3px">${esc(s.artist||'')}</div>
+        <div style="margin-top:6px;display:flex;align-items:center;gap:6px">
+          <div style="font-size:.65rem;color:#ff6b35;font-weight:700">${done} / ${total} 100%</div>
+          <div style="flex:1;height:3px;background:var(--bg4);border-radius:2px">
+            <div style="width:${total>0?Math.round(done/total*100):0}%;height:100%;background:#ff6b35;border-radius:2px;transition:.3s"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="festOpenEdit('${esc(s.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="festDelete('${esc(s.id)}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+function festOpenDetail(id) {
+  const db = loadData();
+  const s = db.festival?.songs?.find(x=>x.id===id); if(!s) return;
+  const diffs = FEST_DIFFS;
+  const instruments = FEST_INSTRUMENTS;
+  const d100 = s.done100_by_instrument || {};
+
+  const rows = instruments.map(inst => {
+    const cells = diffs.map(diff => {
+      const key = `${inst}_${diff.key}`;
+      const val = d100[key]; // true = 100%, false/undefined = non
+      return `<td style="text-align:center;padding:8px 10px">
+        <button onclick="festToggle100('${esc(id)}','${esc(key)}')"
+          style="width:32px;height:32px;border-radius:8px;border:1px solid ${val?diff.color+'88':'var(--border)'};
+          background:${val?diff.color+'22':'transparent'};color:${val?diff.color:'var(--text-muted)'};
+          cursor:pointer;font-size:.8rem;font-weight:700;font-family:'Rajdhani',sans-serif;transition:.2s"
+          title="${diff.label}">
+          ${diff.short}${val?'✓':''}
+        </button>
+      </td>`;
+    }).join('');
+    return `<tr>
+      <td style="padding:8px 14px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.88rem;color:var(--text-dim);white-space:nowrap">${inst}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  openModal(s.name, `
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px">
+      ${s.image?`<img src="${esc(s.image)}" style="width:100px;border-radius:var(--rl);object-fit:cover;flex-shrink:0;cursor:zoom-in" onclick="openLightbox('${esc(s.image)}','${esc(s.name)}')">`:''}
+      <div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700">${esc(s.name)}</div>
+        ${s.artist?`<div style="color:var(--text-muted);font-size:.85rem;margin-top:3px">${esc(s.artist)}</div>`:''}
+        <div style="margin-top:8px;font-size:.75rem;color:var(--text-muted)">Clique sur une lettre pour marquer 100% ✓</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)">
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:var(--bg3)">
+            <th style="padding:10px 14px;text-align:left;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Rajdhani',sans-serif">Instrument</th>
+            ${diffs.map(d=>`<th style="padding:10px 14px;text-align:center;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:${d.color};font-family:'Rajdhani',sans-serif">${d.label}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `);
+}
+
+function festToggle100(songId, key) {
+  const db = loadData();
+  const s = db.festival?.songs?.find(x=>x.id===songId); if(!s) return;
+  if(!s.done100_by_instrument) s.done100_by_instrument={};
+  s.done100_by_instrument[key] = !s.done100_by_instrument[key];
+  saveData(db);
+  // Refresh le modal
+  festOpenDetail(songId);
+}
+
+function festOpenAdd(editSong=null) {
+  const s = editSong;
+  openModal(s?'Modifier un album':'Ajouter un album', `
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-row">
+        <div class="form-group"><label>Nom de la musique / album *</label>
+          <input type="text" id="fest-name" value="${s?esc(s.name):''}" placeholder="ex: Levitating" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+        </div>
+        <div class="form-group"><label>Artiste</label>
+          <input type="text" id="fest-artist" value="${s?esc(s.artist||''):''}" placeholder="ex: Dua Lipa" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+        </div>
+      </div>
+      <div class="form-group"><label>URL image (pochette d'album)</label>
+        <div class="img-url-wrap">
+          <input type="url" id="fest-img" value="${s?esc(s.image||''):''}" placeholder="https://..." oninput="previewUrl('fest-img','fest-img-preview')" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+          <img id="fest-img-preview" class="img-url-preview ${s&&s.image?'show':''}" src="${s?esc(s.image||''):''}" alt="">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="festSave(${s?`'${esc(s.id)}'`:'null'})">💾 Enregistrer</button>
+        <button class="btn btn-ghost" onclick="closeModal()">✕ Annuler</button>
+      </div>
+    </div>
+  `);
+}
+
+function festOpenEdit(id) {
+  const db = loadData();
+  const s = db.festival?.songs?.find(x=>x.id===id); if(!s) return;
+  festOpenAdd(s);
+}
+
+function festSave(editId=null) {
+  const name = document.getElementById('fest-name')?.value.trim(); if(!name){showToast('Nom requis','error');return;}
+  const artist = document.getElementById('fest-artist')?.value.trim();
+  const image = document.getElementById('fest-img')?.value.trim();
+  const db = loadData();
+  if(!db.festival) db.festival = {songs:[]};
+  if(!db.festival.songs) db.festival.songs = [];
+  if(editId) {
+    const idx = db.festival.songs.findIndex(s=>s.id===editId);
+    if(idx!==-1) db.festival.songs[idx] = {...db.festival.songs[idx], name, artist, image:image||null};
+  } else {
+    db.festival.songs.push({id:generateId('fest'), name, artist, image:image||null, done100_by_instrument:{}});
+  }
+  saveData(db); showToast(editId?'Album modifié ✓':'Album ajouté ✓'); closeModal(); navigate('festival');
+}
+
+function festDelete(id) {
+  if(!confirm('Supprimer cet album ?')) return;
+  const db = loadData();
+  db.festival.songs = db.festival.songs.filter(s=>s.id!==id);
+  saveData(db); showToast('Supprimé ✓'); navigate('festival');
+}
+
+
+
+// ════════════════════════════════════════════════
+//  STAR STABLE
+// ════════════════════════════════════════════════
+function renderStarStable() {
+  const db = loadData();
+  const horses = db.starstable?.horses || [];
+  return `
+    <div class="page-header">
+      <div>
+        <div class="page-title ss-accent">STAR STABLE</div>
+        <div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">Ma collection de chevaux</div>
+      </div>
+      <span class="count-badge">${horses.length} cheval${horses.length!==1?'x':''}</span>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Rechercher un cheval…" id="ss-search" oninput="ssFilter()">
+      </div>
+    </div>
+
+    ${horses.length===0
+      ? `<div class="empty-state"><div class="icon">🐴</div><p>Aucun cheval.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p></div>`
+      : `<div class="skins-grid" id="ss-grid">${horses.map(h=>ssHorseCard(h)).join('')}</div>`
+    }
+  `;
+}
+
+function ssHorseCard(h) {
+  return `
+    <div class="ss-card" data-name="${esc((h.name||'').toLowerCase())}" onclick="ssOpenDetail('${esc(h.id)}')">
+      <div class="rarity-bar" style="background:linear-gradient(90deg,#7ec8e3,rgba(126,200,227,.2))"></div>
+      <div class="skin-img-wrap">
+        ${h.image
+          ? `<img src="${esc(h.image)}" loading="lazy" onerror="this.style.display='none'">`
+          : `<div class="no-img">🐴</div>`}
+      </div>
+      <div class="ss-card-info">
+        <div class="ss-card-name">${esc(h.name)}</div>
+        ${h.breed?`<div class="ss-card-breed">${esc(h.breed)}</div>`:''}
+        ${h.coat?`<div class="ss-card-coat">🎨 ${esc(h.coat)}</div>`:''}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="ssEditHorse('${esc(h.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('ss-horse','${esc(h.id)}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+function ssFilter() {
+  const q = document.getElementById('ss-search')?.value.toLowerCase()||'';
+  document.querySelectorAll('#ss-grid .ss-card').forEach(c=>{
+    c.style.display = (!q||c.dataset.name.includes(q))?'':'none';
+  });
+}
+
+function ssOpenDetail(id) {
+  const db = loadData();
+  const h = db.starstable?.horses?.find(x=>x.id===id); if(!h) return;
+  openModal(h.name, `
+    ${h.image?`<img src="${esc(h.image)}" style="width:100%;max-height:360px;object-fit:contain;border-radius:var(--rl);background:var(--bg3);margin-bottom:20px;cursor:zoom-in" onclick="openLightbox('${esc(h.image)}','${esc(h.name)}')">`:''}
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${h.breed?`<div><span style="font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)">Race</span><div style="color:var(--text);font-size:.9rem;margin-top:2px">${esc(h.breed)}</div></div>`:''}
+      ${h.coat?`<div><span style="font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)">Robe</span><div style="color:#7ec8e3;font-size:.9rem;margin-top:2px">${esc(h.coat)}</div></div>`:''}
+      ${h.notes?`<div><span style="font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)">Notes</span><div style="color:var(--text-dim);font-size:.85rem;margin-top:2px">${esc(h.notes)}</div></div>`:''}
+    </div>
+  `);
+}
+
+function ssEditHorse(id) {
+  navigate('add');
+  setTimeout(()=>{
+    document.getElementById('add-game-select').value='starstable';
+    addGameChanged();
+    setTimeout(()=>{
+      const db=loadData();
+      const h=db.starstable?.horses?.find(x=>x.id===id); if(!h) return;
+      const f=document.getElementById('ss-form');
+      if(!f) return;
+      document.getElementById('ss-name').value=h.name||'';
+      document.getElementById('ss-breed').value=h.breed||'';
+      document.getElementById('ss-coat').value=h.coat||'';
+      document.getElementById('ss-img').value=h.image||'';
+      document.getElementById('ss-notes').value=h.notes||'';
+      if(h.image){const p=document.getElementById('ss-img-preview');if(p){p.src=h.image;p.classList.add('show');}}
+      f.dataset.editId=id;
+      showToast('Cheval chargé pour modification');
+    },100);
+  },60);
+}
+
 function renderRandom(){
   return `
     <div class="rand-page">
@@ -912,7 +1330,7 @@ function renderRandom(){
         <div><div class="page-title" style="background:linear-gradient(135deg,var(--epic),var(--fn));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">RANDOMIZER</div><div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">CHOIX ALÉATOIRE</div></div>
       </div>
       <div class="rand-tabs">
-        ${[{k:'fortnite',l:'⚡ Fortnite'},{k:'lol',l:'⚔️ LoL'},{k:'tft',l:'🎲 TFT'},{k:'dbd',l:'🔪 DBD'},{k:'valo',l:'🎯 Valorant'}].map(t=>`<button class="rand-tab ${t.k===_randTab?'active':''}" onclick="randSwitchTab('${t.k}')">${t.l}</button>`).join('')}
+        ${[{k:'fortnite',l:'⚡ Fortnite'},{k:'lol',l:'⚔️ LoL'},{k:'tft',l:'🎲 TFT'},{k:'dbd',l:'🔪 DBD'},{k:'valo',l:'🎯 Valorant'},{k:'starstable',l:'🐴 Star Stable'}].map(t=>`<button class="rand-tab ${t.k===_randTab?'active':''}" onclick="randSwitchTab('${t.k}')">${t.l}</button>`).join('')}
       </div>
       <div id="rand-content"></div>
     </div>`;
@@ -923,7 +1341,7 @@ function initRandom(){ renderRandTab(_randTab); }
 function randSwitchTab(tab){
   _randTab=tab;
   _lolRandStep=1; _lolSelRoles=[]; _lolSelChamps=[];
-  document.querySelectorAll('.rand-tab').forEach(t=>t.classList.toggle('active',t.textContent.includes(tab==='fortnite'?'Fortnite':tab==='lol'?'LoL':tab==='tft'?'TFT':tab==='dbd'?'DBD':'Valorant')));
+  document.querySelectorAll('.rand-tab').forEach(t=>t.classList.toggle('active',t.textContent.includes({fortnite:'Fortnite',lol:'LoL',tft:'TFT',dbd:'DBD',valo:'Valorant',starstable:'Star'}[tab]||tab)));
   renderRandTab(tab);
 }
 
@@ -935,6 +1353,7 @@ function renderRandTab(tab){
   else if(tab==='tft')  c.innerHTML=renderRandTFT();
   else if(tab==='dbd')  c.innerHTML=renderRandDBD();
   else if(tab==='valo') c.innerHTML=renderRandValo();
+  else if(tab==='starstable') c.innerHTML=renderRandSS();
 }
 
 // — Fortnite randomizer
@@ -950,6 +1369,15 @@ function renderRandFN(){
           </label>`).join('')}
       </div>
     </div>
+    <div class="lol-rand-step" style="padding:14px 20px">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <span style="font-size:.8rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600">Filtre :</span>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.88rem;color:var(--text-dim)">
+          <input type="checkbox" id="fn-rand-festival-only" style="accent-color:var(--festival);width:15px;height:15px">
+          <span>🎸 Skins Festival seulement</span>
+        </label>
+      </div>
+    </div>
     <div style="display:flex;justify-content:center;margin:24px 0">
       <button class="rand-btn" onclick="doRandFN()">🎲 Randomizer !</button>
     </div>
@@ -962,9 +1390,11 @@ function doRandFN(){
   const checked=[...document.querySelectorAll('.fn-cat-check input:checked')].map(i=>i.value);
   if(!checked.length){showToast('Coche au moins une catégorie','error');return;}
   const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn.classList.remove('spinning'),600);
+  const festOnly = document.getElementById('fn-rand-festival-only')?.checked;
   const results=[];
   for(const cat of checked){
-    const list=items[cat]||[];
+    let list=items[cat]||[];
+    if(cat==='skin' && festOnly) list=list.filter(s=>s.forFestival);
     if(list.length) results.push({cat,item:rand(list)});
   }
   const c=document.getElementById('fn-rand-results');
@@ -1200,12 +1630,12 @@ function _lolResultCard(role,champ,skin){
 
 // — TFT randomizer
 function renderRandTFT(){
-  const db=loadData();
   return `
     <div class="lol-rand-step">
       <div class="lol-rand-step-title"><div class="step-num">1</div>Choisir le type</div>
       <div class="filter-bar">
-        ${['all',...Object.keys(TFT_TYPES)].map((t,i)=>`<button class="filter-btn ${i===0?'active':''}" data-type="${t}" onclick="tftRandFilter(this,'${t}')">${t==='all'?'Tous':TFT_TYPES[t]}</button>`).join('')}
+        <button class="filter-btn active" data-tft="all" onclick="tftRandFilter(this,'all')">Tous</button>
+        ${Object.entries(TFT_TYPES).map(([k,v])=>`<button class="filter-btn" data-tft="${k}" onclick="tftRandFilter(this,'${k}')">${v}</button>`).join('')}
       </div>
     </div>
     <div style="display:flex;justify-content:center;margin:24px 0"><button class="rand-btn" onclick="doRandTFT()">🎲 Randomizer !</button></div>
@@ -1215,22 +1645,26 @@ let _tftRandType='all';
 function tftRandFilter(btn,type){_tftRandType=type;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 function doRandTFT(){
   const db=loadData();
-  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn.classList.remove('spinning'),600);
+  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn?.classList.remove('spinning'),600);
   const list=_tftRandType==='all'?db.tft.skins:db.tft.skins.filter(s=>s.type===_tftRandType);
-  if(!list.length){showToast('Aucun skin TFT dans cette catégorie','error');return;}
+  if(!list.length){showToast('Aucun skin TFT','error');return;}
   const item=rand(list);
+  const col=TFT_RARITY_COLORS[item.rarity]||'var(--tft-color)';
+  const isChibi=item.type==='chibi';
+  const levelStr=(item.type==='tactician'||item.type==='boom')&&item.level>0
+    ?`<div class="rand-result-sub">${'⭐'.repeat(item.level)} Niveau ${item.level}</div>`
+    :isChibi?`<div class="rand-result-sub" style="color:#a78bfa">✦ Chibi / Unbound</div>`:'';
   document.getElementById('tft-rand-results').innerHTML=`
     <div class="rand-result-card" onclick="openLightbox('${esc(item.image||'')}','${esc(item.name)}')" style="${item.image?'cursor:zoom-in':''}">
       ${item.image?`<img src="${esc(item.image)}" class="rand-result-img" loading="lazy">`:`<div class="rand-result-img no-img-big">🎲</div>`}
       <div class="rand-result-info">
-        <div class="rand-result-cat">${TFT_TYPES[item.type]||item.type}</div>
+        <div class="rand-result-cat" style="color:${col}">${TFT_TYPES[item.type]||item.type}${item.rarity&&item.rarity!=='Default'?` · ${item.rarity}`:''}</div>
         <div class="rand-result-name">${esc(item.name)}</div>
-        ${item.type==='little_legend'&&item.level?`<div class="rand-result-sub">${'⭐'.repeat(item.level)} Niveau ${item.level}</div>`:''}
+        ${levelStr}
       </div>
     </div>`;
 }
 
-// — DBD randomizer
 function renderRandDBD(){
   return `
     <div class="lol-rand-step">
@@ -1341,6 +1775,7 @@ function renderAdd(){
           <option value="tft">TFT</option>
           <option value="dbd">Dead by Daylight</option>
           <option value="valo">Valorant</option>
+          <option value="starstable">Star Stable</option>
         </select>
       </div>
     </div>
@@ -1356,6 +1791,7 @@ function addGameChanged(){
     case 'tft':      c.innerHTML=renderAddTFT(); break;
     case 'dbd':      c.innerHTML=renderAddDBD(); break;
     case 'valo':     c.innerHTML=renderAddValo(); break;
+    case 'starstable': c.innerHTML=renderAddSS(); break;
     default: c.innerHTML='';
   }
 }
@@ -1634,46 +2070,76 @@ function saveLolSkin(e){
 function renderAddTFT(){
   return `
     <div class="form-section">
-      <div class="form-section-title">🎲 Ajouter un Skin TFT</div>
-      <form onsubmit="saveTFT(event)">
+      <div class="form-section-title">🎲 Ajouter / Modifier un Skin TFT</div>
+      <form id="tft-skin-form" onsubmit="saveTFT(event)">
         <div class="form-row">
-          <div class="form-group"><label>Nom *</label><input type="text" id="tft-name" placeholder="ex: Pengu" required></div>
+          <div class="form-group"><label>Nom *</label>
+            <input type="text" id="tft-name" placeholder="ex: Pengu" required></div>
           <div class="form-group"><label>Type *</label>
-            <select id="tft-type" required onchange="document.getElementById('tft-level-row').style.display=this.value==='little_legend'?'':'none'">
+            <select id="tft-type" required onchange="tftTypeChanged()">
               <option value="">-- Type --</option>
-              <option value="little_legend">Bestiole</option>
-              <option value="portal">Portail</option>
-              <option value="arena">Map / Arène</option>
-              <option value="boom">Tirée (Boom)</option>
-              <option value="tactician">Tacticien</option>
+              ${Object.entries(TFT_TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}
             </select>
           </div>
         </div>
-        <div class="form-row" id="tft-level-row" style="display:none">
-          <div class="form-group"><label>Niveau (1–3)</label><select id="tft-level"><option value="1">⭐ 1</option><option value="2">⭐⭐ 2</option><option value="3">⭐⭐⭐ 3</option></select></div>
+        <div class="form-row">
+          <div class="form-group"><label>Rareté</label>
+            <select id="tft-rarity">
+              ${TFT_RARITIES.map(r=>`<option value="${r}" ${r==='Default'?'selected':''}>${r}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group" id="tft-level-row" style="display:none">
+            <label>Niveau (0 = aucune étoile)</label>
+            <select id="tft-level">
+              <option value="0">— Aucune étoile</option>
+              <option value="1">⭐ Niveau 1</option>
+              <option value="2">⭐⭐ Niveau 2</option>
+              <option value="3">⭐⭐⭐ Niveau 3</option>
+            </select>
+          </div>
         </div>
         <div class="form-row single">
           <div class="form-group"><label>URL image</label>
             <div class="img-url-wrap">
               <input type="url" id="tft-img" placeholder="https://..." oninput="previewUrl('tft-img','tft-preview')">
-              <img id="tft-preview" class="img-url-preview" alt="Aperçu">
+              <img id="tft-preview" class="img-url-preview" alt="">
             </div>
           </div>
         </div>
-        <div class="btn-row"><button type="submit" class="btn btn-primary">💾 Enregistrer</button><button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕</button></div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
+        </div>
       </form>
     </div>`;
 }
+
+function tftTypeChanged(){
+  const type=document.getElementById('tft-type')?.value;
+  // Étoiles pour tacticien et boom uniquement
+  document.getElementById('tft-level-row').style.display=(type==='tactician'||type==='boom')?'':'none';
+}
+
 function saveTFT(e){
   e.preventDefault();
   const name=document.getElementById('tft-name').value.trim();
   const type=document.getElementById('tft-type').value;
-  const level=parseInt(document.getElementById('tft-level')?.value||'1');
+  const rarity=document.getElementById('tft-rarity').value||'Default';
+  const level=parseInt(document.getElementById('tft-level')?.value||'0');
   const image=document.getElementById('tft-img').value.trim();
+  const editId=document.getElementById('tft-skin-form').dataset.editId;
   if(!name||!type) return;
   const db=loadData();
-  db.tft.skins.push({id:generateId('tft'),name,type,level,image:image||null});
-  saveData(db); showToast('Skin TFT ajouté ✓'); addGameChanged();
+  const obj={name,type,rarity,level,image:image||null};
+  if(editId){
+    const idx=db.tft.skins.findIndex(s=>s.id===editId);
+    if(idx!==-1) db.tft.skins[idx]={...db.tft.skins[idx],...obj};
+  } else {
+    db.tft.skins.push({id:generateId('tft'),...obj});
+  }
+  saveData(db); showToast(editId?'Skin TFT modifié ✓':'Skin TFT ajouté ✓');
+  delete document.getElementById('tft-skin-form').dataset.editId;
+  addGameChanged();
 }
 
 // ── DBD Add
@@ -1821,6 +2287,59 @@ function valoAddTab(tab){
     document.getElementById(`valo-form-${t}`)?.style.setProperty('display',t===tab?'':'none');
   });
 }
+
+function renderAddSS(){
+  return `
+    <div class="form-section">
+      <div class="form-section-title">🐴 Ajouter un Cheval</div>
+      <form id="ss-form" onsubmit="saveSS(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Nom *</label>
+            <input type="text" id="ss-name" placeholder="ex: Starshine" required></div>
+          <div class="form-group"><label>Race</label>
+            <input type="text" id="ss-breed" placeholder="ex: Fjord, Arabe, Frisian..."></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Robe / Couleur</label>
+            <input type="text" id="ss-coat" placeholder="ex: Palomino, Gris pommelé..."></div>
+          <div class="form-group"><label>Notes</label>
+            <input type="text" id="ss-notes" placeholder="ex: Mon cheval principal..."></div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group"><label>URL image</label>
+            <div class="img-url-wrap">
+              <input type="url" id="ss-img" placeholder="https://..." oninput="previewUrl('ss-img','ss-img-preview')">
+              <img id="ss-img-preview" class="img-url-preview" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>`;
+}
+
+function saveSS(e){
+  e.preventDefault();
+  const name=document.getElementById('ss-name').value.trim(); if(!name) return;
+  const breed=document.getElementById('ss-breed').value.trim();
+  const coat=document.getElementById('ss-coat').value.trim();
+  const notes=document.getElementById('ss-notes').value.trim();
+  const image=document.getElementById('ss-img').value.trim();
+  const editId=document.getElementById('ss-form').dataset.editId;
+  const db=loadData();
+  if(!db.starstable) db.starstable={horses:[]};
+  if(editId){
+    const idx=db.starstable.horses.findIndex(h=>h.id===editId);
+    if(idx!==-1) db.starstable.horses[idx]={...db.starstable.horses[idx],name,breed,coat,notes,image:image||null};
+  } else {
+    db.starstable.horses.push({id:generateId('ssh'),name,breed,coat,notes,image:image||null});
+  }
+  saveData(db); showToast(editId?'Cheval modifié ✓':'Cheval ajouté ✓'); addGameChanged();
+}
+
 function saveValoWeap(e){
   e.preventDefault();
   const name=document.getElementById('valo-weap-name').value.trim(); if(!name) return;
@@ -1854,6 +2373,12 @@ function saveValoBuddy(e){
 //  VARIANTES FORTNITE — modifier / supprimer
 // ══════════════════════════════════════════════
 
+
+function fnToggleFestival(id, val) {
+  const db = loadData();
+  const skin = (db.fortnite.items['skin']||[]).find(s=>s.id===id);
+  if(skin) { skin.forFestival = val; saveData(db); showToast(val?'Marqué pour Festival 🎸':'Retiré du Festival'); }
+}
 function fnDeleteVariant(skinId, idx) {
   if(!confirm('Supprimer cette variante ?')) return;
   const db = loadData();
@@ -2019,6 +2544,33 @@ function lolAddChromaFromModal(champId, skinId) {
   saveData(db);
   showToast('Chroma ajouté ✓');
   lolOpenSkinModal(champId, skinId);
+}
+
+
+function renderRandSS(){
+  return `
+    <div style="display:flex;justify-content:center;margin:24px 0">
+      <button class="rand-btn" onclick="doRandSS()">🎲 Cheval aléatoire !</button>
+    </div>
+    <div class="rand-results" id="ss-rand-results"></div>`;
+}
+
+function doRandSS(){
+  const db=loadData();
+  const horses=db.starstable?.horses||[];
+  if(!horses.length){showToast('Aucun cheval enregistré','error');return;}
+  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn?.classList.remove('spinning'),600);
+  const h=rand(horses);
+  document.getElementById('ss-rand-results').innerHTML=`
+    <div class="rand-result-card" onclick="openLightbox('${esc(h.image||'')}','${esc(h.name)}')" style="${h.image?'cursor:zoom-in':''}">
+      ${h.image?`<img src="${esc(h.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">🐴</div>`}
+      <div class="rand-result-info">
+        <div class="rand-result-cat">Star Stable</div>
+        <div class="rand-result-name">${esc(h.name)}</div>
+        ${h.breed?`<div class="rand-result-sub">${esc(h.breed)}</div>`:''}
+        ${h.coat?`<div class="rand-result-sub" style="color:#7ec8e3">🎨 ${esc(h.coat)}</div>`:''}
+      </div>
+    </div>`;
 }
 
 // ═══ INIT ═══
