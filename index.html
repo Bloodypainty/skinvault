@@ -1630,35 +1630,72 @@ function _lolResultCard(role,champ,skin){
 
 // — TFT randomizer
 function tftEditSkin(id) {
-  navigate('add');
-  setTimeout(()=>{
-    document.getElementById('add-game-select').value='tft';
-    addGameChanged();
-    setTimeout(()=>{
-      const db=loadData();
-      const s=db.tft.skins.find(x=>x.id===id);
-      if(!s) return;
-      const nameEl = document.getElementById('tft-name');
-      const typeEl = document.getElementById('tft-type');
-      const rarEl  = document.getElementById('tft-rarity');
-      const imgEl  = document.getElementById('tft-img');
-      const prev   = document.getElementById('tft-preview');
-      const form   = document.getElementById('tft-skin-form');
-      if(!form) return;
-      if(nameEl) nameEl.value = s.name||'';
-      if(typeEl) { typeEl.value = s.type||''; tftTypeChanged(); }
-      if(rarEl)  rarEl.value  = s.rarity||'Default';
-      if(imgEl)  imgEl.value  = s.image||'';
-      if(prev&&s.image){ prev.src=s.image; prev.classList.add('show'); }
-      // Niveau après tftTypeChanged()
-      setTimeout(()=>{
-        const lvlEl = document.getElementById('tft-level');
-        if(lvlEl) lvlEl.value = s.level||0;
-      }, 30);
-      form.dataset.editId = id;
-      showToast('Skin TFT chargé pour modification');
-    }, 120);
-  }, 60);
+  const db=loadData();
+  const s=db.tft.skins.find(x=>x.id===id);
+  if(!s) return;
+
+  const showLevel = s.type==='tactician'||s.type==='boom';
+  const levelRow = showLevel ? `
+    <div class="form-group" style="margin-top:12px">
+      <label style="font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600">Niveau</label>
+      <select id="tft-edit-level" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%;margin-top:6px">
+        <option value="0" ${!s.level||s.level===0?'selected':''}>— Aucune étoile</option>
+        <option value="1" ${s.level===1?'selected':''}>⭐ Niveau 1</option>
+        <option value="2" ${s.level===2?'selected':''}>⭐⭐ Niveau 2</option>
+        <option value="3" ${s.level===3?'selected':''}>⭐⭐⭐ Niveau 3</option>
+      </select>
+    </div>` : '';
+
+  const inputStyle = 'background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%;margin-top:6px';
+  const labelStyle = 'font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600';
+
+  openModal(`Modifier : ${s.name}`, `
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-group">
+        <label style="${labelStyle}">Nom *</label>
+        <input type="text" id="tft-edit-name" value="${esc(s.name)}" style="${inputStyle}">
+      </div>
+      <div class="form-group">
+        <label style="${labelStyle}">Type *</label>
+        <select id="tft-edit-type" style="${inputStyle}">
+          ${Object.entries(TFT_TYPES).map(([k,v])=>`<option value="${k}" ${s.type===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label style="${labelStyle}">Rareté</label>
+        <select id="tft-edit-rarity" style="${inputStyle}">
+          ${TFT_RARITIES.map(r=>`<option value="${r}" ${s.rarity===r?'selected':''}>${r}</option>`).join('')}
+        </select>
+      </div>
+      ${levelRow}
+      <div class="form-group">
+        <label style="${labelStyle}">URL image</label>
+        <input type="url" id="tft-edit-img" value="${esc(s.image||'')}" placeholder="https://..." style="${inputStyle}" oninput="const p=document.getElementById('tft-edit-prev');if(this.value){p.src=this.value;p.style.display='block';}else{p.style.display='none';}">
+        <img id="tft-edit-prev" src="${esc(s.image||'')}" style="width:80px;height:80px;object-fit:contain;border-radius:8px;margin-top:8px;background:var(--bg3);${s.image?'':'display:none'}">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button class="btn btn-primary" onclick="tftSaveEdit('${esc(s.id)}')">💾 Enregistrer</button>
+        <button class="btn btn-ghost" onclick="closeModal()">✕ Annuler</button>
+      </div>
+    </div>
+  `);
+}
+
+function tftSaveEdit(id) {
+  const name   = document.getElementById('tft-edit-name')?.value.trim();
+  const type   = document.getElementById('tft-edit-type')?.value;
+  const rarity = document.getElementById('tft-edit-rarity')?.value || 'Default';
+  const level  = parseInt(document.getElementById('tft-edit-level')?.value || '0');
+  const image  = document.getElementById('tft-edit-img')?.value.trim();
+  if(!name||!type) { showToast('Nom et type requis','error'); return; }
+  const db = loadData();
+  const idx = db.tft.skins.findIndex(s=>s.id===id);
+  if(idx===-1) return;
+  db.tft.skins[idx] = {...db.tft.skins[idx], name, type, rarity, level, image:image||null};
+  saveData(db);
+  showToast('Skin TFT modifié ✓');
+  closeModal();
+  navigate('tft');
 }
 
 function renderRandTFT(){
@@ -1668,6 +1705,7 @@ function renderRandTFT(){
       <div class="filter-bar">
         <button class="filter-btn active" data-tft="all" onclick="tftRandFilter(this,'all')">Tous</button>
         ${Object.entries(TFT_TYPES).map(([k,v])=>`<button class="filter-btn" data-tft="${k}" onclick="tftRandFilter(this,'${k}')">${v}</button>`).join('')}
+        <button class="filter-btn" data-tft="tacticien_chibi" onclick="tftRandFilter(this,'tacticien_chibi')">🐧 Tacticiens + Chibi</button>
       </div>
     </div>
     <div style="display:flex;justify-content:center;margin:24px 0"><button class="rand-btn" onclick="doRandTFT()">🎲 Randomizer !</button></div>
@@ -1678,7 +1716,7 @@ function tftRandFilter(btn,type){_tftRandType=type;document.querySelectorAll('.f
 function doRandTFT(){
   const db=loadData();
   const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn?.classList.remove('spinning'),600);
-  const list=_tftRandType==='all'?db.tft.skins:db.tft.skins.filter(s=>s.type===_tftRandType);
+  const list=_tftRandType==='all'?db.tft.skins:_tftRandType==='tacticien_chibi'?db.tft.skins.filter(s=>s.type==='tactician'||s.type==='chibi'):db.tft.skins.filter(s=>s.type===_tftRandType);
   if(!list.length){showToast('Aucun skin TFT','error');return;}
   const item=rand(list);
   const col=TFT_RARITY_COLORS[item.rarity]||'var(--tft-color)';
