@@ -1629,6 +1629,38 @@ function _lolResultCard(role,champ,skin){
 }
 
 // — TFT randomizer
+function tftEditSkin(id) {
+  navigate('add');
+  setTimeout(()=>{
+    document.getElementById('add-game-select').value='tft';
+    addGameChanged();
+    setTimeout(()=>{
+      const db=loadData();
+      const s=db.tft.skins.find(x=>x.id===id);
+      if(!s) return;
+      const nameEl = document.getElementById('tft-name');
+      const typeEl = document.getElementById('tft-type');
+      const rarEl  = document.getElementById('tft-rarity');
+      const imgEl  = document.getElementById('tft-img');
+      const prev   = document.getElementById('tft-preview');
+      const form   = document.getElementById('tft-skin-form');
+      if(!form) return;
+      if(nameEl) nameEl.value = s.name||'';
+      if(typeEl) { typeEl.value = s.type||''; tftTypeChanged(); }
+      if(rarEl)  rarEl.value  = s.rarity||'Default';
+      if(imgEl)  imgEl.value  = s.image||'';
+      if(prev&&s.image){ prev.src=s.image; prev.classList.add('show'); }
+      // Niveau après tftTypeChanged()
+      setTimeout(()=>{
+        const lvlEl = document.getElementById('tft-level');
+        if(lvlEl) lvlEl.value = s.level||0;
+      }, 30);
+      form.dataset.editId = id;
+      showToast('Skin TFT chargé pour modification');
+    }, 120);
+  }, 60);
+}
+
 function renderRandTFT(){
   return `
     <div class="lol-rand-step">
