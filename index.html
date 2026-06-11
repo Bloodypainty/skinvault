@@ -359,6 +359,61 @@ select option{background:var(--bg3)}
 .ss-card-name{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.95rem;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ss-card-breed{font-size:.68rem;color:var(--text-muted);margin-top:3px}
 .ss-card-coat{font-size:.65rem;color:#7ec8e3;margin-top:2px}
+
+/* ── Mode sélection multiple ── */
+.select-mode-bar {
+  display:none;
+  align-items:center;
+  gap:12px;
+  padding:12px 18px;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:var(--rl);
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+.select-mode-bar.active { display:flex; }
+.select-count {
+  font-family:'Rajdhani',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:.05em;
+}
+.skin-card.selectable { cursor:pointer; }
+.skin-card.selected {
+  outline:2px solid var(--valo-color);
+  outline-offset:2px;
+  box-shadow:0 0 20px rgba(255,70,85,.25);
+}
+.skin-card.selected::after {
+  content:'✓';
+  position:absolute;
+  top:8px;left:8px;
+  width:24px;height:24px;
+  background:var(--valo-color);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;
+  color:#fff;
+  font-weight:700;
+  z-index:20;
+}
+.ss-card.selected {
+  outline:2px solid var(--valo-color);
+  outline-offset:2px;
+  box-shadow:0 0 20px rgba(255,70,85,.25);
+}
+.ss-card.selected::after {
+  content:'✓';
+  position:absolute;
+  top:8px;left:8px;
+  width:24px;height:24px;
+  background:var(--valo-color);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;color:#fff;font-weight:700;z-index:20;
+}
 </style>
 </head>
 <body>
@@ -635,7 +690,13 @@ function renderFN() {
   const items=db.fortnite.items||{};
   const total=Object.values(items).reduce((a,arr)=>a+(arr?.length||0),0);
   return `
-    <div class="page-header fn-page"><div class="page-title fn-accent">FORTNITE</div><span class="count-badge">${total} items</span></div>
+    <div class="page-header fn-page"><div class="page-title fn-accent">FORTNITE</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${total} items</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('fortnite',{cat:_fnCat})">☑ Sélectionner</button>
+      </div>
+    </div>
+    ${_selectMode&&_selectContext?.game==='fortnite'?_selectModeBar('fortnite',{cat:_fnCat}):''}
     <div class="tabs" id="fn-cat-tabs">
       ${Object.entries(FN_CATS).map(([k,v],i)=>`<button class="tab ${i===0?'active':''}" data-cat="${k}" onclick="fnSwitchCat(this,'${k}')">${v.icon} ${v.label}</button>`).join('')}
     </div>
@@ -656,7 +717,7 @@ function renderFnGrid(cat, items) {
   const list=items[cat]||[];
   if(!list.length) return `<div class="empty-state"><div class="icon">${FN_CATS[cat]?.icon||'🎮'}</div><p>Aucun ${FN_CATS[cat]?.label||cat}.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p></div>`;
   return list.map(s=>`
-    <div class="skin-card" data-rarity="${esc(s.rarity||'')}" data-name="${esc((s.name||'').toLowerCase())}"
+    <div class="skin-card" data-rarity="${esc(s.rarity||'')}" data-name="${esc((s.name||'').toLowerCase())}" data-id="${esc(s.id)}"
       onclick="${cat==='skin'?`fnOpenModal(\'${esc(s.id)}\')`:s.image?`openLightbox(\'${esc(s.image)}\',\'${esc(s.name)}\')`:''}" style="${s.image||cat==='skin'?'cursor:zoom-in':''}">
       <div class="rarity-bar ${esc(s.rarity||'')}"></div>
       <div class="skin-img-wrap">
@@ -825,14 +886,20 @@ function renderLoL() {
   const db=loadData();
   const total=db.lol.champions.reduce((a,c)=>a+c.skins.length,0);
   return `
-    <div class="page-header lol-page"><div class="page-title lol-accent">LEAGUE OF LEGENDS</div><span class="count-badge">${db.lol.champions.length} champions · ${total} skins</span></div>
+    <div class="page-header lol-page"><div class="page-title lol-accent">LEAGUE OF LEGENDS</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${db.lol.champions.length} champions · ${total} skins</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('lol-champions')">☑ Sélectionner champions</button>
+      </div>
+    </div>
+    ${_selectMode&&_selectContext?.game==='lol-champions'?_selectModeBar('lol-champions'):''}
     <div class="search-bar"><div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Rechercher…" id="lol-search" oninput="lolFilter()"></div></div>
     <div id="lol-content">${db.lol.champions.length===0?`<div class="empty-state"><div class="icon">⚔️</div><p>Aucun champion.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p></div>`:db.lol.champions.map(c=>lolChampSection(c)).join('')}</div>`;
 }
 function lolChampSection(c) {
   const roles=(c.roles||[]).map(r=>`<span class="role-badge">${esc(r)}</span>`).join(' ');
   return `
-    <div class="champion-section" data-champ="${esc((c.name||'').toLowerCase())}">
+    <div class="champion-section" data-champ="${esc((c.name||'').toLowerCase())}" data-id="${esc(c.id)}">
       <div class="champion-header">
         ${c.image?`<img src="${esc(c.image)}" class="champion-avatar" onerror="this.className='champion-avatar no-img';this.textContent='👤'">`:`<div class="champion-avatar no-img">👤</div>`}
         <div><div class="champion-name">${esc(c.name)}</div><div>${roles}</div><div class="champion-skin-count">${c.skins.length} skin${c.skins.length!==1?'s':''}</div></div>
@@ -881,7 +948,13 @@ function renderTFT() {
   const db=loadData();
   const skins=db.tft.skins;
   return `
-    <div class="page-header tft-page"><div class="page-title tft-accent">TFT</div><span class="count-badge">${skins.length} skins</span></div>
+    <div class="page-header tft-page"><div class="page-title tft-accent">TFT</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${skins.length} skins</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('tft')">☑ Sélectionner</button>
+      </div>
+    </div>
+    ${_selectMode&&_selectContext?.game==='tft'?_selectModeBar('tft'):''}
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px" id="tft-type-filter">
       ${['all',...Object.keys(TFT_TYPES)].map((t,i)=>`<button class="filter-btn ${i===0?'active':''}" data-type="${t}" onclick="tftFilter(this,'${t}')">${t==='all'?'Tous':TFT_TYPES[t]}</button>`).join('')}
     </div>
@@ -908,7 +981,7 @@ function tftCard(s) {
   }
 
   return `
-    <div class="skin-card" data-type="${esc(s.type||'')}" data-rar="${esc(s.rarity||'')}"
+    <div class="skin-card" data-type="${esc(s.type||'')}" data-rar="${esc(s.rarity||'')}" data-id="${esc(s.id)}"
          style="border-color:${col}33;--hover-glow:${glow}" onclick="tftOpenDetail('${esc(s.id)}')">
       <div class="rarity-bar" style="background:linear-gradient(90deg,${col},${col}33)"></div>
       <div class="skin-img-wrap">
@@ -971,7 +1044,13 @@ let _dbdTab='survivors';
 function renderDBD() {
   const db=loadData();
   return `
-    <div class="page-header dbd-page"><div class="page-title dbd-accent">DEAD BY DAYLIGHT</div><span class="count-badge">${db.dbd.survivors.length} survivants · ${db.dbd.killers.length} tueurs</span></div>
+    <div class="page-header dbd-page"><div class="page-title dbd-accent">DEAD BY DAYLIGHT</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${db.dbd.survivors.length} survivants · ${db.dbd.killers.length} tueurs</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode(_dbdTab==='survivors'?'dbd-survivors':'dbd-killers')">☑ Sélectionner</button>
+      </div>
+    </div>
+    ${_selectMode&&(_selectContext?.game==='dbd-survivors'||_selectContext?.game==='dbd-killers')?_selectModeBar(_dbdTab==='survivors'?'dbd-survivors':'dbd-killers'):''}
     <div class="tabs"><button class="tab ${_dbdTab==='survivors'?'active':''}" onclick="dbdTab('survivors')">Survivants</button><button class="tab ${_dbdTab==='killers'?'active':''}" onclick="dbdTab('killers')">Tueurs</button></div>
     <div id="dbd-content">${renderDbdTab(_dbdTab)}</div>`;
 }
@@ -1007,7 +1086,13 @@ function renderValo(){
   const db=loadData();
   const total=db.valo.weapons.reduce((a,w)=>a+w.skins.length,0);
   return `
-    <div class="page-header valo-page"><div class="page-title valo-accent">VALORANT</div><span class="count-badge">${db.valo.weapons.length} armes · ${db.valo.buddies.length} buddies · ${total} skins</span></div>
+    <div class="page-header valo-page"><div class="page-title valo-accent">VALORANT</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${db.valo.weapons.length} armes · ${db.valo.buddies.length} buddies · ${total} skins</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode(_valoTab==='weapons'?'valo-weapons':'valo-buddies')">☑ Sélectionner</button>
+      </div>
+    </div>
+    ${_selectMode&&(_selectContext?.game==='valo-weapons'||_selectContext?.game==='valo-buddies')?_selectModeBar(_valoTab==='weapons'?'valo-weapons':'valo-buddies'):''}
     <div class="tabs"><button class="tab ${_valoTab==='weapons'?'active':''}" onclick="valoTab('weapons')">Armes</button><button class="tab ${_valoTab==='buddies'?'active':''}" onclick="valoTab('buddies')">Buddies</button></div>
     <div id="valo-content">${renderValoTab(_valoTab)}</div>`;
 }
@@ -1066,8 +1151,12 @@ function renderFestival() {
         <div class="page-title" style="color:#ff6b35;text-shadow:0 0 40px rgba(255,107,53,.5)">FN FESTIVAL</div>
         <div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">Ma progression musicale</div>
       </div>
-      <button class="btn btn-primary" onclick="festOpenAdd()">➕ Ajouter un album</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('festival')">☑ Sélectionner</button>
+        <button class="btn btn-primary" onclick="festOpenAdd()">➕ Ajouter un album</button>
+      </div>
     </div>
+    ${_selectMode&&_selectContext?.game==='festival'?_selectModeBar('festival'):''}
 
     <div class="festival-stat-bar">
       <div class="festival-stat"><div class="festival-stat-num">${total}</div><div class="festival-stat-label">Albums</div></div>
@@ -1092,7 +1181,7 @@ function festAlbumCard(s) {
   const total = instruments.length * diffs.length;
 
   return `
-    <div class="skin-card" style="cursor:pointer" onclick="festOpenDetail('${esc(s.id)}')">
+    <div class="skin-card" style="cursor:pointer" data-id="${esc(s.id)}" onclick="festOpenDetail('${esc(s.id)}')">
       <div class="rarity-bar" style="background:linear-gradient(90deg,#ff6b35,rgba(255,107,53,.2))"></div>
       <div class="skin-img-wrap">
         ${s.image
@@ -1245,8 +1334,12 @@ function renderStarStable() {
         <div class="page-title ss-accent">STAR STABLE</div>
         <div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">Ma collection de chevaux</div>
       </div>
-      <span class="count-badge">${horses.length} cheval${horses.length!==1?'x':''}</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${horses.length} cheval${horses.length!==1?'x':''}</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('starstable')">☑ Sélectionner</button>
+      </div>
     </div>
+    ${_selectMode&&_selectContext?.game==='starstable'?_selectModeBar('starstable'):''}
 
     <div class="search-bar">
       <div class="search-input-wrap">
@@ -1264,7 +1357,7 @@ function renderStarStable() {
 
 function ssHorseCard(h) {
   return `
-    <div class="ss-card" data-name="${esc((h.name||'').toLowerCase())}" onclick="ssOpenDetail('${esc(h.id)}')">
+    <div class="ss-card" data-name="${esc((h.name||'').toLowerCase())}" data-id="${esc(h.id)}" onclick="ssOpenDetail('${esc(h.id)}')">
       <div class="rarity-bar" style="background:linear-gradient(90deg,#7ec8e3,rgba(126,200,227,.2))"></div>
       <div class="skin-img-wrap">
         ${h.image
@@ -2656,6 +2749,129 @@ function doRandSS(){
         ${h.coat?`<div class="rand-result-sub" style="color:#7ec8e3">🎨 ${esc(h.coat)}</div>`:''}
       </div>
     </div>`;
+}
+
+
+// ════════════════════════════════════════════════
+//  SÉLECTION MULTIPLE
+// ════════════════════════════════════════════════
+let _selectMode = false;
+let _selectedIds = new Set();
+let _selectContext = null; // { game, cat?, champId?, etc. }
+
+function toggleSelectMode(game, context={}) {
+  _selectMode = !_selectMode;
+  _selectedIds.clear();
+  _selectContext = _selectMode ? { game, ...context } : null;
+  if(!_selectMode) {
+    // Quitter le mode → refresh
+    navigate(currentPage);
+    return;
+  }
+  // Entrer le mode → activer les cards
+  _activateSelectMode();
+  _updateSelectBar();
+}
+
+function _activateSelectMode() {
+  document.querySelectorAll('.skin-card, .ss-card').forEach(card => {
+    card.classList.add('selectable');
+    // Retirer le onclick existant et remplacer par sélection
+    card.dataset.origClick = card.getAttribute('onclick')||'';
+    card.setAttribute('onclick', `_toggleSelectCard(this)`);
+    // Cacher les card-actions
+    card.querySelectorAll('.card-actions').forEach(a => a.style.display='none');
+  });
+  const bar = document.getElementById('select-mode-bar');
+  if(bar) bar.classList.add('active');
+}
+
+function _toggleSelectCard(card) {
+  const id = card.dataset.id;
+  if(!id) return;
+  if(_selectedIds.has(id)) {
+    _selectedIds.delete(id);
+    card.classList.remove('selected');
+  } else {
+    _selectedIds.add(id);
+    card.classList.add('selected');
+  }
+  _updateSelectBar();
+}
+
+function _updateSelectBar() {
+  const countEl = document.getElementById('select-count');
+  if(countEl) countEl.textContent = `${_selectedIds.size} sélectionné${_selectedIds.size>1?'s':''}`;
+  const delBtn = document.getElementById('select-delete-btn');
+  if(delBtn) delBtn.disabled = _selectedIds.size === 0;
+}
+
+function selectAll() {
+  document.querySelectorAll('.skin-card.selectable, .ss-card.selectable').forEach(card => {
+    const id = card.dataset.id;
+    if(id) {
+      _selectedIds.add(id);
+      card.classList.add('selected');
+    }
+  });
+  _updateSelectBar();
+}
+
+function deleteSelected() {
+  if(_selectedIds.size === 0) return;
+  if(!confirm(`Supprimer ${_selectedIds.size} élément${_selectedIds.size>1?'s':''} ?`)) return;
+  const db = loadData();
+  const ctx = _selectContext;
+  const ids = [..._selectedIds];
+
+  if(ctx.game==='fortnite') {
+    const cat = ctx.cat;
+    db.fortnite.items[cat] = (db.fortnite.items[cat]||[]).filter(s=>!ids.includes(s.id));
+  }
+  else if(ctx.game==='lol-skins') {
+    const champ = db.lol.champions.find(c=>c.id===ctx.champId);
+    if(champ) champ.skins = champ.skins.filter(s=>!ids.includes(s.id));
+  }
+  else if(ctx.game==='lol-champions') {
+    db.lol.champions = db.lol.champions.filter(c=>!ids.includes(c.id));
+  }
+  else if(ctx.game==='tft') {
+    db.tft.skins = db.tft.skins.filter(s=>!ids.includes(s.id));
+  }
+  else if(ctx.game==='dbd-survivors') {
+    db.dbd.survivors = db.dbd.survivors.filter(c=>!ids.includes(c.id));
+  }
+  else if(ctx.game==='dbd-killers') {
+    db.dbd.killers = db.dbd.killers.filter(c=>!ids.includes(c.id));
+  }
+  else if(ctx.game==='valo-weapons') {
+    db.valo.weapons = db.valo.weapons.filter(w=>!ids.includes(w.id));
+  }
+  else if(ctx.game==='valo-buddies') {
+    db.valo.buddies = db.valo.buddies.filter(b=>!ids.includes(b.id));
+  }
+  else if(ctx.game==='festival') {
+    db.festival.songs = (db.festival.songs||[]).filter(s=>!ids.includes(s.id));
+  }
+  else if(ctx.game==='starstable') {
+    db.starstable.horses = (db.starstable.horses||[]).filter(h=>!ids.includes(h.id));
+  }
+
+  saveData(db);
+  showToast(`${ids.length} élément${ids.length>1?'s':''} supprimé${ids.length>1?'s':''} ✓`);
+  _selectMode = false;
+  _selectedIds.clear();
+  _selectContext = null;
+  navigate(currentPage);
+}
+
+function _selectModeBar(game, context={}) {
+  return `<div class="select-mode-bar" id="select-mode-bar">
+    <span class="select-count" id="select-count">0 sélectionné</span>
+    <button class="btn btn-ghost btn-sm" onclick="selectAll()">☑ Tout sélectionner</button>
+    <button class="btn btn-danger btn-sm" id="select-delete-btn" disabled onclick="deleteSelected()">🗑 Supprimer la sélection</button>
+    <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('${game}',${JSON.stringify(context).replace(/'/g,'&#39;')})">✕ Annuler</button>
+  </div>`;
 }
 
 // ═══ INIT ═══
