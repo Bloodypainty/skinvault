@@ -794,6 +794,8 @@ function fnEditItem(cat, id) {
       if(serEl) serEl.value=s.series||'';
       if(imgEl) imgEl.value=s.image||'';
       if(prev&&s.image){prev.src=s.image;prev.classList.add('show');}
+      const festCheck=document.getElementById('fn-festival-check');
+      if(festCheck) festCheck.checked=s.forFestival||false;
       const form=document.querySelector('#add-form-container form');
       if(form){form.dataset.editId=id; form.dataset.editCat=cat;}
       showToast('Item chargé pour modification');
@@ -1217,7 +1219,7 @@ function festSave(editId=null) {
     const idx = db.festival.songs.findIndex(s=>s.id===editId);
     if(idx!==-1) db.festival.songs[idx] = {...db.festival.songs[idx], name, artist, image:image||null};
   } else {
-    db.festival.songs.push({id:generateId('fest'), name, artist, image:image||null, done100_by_instrument:{}});
+    db.festival.songs.unshift({id:generateId('fest'), name, artist, image:image||null, done100_by_instrument:{}});
   }
   saveData(db); showToast(editId?'Album modifié ✓':'Album ajouté ✓'); closeModal(); navigate('festival');
 }
@@ -1910,6 +1912,17 @@ function renderAddFN(){
         </div>
         <div class="form-row single">
           <div class="form-group">
+            <label style="display:flex;align-items:center;gap:10px">
+              Fortnite Festival
+              <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.85rem;text-transform:none;letter-spacing:0;font-weight:400;color:var(--text-dim)">
+                <input type="checkbox" id="fn-festival-check" style="width:15px;height:15px;cursor:pointer;accent-color:var(--festival)">
+                <span>🎸 Utiliser ce skin en Festival</span>
+              </label>
+            </label>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
             <label>URL de l'image</label>
             <div class="img-url-wrap">
               <input type="url" id="fn-img-url" placeholder="https://raw.githubusercontent.com/Bloodypainty/skinvault/main/images/fortnite/..." oninput="previewUrl('fn-img-url','fn-img-preview')">
@@ -2002,7 +2015,8 @@ function saveFNItem(e){
     const idx=list.findIndex(x=>x.id===editId);
     if(idx!==-1){
       const old=list[idx];
-      list[idx]={...old,name,rarity,series:series||null,image:image||old.image};
+      const forFestival2=document.getElementById('fn-festival-check')?.checked||false;
+      list[idx]={...old,name,rarity,series:series||null,image:image||old.image,forFestival:forFestival2};
       // Si changement de catégorie
       if(editCat!==cat){
         list.splice(idx,1);
@@ -2013,7 +2027,8 @@ function saveFNItem(e){
     saveData(db); showToast('Item modifié ✓'); addGameChanged();
   } else {
     if(!db.fortnite.items[cat]) db.fortnite.items[cat]=[];
-    db.fortnite.items[cat].push({id:generateId('fn'),name,rarity,series:series||null,image:image||null,variants:[]});
+    const forFestival = document.getElementById('fn-festival-check')?.checked || false;
+    db.fortnite.items[cat].unshift({id:generateId('fn'),name,rarity,series:series||null,image:image||null,variants:[],forFestival});
     saveData(db); showToast('Item Fortnite ajouté ✓'); addGameChanged();
   }
 }
@@ -2205,7 +2220,7 @@ function saveTFT(e){
     const idx=db.tft.skins.findIndex(s=>s.id===editId);
     if(idx!==-1) db.tft.skins[idx]={...db.tft.skins[idx],...obj};
   } else {
-    db.tft.skins.push({id:generateId('tft'),...obj});
+    db.tft.skins.unshift({id:generateId('tft'),...obj});
   }
   saveData(db); showToast(editId?'Skin TFT modifié ✓':'Skin TFT ajouté ✓');
   delete document.getElementById('tft-skin-form').dataset.editId;
@@ -2275,7 +2290,7 @@ function saveDBDChar(e){
   if(!type||!name) return;
   const db=loadData();
   const list=type==='survivor'?db.dbd.survivors:db.dbd.killers;
-  list.push({id:generateId('dbd'),name,image:image||null,skins:[]});
+  list.unshift({id:generateId('dbd'),name,image:image||null,skins:[]});
   saveData(db); showToast('Personnage ajouté ✓'); addGameChanged();
 }
 function saveDBDSkin(e){
@@ -2288,7 +2303,7 @@ function saveDBDSkin(e){
   const db=loadData();
   const list=survId?db.dbd.survivors:db.dbd.killers;
   const char=list.find(c=>c.id===(survId||killId)); if(!char) return;
-  char.skins.push({id:generateId('dbdsk'),name,image:image||null});
+  char.skins.unshift({id:generateId('dbdsk'),name,image:image||null});
   saveData(db); showToast('Skin DBD ajouté ✓'); addGameChanged();
 }
 
@@ -2405,7 +2420,7 @@ function saveSS(e){
     const idx=db.starstable.horses.findIndex(h=>h.id===editId);
     if(idx!==-1) db.starstable.horses[idx]={...db.starstable.horses[idx],name,breed,coat,notes,image:image||null};
   } else {
-    db.starstable.horses.push({id:generateId('ssh'),name,breed,coat,notes,image:image||null});
+    db.starstable.horses.unshift({id:generateId('ssh'),name,breed,coat,notes,image:image||null});
   }
   saveData(db); showToast(editId?'Cheval modifié ✓':'Cheval ajouté ✓'); addGameChanged();
 }
@@ -2415,7 +2430,7 @@ function saveValoWeap(e){
   const name=document.getElementById('valo-weap-name').value.trim(); if(!name) return;
   const image=document.getElementById('valo-weap-img').value.trim();
   const db=loadData();
-  db.valo.weapons.push({id:generateId('valow'),name,image:image||null,skins:[]});
+  db.valo.weapons.unshift({id:generateId('valow'),name,image:image||null,skins:[]});
   saveData(db); showToast('Arme ajoutée ✓'); addGameChanged();
 }
 function saveValoWSkin(e){
@@ -2426,7 +2441,7 @@ function saveValoWSkin(e){
   if(!wid||!name) return;
   const db=loadData();
   const w=db.valo.weapons.find(x=>x.id===wid); if(!w) return;
-  w.skins.push({id:generateId('valoski'),name,image:image||null});
+  w.skins.unshift({id:generateId('valoski'),name,image:image||null});
   saveData(db); showToast('Skin Valorant ajouté ✓'); addGameChanged();
 }
 function saveValoBuddy(e){
@@ -2434,7 +2449,7 @@ function saveValoBuddy(e){
   const name=document.getElementById('valo-buddy-name').value.trim(); if(!name) return;
   const image=document.getElementById('valo-buddy-img').value.trim();
   const db=loadData();
-  db.valo.buddies.push({id:generateId('valob'),name,image:image||null});
+  db.valo.buddies.unshift({id:generateId('valob'),name,image:image||null});
   saveData(db); showToast('Buddy ajouté ✓'); addGameChanged();
 }
 
