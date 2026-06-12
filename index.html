@@ -102,6 +102,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .skin-series-badge{font-size:.58rem;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--text-muted);border:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px}
 .card-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:.22s;z-index:10}
 .skin-card:hover .card-actions{opacity:1}
+.skin-card.selectable .card-actions{display:none!important}
 .card-btn{width:30px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.1);cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);transition:.22s}
 .card-btn-edit{background:rgba(255,255,255,.12);color:#fff}
 .card-btn-delete{background:rgba(204,34,34,.35);color:#ffaaaa}
@@ -579,6 +580,7 @@ function navigate(page) {
     case 'add':         c.innerHTML = renderAdd(); break;
     default: c.innerHTML='<p>404</p>';
   }
+  if(_selectMode) setTimeout(_updateSelectBar, 30);
 }
 function refresh() { DB=loadData(); navigate(currentPage); }
 
@@ -718,7 +720,7 @@ function renderFnGrid(cat, items) {
   if(!list.length) return `<div class="empty-state"><div class="icon">${FN_CATS[cat]?.icon||'🎮'}</div><p>Aucun ${FN_CATS[cat]?.label||cat}.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p></div>`;
   return list.map(s=>`
     <div class="skin-card" data-rarity="${esc(s.rarity||'')}" data-name="${esc((s.name||'').toLowerCase())}" data-id="${esc(s.id)}"
-      onclick="${cat==='skin'?`fnOpenModal(\'${esc(s.id)}\')`:s.image?`openLightbox(\'${esc(s.image)}\',\'${esc(s.name)}\')`:''}" style="${s.image||cat==='skin'?'cursor:zoom-in':''}">
+      onclick="fnCardClick(event,this,'${esc(s.id)}','${esc(s.image||'')}','${esc(s.name)}','${cat}')" style="cursor:pointer">
       <div class="rarity-bar ${esc(s.rarity||'')}"></div>
       <div class="skin-img-wrap">
         ${s.image?`<img src="${esc(s.image)}" alt="${esc(s.name)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'no-img\'>🎮</div>'">`:`<div class="no-img">${FN_CATS[cat]?.icon||'🎮'}</div>`}
@@ -735,6 +737,12 @@ function renderFnGrid(cat, items) {
     </div>`).join('');
 }
 
+
+function fnCardClick(e, card, id, image, name, cat) {
+  if(_selectMode) { _toggleSelectCard(card); return; }
+  if(cat==='skin') { fnOpenModal(id); }
+  else if(image) { openLightbox(image, name); }
+}
 function fnOpenModal(id) {
   const db=loadData();
   const s=(db.fortnite.items['skin']||[]).find(x=>x.id===id);
@@ -982,7 +990,7 @@ function tftCard(s) {
 
   return `
     <div class="skin-card" data-type="${esc(s.type||'')}" data-rar="${esc(s.rarity||'')}" data-id="${esc(s.id)}"
-         style="border-color:${col}33;--hover-glow:${glow}" onclick="tftOpenDetail('${esc(s.id)}')">
+         style="border-color:${col}33;--hover-glow:${glow}" onclick="${_selectMode?'_toggleSelectCard(this)':"tftOpenDetail('"+ esc(s.id) +"')"}">
       <div class="rarity-bar" style="background:linear-gradient(90deg,${col},${col}33)"></div>
       <div class="skin-img-wrap">
         ${s.image?`<img src="${esc(s.image)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="no-img">🎲</div>`}
@@ -1181,7 +1189,7 @@ function festAlbumCard(s) {
   const total = instruments.length * diffs.length;
 
   return `
-    <div class="skin-card" style="cursor:pointer" data-id="${esc(s.id)}" onclick="festOpenDetail('${esc(s.id)}')">
+    <div class="skin-card" style="cursor:pointer" data-id="${esc(s.id)}" onclick="${_selectMode?'_toggleSelectCard(this)':`festOpenDetail('${esc(s.id)}')`}">
       <div class="rarity-bar" style="background:linear-gradient(90deg,#ff6b35,rgba(255,107,53,.2))"></div>
       <div class="skin-img-wrap">
         ${s.image
@@ -1357,7 +1365,7 @@ function renderStarStable() {
 
 function ssHorseCard(h) {
   return `
-    <div class="ss-card" data-name="${esc((h.name||'').toLowerCase())}" data-id="${esc(h.id)}" onclick="ssOpenDetail('${esc(h.id)}')">
+    <div class="ss-card" data-name="${esc((h.name||'').toLowerCase())}" data-id="${esc(h.id)}" onclick="${_selectMode?'_toggleSelectCard(this)':`ssOpenDetail('${esc(h.id)}')`}">
       <div class="rarity-bar" style="background:linear-gradient(90deg,#7ec8e3,rgba(126,200,227,.2))"></div>
       <div class="skin-img-wrap">
         ${h.image
@@ -2760,28 +2768,22 @@ let _selectedIds = new Set();
 let _selectContext = null; // { game, cat?, champId?, etc. }
 
 function toggleSelectMode(game, context={}) {
-  _selectMode = !_selectMode;
-  _selectedIds.clear();
-  _selectContext = _selectMode ? { game, ...context } : null;
-  if(!_selectMode) {
-    // Quitter le mode → refresh
-    navigate(currentPage);
-    return;
+  if(_selectMode && _selectContext?.game === game) {
+    // Quitter le mode
+    _selectMode = false;
+    _selectedIds.clear();
+    _selectContext = null;
+  } else {
+    // Entrer le mode
+    _selectMode = true;
+    _selectedIds.clear();
+    _selectContext = { game, ...context };
   }
-  // Entrer le mode → activer les cards
-  _activateSelectMode();
-  _updateSelectBar();
+  navigate(currentPage);
 }
 
 function _activateSelectMode() {
-  document.querySelectorAll('.skin-card, .ss-card').forEach(card => {
-    card.classList.add('selectable');
-    // Retirer le onclick existant et remplacer par sélection
-    card.dataset.origClick = card.getAttribute('onclick')||'';
-    card.setAttribute('onclick', `_toggleSelectCard(this)`);
-    // Cacher les card-actions
-    card.querySelectorAll('.card-actions').forEach(a => a.style.display='none');
-  });
+  // Rien à faire ici — les cards sont gérées au rendu via _selectMode
   const bar = document.getElementById('select-mode-bar');
   if(bar) bar.classList.add('active');
 }
@@ -2804,6 +2806,10 @@ function _updateSelectBar() {
   if(countEl) countEl.textContent = `${_selectedIds.size} sélectionné${_selectedIds.size>1?'s':''}`;
   const delBtn = document.getElementById('select-delete-btn');
   if(delBtn) delBtn.disabled = _selectedIds.size === 0;
+  // Ajouter classe selectable pour cacher les card-actions
+  if(_selectMode) {
+    document.querySelectorAll('.skin-card[data-id], .ss-card[data-id]').forEach(c=>c.classList.add('selectable'));
+  }
 }
 
 function selectAll() {
