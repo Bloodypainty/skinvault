@@ -1212,7 +1212,7 @@ function festAlbumCard(s) {
   const total = instruments.length * diffs.length;
 
   return `
-    <div class="skin-card" style="cursor:pointer" data-id="${esc(s.id)}" onclick="_cardClick(this,()=>festOpenDetail('${esc(s.id)}')">
+    <div class="skin-card" style="cursor:pointer" data-id="${esc(s.id)}" onclick="_cardClick(this,function(){festOpenDetail('${esc(s.id)}')})">
       <div class="rarity-bar" style="background:linear-gradient(90deg,#ff6b35,rgba(255,107,53,.2))"></div>
       <div class="skin-img-wrap">
         ${s.image
@@ -1387,7 +1387,7 @@ function renderStarStable() {
 
 function ssHorseCard(h) {
   return `
-    <div class="ss-card" data-name="${esc((h.name||'').toLowerCase())}" data-id="${esc(h.id)}" onclick="_cardClick(this,()=>ssOpenDetail('${esc(h.id)}'))">
+    <div class="ss-card" data-name="${esc((h.name||'').toLowerCase())}" data-id="${esc(h.id)}" onclick="_cardClick(this,function(){ssOpenDetail('${esc(h.id)}')})">
       <div class="rarity-bar" style="background:linear-gradient(90deg,#7ec8e3,rgba(126,200,227,.2))"></div>
       <div class="skin-img-wrap">
         ${h.image
@@ -2893,3 +2893,11 @@ function _injectSelectBar() {
 }
 
 
+
+
+// ═══ INIT ═══
+window.addEventListener('keydown', e => { if(e.key==='Escape'){closeModal();closeLightbox();} });
+navigate('home');
+</script>
+</body>
+</html>
