@@ -1,0 +1,2903 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkinVault – Ma Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#07070d; --bg2:#0d0d16; --bg3:#12121e; --bg4:#181828; --bg5:#1e1e30;
+  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.12);
+  --text:#eeeef8; --text-muted:#5a5a72; --text-dim:#9090b0;
+  --mythic:#ffd700; --legendary:#ff8c00; --epic:#9b30ff; --rare:#1e90ff; --uncommon:#00c060; --common:#777788;
+  --fn:#00d4ff; --lol:#c89b3c; --tft:#0bc4e3; --dbd:#cc2222; --valo:#ff4655;
+  --r:8px; --rl:14px; --rx:20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 10% 0%,rgba(0,212,255,0.03),transparent 60%),radial-gradient(ellipse 60% 40% at 90% 100%,rgba(155,48,255,0.04),transparent 60%);pointer-events:none;z-index:0}
+#app{display:flex;min-height:100vh;position:relative;z-index:1}
+
+/* SIDEBAR */
+#sidebar{width:230px;min-height:100vh;background:linear-gradient(180deg,var(--bg2),var(--bg));border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100}
+.sidebar-logo{padding:28px 22px 22px;border-bottom:1px solid var(--border)}
+.sidebar-logo h1{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:.18em;background:linear-gradient(135deg,#fff,#8888bb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sidebar-logo span{font-size:.6rem;letter-spacing:.25em;color:var(--text-muted);text-transform:uppercase}
+.sidebar-section{padding:16px 18px 5px;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);font-weight:600}
+.sidebar-nav{padding:0 10px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:var(--r);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:500;letter-spacing:.05em;color:var(--text-dim);transition:.22s;margin-bottom:2px;border:1px solid transparent;user-select:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{color:var(--text)}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:.22s}
+.nav-item[data-game=fortnite] .nav-dot{background:var(--fn)}
+.nav-item[data-game=lol] .nav-dot{background:var(--lol)}
+.nav-item[data-game=tft] .nav-dot{background:var(--tft)}
+.nav-item[data-game=dbd] .nav-dot{background:var(--dbd)}
+.nav-item[data-game=valo] .nav-dot{background:var(--valo)}
+.nav-item[data-game=random] .nav-dot{background:linear-gradient(135deg,var(--fn),var(--valo))}
+.nav-item[data-game=add] .nav-dot,.nav-item[data-game=home] .nav-dot{background:#444466}
+.nav-item.active[data-game=fortnite]{border-color:rgba(0,212,255,.2);background:linear-gradient(90deg,rgba(0,212,255,.07),transparent)}
+.nav-item.active[data-game=lol]{border-color:rgba(200,155,60,.2);background:linear-gradient(90deg,rgba(200,155,60,.07),transparent)}
+.nav-item.active[data-game=tft]{border-color:rgba(11,196,227,.2);background:linear-gradient(90deg,rgba(11,196,227,.07),transparent)}
+.nav-item.active[data-game=dbd]{border-color:rgba(204,34,34,.2);background:linear-gradient(90deg,rgba(204,34,34,.07),transparent)}
+.nav-item.active[data-game=valo]{border-color:rgba(255,70,85,.2);background:linear-gradient(90deg,rgba(255,70,85,.07),transparent)}
+.nav-item.active[data-game=random]{border-color:rgba(155,48,255,.3);background:linear-gradient(90deg,rgba(155,48,255,.08),transparent)}
+.nav-item.active[data-game=fortnite] .nav-dot{box-shadow:0 0 10px var(--fn)}
+.nav-item.active[data-game=lol] .nav-dot{box-shadow:0 0 10px var(--lol)}
+.nav-item.active[data-game=tft] .nav-dot{box-shadow:0 0 10px var(--tft)}
+.nav-item.active[data-game=dbd] .nav-dot{box-shadow:0 0 10px var(--dbd)}
+.nav-item.active[data-game=valo] .nav-dot{box-shadow:0 0 10px var(--valo)}
+.sidebar-bottom{margin-top:auto;padding:14px 10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+
+/* MAIN */
+#main{margin-left:230px;flex:1;padding:36px 40px;min-height:100vh}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);position:relative}
+.page-header::after{content:'';position:absolute;bottom:-1px;left:0;width:120px;height:1px}
+.page-header.fn-page::after{background:linear-gradient(90deg,var(--fn),transparent)}
+.page-header.lol-page::after{background:linear-gradient(90deg,var(--lol),transparent)}
+.page-header.tft-page::after{background:linear-gradient(90deg,var(--tft),transparent)}
+.page-header.dbd-page::after{background:linear-gradient(90deg,var(--dbd),transparent)}
+.page-header.valo-page::after{background:linear-gradient(90deg,var(--valo),transparent)}
+.page-title{font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:.1em;line-height:1}
+.fn-accent{color:var(--fn);text-shadow:0 0 40px rgba(0,212,255,.5)}
+.lol-accent{color:var(--lol);text-shadow:0 0 40px rgba(200,155,60,.5)}
+.tft-accent{color:var(--tft);text-shadow:0 0 40px rgba(11,196,227,.5)}
+.dbd-accent{color:var(--dbd);text-shadow:0 0 40px rgba(204,34,34,.5)}
+.valo-accent{color:var(--valo);text-shadow:0 0 40px rgba(255,70,85,.5)}
+.count-badge{font-size:.72rem;padding:5px 12px;border-radius:20px;background:var(--bg3);border:1px solid var(--border2);color:var(--text-dim);font-family:'Rajdhani',sans-serif;letter-spacing:.12em}
+
+/* GRID & CARDS */
+.skins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+.skin-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:transform .28s,box-shadow .28s,border-color .28s;position:relative}
+.skin-card:hover{transform:translateY(-6px) scale(1.01)}
+.skin-card[data-rarity=Mythic]{border-color:rgba(255,215,0,.25)}
+.skin-card[data-rarity=Legendary]{border-color:rgba(255,140,0,.22)}
+.skin-card[data-rarity=Epic]{border-color:rgba(155,48,255,.25)}
+.skin-card[data-rarity=Rare]{border-color:rgba(30,144,255,.22)}
+.skin-card[data-rarity=Uncommon]{border-color:rgba(0,192,96,.22)}
+.skin-card[data-rarity=Mythic]:hover{box-shadow:0 12px 40px rgba(255,215,0,.22),0 0 0 1px rgba(255,215,0,.4)}
+.skin-card[data-rarity=Legendary]:hover{box-shadow:0 12px 40px rgba(255,140,0,.22),0 0 0 1px rgba(255,140,0,.4)}
+.skin-card[data-rarity=Epic]:hover{box-shadow:0 12px 40px rgba(155,48,255,.22),0 0 0 1px rgba(155,48,255,.4)}
+.skin-card[data-rarity=Rare]:hover{box-shadow:0 12px 40px rgba(30,144,255,.22),0 0 0 1px rgba(30,144,255,.4)}
+.skin-card[data-rarity=Uncommon]:hover{box-shadow:0 12px 40px rgba(0,192,96,.22),0 0 0 1px rgba(0,192,96,.4)}
+.skin-img-wrap{aspect-ratio:3/4;overflow:hidden;background:linear-gradient(135deg,var(--bg3),var(--bg4));position:relative}
+.skin-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block}
+.skin-card:hover .skin-img-wrap img{transform:scale(1.08)}
+.skin-img-wrap .no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--bg5)}
+.skin-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(0deg,rgba(7,7,13,.85),transparent);pointer-events:none}
+.rarity-bar{height:2px;width:100%}
+.rarity-bar.Mythic{background:linear-gradient(90deg,var(--mythic),rgba(255,215,0,.2))}
+.rarity-bar.Legendary{background:linear-gradient(90deg,var(--legendary),rgba(255,140,0,.2))}
+.rarity-bar.Epic{background:linear-gradient(90deg,var(--epic),rgba(155,48,255,.2))}
+.rarity-bar.Rare{background:linear-gradient(90deg,var(--rare),rgba(30,144,255,.2))}
+.rarity-bar.Uncommon{background:linear-gradient(90deg,var(--uncommon),rgba(0,192,96,.2))}
+.rarity-bar.Common{background:var(--common);opacity:.4}
+.skin-info{padding:10px 12px 12px}
+.skin-name{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.93rem;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.skin-meta{display:flex;align-items:center;justify-content:space-between;margin-top:4px;gap:5px}
+.skin-rarity-label{font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.skin-rarity-label.Mythic{color:var(--mythic)}.skin-rarity-label.Legendary{color:var(--legendary)}.skin-rarity-label.Epic{color:var(--epic)}.skin-rarity-label.Rare{color:var(--rare)}.skin-rarity-label.Uncommon{color:var(--uncommon)}.skin-rarity-label.Common{color:var(--common)}
+.skin-series-badge{font-size:.58rem;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--text-muted);border:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px}
+.card-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:.22s;z-index:10}
+.skin-card:hover .card-actions{opacity:1}
+.skin-card.selectable .card-actions{display:none!important}
+.card-btn{width:30px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.1);cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);transition:.22s}
+.card-btn-edit{background:rgba(255,255,255,.12);color:#fff}
+.card-btn-delete{background:rgba(204,34,34,.35);color:#ffaaaa}
+.card-btn:hover{transform:scale(1.12)}
+
+/* TABS */
+.tabs{display:flex;gap:3px;margin-bottom:24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:4px;width:fit-content}
+.tab{padding:8px 22px;border-radius:calc(var(--r) - 2px);cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.07em;font-size:.9rem;color:var(--text-muted);transition:.22s;border:none;background:none}
+.tab.active{background:var(--bg5);color:var(--text);box-shadow:0 1px 8px rgba(0,0,0,.3)}
+.tab:hover:not(.active){color:var(--text-dim)}
+
+/* CHAMPION SECTIONS */
+.champion-section{margin-bottom:36px}
+.champion-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl)}
+.champion-avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);flex-shrink:0}
+.champion-avatar.no-img{background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--text-muted)}
+.champion-name{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.06em}
+.champion-skin-count{color:var(--text-muted);font-size:.76rem;margin-top:2px}
+.role-badge{font-size:.6rem;padding:2px 8px;border-radius:10px;background:rgba(200,155,60,.1);border:1px solid rgba(200,155,60,.25);color:var(--lol);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-top:3px;display:inline-block}
+
+/* Chromas */
+.chromas-hover{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,rgba(7,7,13,.95),transparent);padding:14px 10px 10px;transform:translateY(100%);transition:transform .3s;display:flex;gap:5px;flex-wrap:wrap;z-index:5}
+.skin-card:hover .chromas-hover{transform:translateY(0)}
+.chroma-dot{width:15px;height:15px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;transition:.22s;flex-shrink:0}
+.chroma-dot:hover{transform:scale(1.3)}
+
+/* TFT */
+.tft-level{display:flex;gap:2px;margin-top:3px}
+.tft-star{color:#ffd700;font-size:.7rem}
+.tft-type-badge{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tft);margin-top:3px;font-weight:600}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.86);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .28s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rx);width:100%;max-width:620px;max-height:92vh;overflow-y:auto;transform:scale(.93) translateY(20px);transition:transform .28s;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal-overlay.open .modal{transform:scale(1) translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:22px 28px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:2}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;letter-spacing:.07em}
+.modal-close{width:34px;height:34px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text-dim);cursor:pointer;font-size:1.1rem;transition:.22s;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--bg5);color:var(--text)}
+.modal-body{padding:22px}.modal-body img{max-width:100%}
+.modal-main-img{width:100%;max-height:300px;object-fit:contain;border-radius:var(--r);background:var(--bg3);margin-bottom:22px}
+.modal-badges{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.modal-badge{padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.modal-badge.rarity.Mythic{background:rgba(255,215,0,.12);color:var(--mythic);border:1px solid rgba(255,215,0,.35)}
+.modal-badge.rarity.Legendary{background:rgba(255,140,0,.12);color:var(--legendary);border:1px solid rgba(255,140,0,.35)}
+.modal-badge.rarity.Epic{background:rgba(155,48,255,.12);color:var(--epic);border:1px solid rgba(155,48,255,.35)}
+.modal-badge.rarity.Rare{background:rgba(30,144,255,.12);color:var(--rare);border:1px solid rgba(30,144,255,.35)}
+.modal-badge.rarity.Uncommon{background:rgba(0,192,96,.12);color:var(--uncommon);border:1px solid rgba(0,192,96,.35)}
+.modal-badge.rarity.Common{background:rgba(119,119,136,.1);color:var(--common);border:1px solid rgba(119,119,136,.2)}
+.modal-badge.series{background:rgba(255,255,255,.05);color:var(--text-dim);border:1px solid var(--border2)}
+.variant-section-modal{margin-bottom:22px}
+.variant-label{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-weight:600}
+.variant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.variant-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;text-align:center;transition:.22s}
+.variant-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.variant-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.variant-card .vname{font-size:.66rem;padding:5px 4px;color:var(--text-dim)}
+
+/* FORMS */
+.form-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:24px 26px;margin-bottom:18px}
+.form-section-title{font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:.07em;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-row.single{grid-template-columns:1fr}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600}
+input[type=text],input[type=number],input[type=url],select,textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;transition:.22s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,.3);box-shadow:0 0 0 3px rgba(255,255,255,.04)}
+select option{background:var(--bg3)}
+
+/* Image URL preview */
+.img-url-wrap{display:flex;flex-direction:column;gap:8px}
+.img-url-preview{width:100%;height:140px;object-fit:contain;border-radius:var(--r);background:var(--bg3);border:1px solid var(--border);display:none}
+.img-url-preview.show{display:block}
+
+/* Roles checkboxes */
+.roles-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.role-check{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:.82rem;color:var(--text-dim);transition:.22s}
+.role-check input{display:none}
+.role-pill{padding:5px 13px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.8rem;letter-spacing:.07em;transition:.22s;cursor:pointer}
+.role-check input:checked+.role-pill{background:rgba(200,155,60,.15);border-color:rgba(200,155,60,.5);color:var(--lol)}
+
+/* Chips */
+.variant-list-preview{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.variant-chip{display:flex;align-items:center;gap:6px;background:var(--bg4);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:.77rem;color:var(--text-dim)}
+.variant-chip img{width:20px;height:20px;object-fit:cover;border-radius:50%}
+.variant-chip-remove{border:none;background:none;color:var(--text-muted);cursor:pointer;font-size:.9rem;padding:0 2px;transition:.22s;line-height:1}
+.variant-chip-remove:hover{color:#ff5555}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:var(--r);border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.95rem;letter-spacing:.07em;transition:.22s;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.18);color:#fff}
+.btn-primary:hover{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.1));box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.btn-danger{background:rgba(204,34,34,.18);border:1px solid rgba(204,34,34,.35);color:#ff7777}
+.btn-danger:hover{background:rgba(204,34,34,.3)}
+.btn-sm{padding:7px 14px;font-size:.82rem}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text-muted)}
+.btn-ghost:hover{background:var(--bg3);color:var(--text)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+
+/* SEARCH & FILTER */
+.search-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.search-input-wrap{position:relative;flex:1;max-width:340px}
+.search-input-wrap input{padding-left:36px}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.9rem;pointer-events:none}
+.filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:.72rem;cursor:pointer;transition:.22s;font-family:'Exo 2',sans-serif}
+.filter-btn:hover{background:var(--bg3);color:var(--text-dim);border-color:var(--border2)}
+.filter-btn.active{background:var(--bg4);color:var(--text);border-color:var(--border2)}
+
+/* TOAST */
+#toast{position:fixed;bottom:28px;right:28px;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r);padding:13px 20px;font-size:.88rem;color:var(--text);z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:300px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success{border-color:rgba(0,192,96,.4)}
+#toast.error{border-color:rgba(204,34,34,.4)}
+
+/* EMPTY */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 20px;text-align:center;color:var(--text-muted);gap:14px;grid-column:1/-1}
+.empty-state .icon{font-size:3.5rem;opacity:.5}
+.empty-state p{font-size:.9rem;line-height:1.6}
+
+/* HOME */
+.home-stats{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.stat-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:18px 22px;flex:1;min-width:110px}
+.stat-number{font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;line-height:1}
+.stat-label{font-size:.68rem;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.game-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rx);padding:26px 22px;cursor:pointer;transition:transform .28s,box-shadow .28s,border-color .28s;display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden}
+.game-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px}
+.game-card:hover{transform:translateY(-5px)}
+.game-card.fn{border-color:rgba(0,212,255,.18)}.game-card.fn::before{background:linear-gradient(90deg,transparent,var(--fn),transparent);opacity:.4}
+.game-card.lol{border-color:rgba(200,155,60,.18)}.game-card.lol::before{background:linear-gradient(90deg,transparent,var(--lol),transparent);opacity:.4}
+.game-card.tft{border-color:rgba(11,196,227,.18)}.game-card.tft::before{background:linear-gradient(90deg,transparent,var(--tft),transparent);opacity:.4}
+.game-card.dbd{border-color:rgba(204,34,34,.18)}.game-card.dbd::before{background:linear-gradient(90deg,transparent,var(--dbd),transparent);opacity:.4}
+.game-card.valo{border-color:rgba(255,70,85,.18)}.game-card.valo::before{background:linear-gradient(90deg,transparent,var(--valo),transparent);opacity:.4}
+.game-card.rand{border-color:rgba(155,48,255,.25);background:linear-gradient(135deg,rgba(155,48,255,.05),rgba(0,212,255,.05))}.game-card.rand::before{background:linear-gradient(90deg,transparent,var(--epic),transparent);opacity:.5}
+.game-card:hover.fn{box-shadow:0 10px 40px rgba(0,212,255,.15);border-color:rgba(0,212,255,.35)}
+.game-card:hover.lol{box-shadow:0 10px 40px rgba(200,155,60,.15);border-color:rgba(200,155,60,.35)}
+.game-card:hover.tft{box-shadow:0 10px 40px rgba(11,196,227,.15);border-color:rgba(11,196,227,.35)}
+.game-card:hover.dbd{box-shadow:0 10px 40px rgba(204,34,34,.15);border-color:rgba(204,34,34,.35)}
+.game-card:hover.valo{box-shadow:0 10px 40px rgba(255,70,85,.15);border-color:rgba(255,70,85,.35)}
+.game-card:hover.rand{box-shadow:0 10px 40px rgba(155,48,255,.2);border-color:rgba(155,48,255,.45)}
+.game-card-icon{font-size:2.2rem}
+.game-card-name{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:.08em}
+.game-card.fn .game-card-name{color:var(--fn)}.game-card.lol .game-card-name{color:var(--lol)}.game-card.tft .game-card-name{color:var(--tft)}.game-card.dbd .game-card-name{color:var(--dbd)}.game-card.valo .game-card-name{color:var(--valo)}.game-card.rand .game-card-name{background:linear-gradient(135deg,var(--epic),var(--fn));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.game-card-count{font-size:.78rem;color:var(--text-muted)}
+
+/* ═══════════════ RANDOMIZER ═══════════════ */
+.rand-page{max-width:1100px}
+.rand-tabs{display:flex;gap:3px;margin-bottom:28px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:4px;width:fit-content}
+.rand-tab{padding:9px 24px;border-radius:calc(var(--r) - 2px);cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.07em;font-size:.95rem;color:var(--text-muted);transition:.22s;border:none;background:none}
+.rand-tab.active{background:var(--bg5);color:var(--text);box-shadow:0 1px 8px rgba(0,0,0,.3)}
+
+/* Sélection des catégories FN */
+.fn-cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:24px}
+.fn-cat-check{cursor:pointer}
+.fn-cat-check input{display:none}
+.fn-cat-pill{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:.05em;color:var(--text-dim);transition:.22s;cursor:pointer}
+.fn-cat-check input:checked+.fn-cat-pill{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.4);color:var(--fn)}
+.fn-cat-pill .cat-icon{font-size:1.1rem}
+
+/* Résultats randomizer */
+.rand-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:28px}
+.rand-result-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rx);overflow:hidden;position:relative;transition:.28s}
+.rand-result-card:hover{transform:translateY(-4px)}
+.rand-result-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:var(--bg3)}
+.rand-result-img.landscape{aspect-ratio:16/9}
+.rand-result-img.no-img-big{width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,var(--bg3),var(--bg4))}
+.rand-result-info{padding:14px 16px 16px;background:linear-gradient(0deg,var(--bg2),transparent)}
+.rand-result-cat{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);font-weight:600;margin-bottom:4px}
+.rand-result-name{font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:700;letter-spacing:.05em}
+.rand-result-sub{font-size:.75rem;color:var(--text-dim);margin-top:3px}
+.rand-result-card[data-rarity=Mythic]{border-color:rgba(255,215,0,.3);box-shadow:0 0 20px rgba(255,215,0,.08)}
+.rand-result-card[data-rarity=Legendary]{border-color:rgba(255,140,0,.3);box-shadow:0 0 20px rgba(255,140,0,.08)}
+.rand-result-card[data-rarity=Epic]{border-color:rgba(155,48,255,.3);box-shadow:0 0 20px rgba(155,48,255,.08)}
+.rand-result-card[data-rarity=Rare]{border-color:rgba(30,144,255,.3);box-shadow:0 0 20px rgba(30,144,255,.08)}
+
+.rand-btn{font-size:1.1rem;padding:14px 36px;border-radius:var(--rl);background:linear-gradient(135deg,rgba(155,48,255,.2),rgba(0,212,255,.15));border:1px solid rgba(155,48,255,.4);color:#fff;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.1em;cursor:pointer;transition:.28s;display:flex;align-items:center;gap:10px}
+.rand-btn:hover{background:linear-gradient(135deg,rgba(155,48,255,.35),rgba(0,212,255,.25));box-shadow:0 8px 30px rgba(155,48,255,.25);transform:translateY(-2px)}
+.rand-btn.spinning{animation:spinBounce .6s ease}
+@keyframes spinBounce{0%{transform:scale(.95)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+
+/* LOL Randomizer steps */
+.lol-rand-step{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px 24px;margin-bottom:16px}
+.lol-rand-step-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.08em;color:var(--text-dim);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--bg5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;font-weight:700;flex-shrink:0}
+.lol-roles-grid{display:flex;flex-wrap:wrap;gap:8px}
+.lol-role-btn{padding:8px 18px;border-radius:20px;border:1px solid var(--border2);background:var(--bg3);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:.07em;color:var(--text-dim);cursor:pointer;transition:.22s}
+.lol-role-btn.selected{background:rgba(200,155,60,.15);border-color:rgba(200,155,60,.5);color:var(--lol)}
+.lol-champ-select-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:10px}
+.lol-champ-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 8px;text-align:center;cursor:pointer;transition:.22s;font-family:'Rajdhani',sans-serif;font-size:.82rem;font-weight:600;color:var(--text-dim)}
+.lol-champ-btn img{width:44px;height:44px;border-radius:50%;object-fit:cover;margin:0 auto 6px;display:block;border:2px solid var(--border2)}
+.lol-champ-btn:hover{border-color:var(--border2);color:var(--text)}
+.lol-champ-btn.selected{border-color:rgba(200,155,60,.5);background:rgba(200,155,60,.08);color:var(--lol)}
+.lol-rand-result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin-top:20px}
+@media(min-width:1100px){.lol-rand-result-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--border2)}
+
+/* Section divider */
+.section-divider{border:none;border-top:1px solid var(--border);margin:28px 0}
+
+/* ── Lightbox ── */
+.lightbox-overlay{visibility:hidden;opacity:0;position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(14px);z-index:9999;cursor:zoom-out;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:24px;transition:opacity .25s,visibility .25s}
+.lightbox-overlay.open{visibility:visible;opacity:1}
+#lightbox-img{max-width:min(500px,88vw);max-height:80vh;object-fit:contain;border-radius:14px;box-shadow:0 40px 100px rgba(0,0,0,.9);border:1px solid rgba(255,255,255,.12);display:block;transform:scale(.92);transition:transform .25s cubic-bezier(0.4,0,0.2,1)}
+.lightbox-overlay.open #lightbox-img{transform:scale(1)}
+.lightbox-name{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;letter-spacing:.08em;color:rgba(255,255,255,.9);background:rgba(0,0,0,.5);padding:6px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.1);white-space:nowrap}
+
+/* ── Festival ── */
+:root{--festival:#ff6b35}
+.festival-accent{color:var(--festival);text-shadow:0 0 40px rgba(255,107,53,.5)}
+
+.nav-item.active[data-game=festival]{border-color:rgba(255,107,53,.2);background:linear-gradient(90deg,rgba(255,107,53,.07),transparent)}
+
+/* Tableau festival */
+.festival-table-wrap{overflow-x:auto;border-radius:var(--rl);border:1px solid var(--border)}
+.festival-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.festival-table th{background:var(--bg3);padding:10px 14px;text-align:left;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.08em;font-size:.75rem;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap}
+.festival-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:middle}
+.festival-table tr:last-child td{border-bottom:none}
+.festival-table tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
+.festival-table .diff-badge{padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.diff-easy{background:rgba(0,192,96,.12);color:#00c060;border:1px solid rgba(0,192,96,.3)}
+.diff-medium{background:rgba(255,200,0,.12);color:#ffc800;border:1px solid rgba(255,200,0,.3)}
+.diff-hard{background:rgba(255,107,53,.12);color:#ff6b35;border:1px solid rgba(255,107,53,.3)}
+.diff-expert{background:rgba(155,48,255,.12);color:var(--epic);border:1px solid rgba(155,48,255,.3)}
+.done100-yes{color:#00c060;font-size:1rem}
+.done100-no{color:var(--text-muted);font-size:1rem}
+.festival-stat-bar{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.festival-stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px 20px;flex:1;min-width:100px;text-align:center}
+.festival-stat-num{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--festival)}
+.festival-stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin-top:3px}
+
+/* Festival skin checkbox */
+.fn-festival-toggle{display:flex;align-items:center;gap:6px;margin-top:5px;cursor:pointer;user-select:none}
+.fn-festival-toggle input{display:none}
+.fn-festival-pill{font-size:.6rem;padding:2px 8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-muted);transition:.2s;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.06em}
+.fn-festival-toggle input:checked+.fn-festival-pill{background:rgba(255,107,53,.15);border-color:rgba(255,107,53,.5);color:var(--festival)}
+
+/* ── Star Stable ── */
+.ss-accent{color:#7ec8e3;text-shadow:0 0 40px rgba(126,200,227,.5)}
+.nav-item.active[data-game=starstable]{border-color:rgba(126,200,227,.2);background:linear-gradient(90deg,rgba(126,200,227,.07),transparent)}
+.nav-item.active[data-game=starstable] .nav-dot{box-shadow:0 0 10px #7ec8e3}
+.ss-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rx);overflow:hidden;cursor:pointer;transition:transform .28s,box-shadow .28s,border-color .28s}
+.ss-card:hover{transform:translateY(-6px) scale(1.01);border-color:rgba(126,200,227,.35);box-shadow:0 12px 40px rgba(126,200,227,.15)}
+.ss-card-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:linear-gradient(135deg,var(--bg3),var(--bg4))}
+.ss-card-img.no-img{display:flex;align-items:center;justify-content:center;font-size:3rem}
+.ss-card-info{padding:11px 13px 13px}
+.ss-card-name{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.95rem;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ss-card-breed{font-size:.68rem;color:var(--text-muted);margin-top:3px}
+.ss-card-coat{font-size:.65rem;color:#7ec8e3;margin-top:2px}
+
+/* ── Mode sélection multiple ── */
+.select-mode-bar {
+  display:none;
+  align-items:center;
+  gap:12px;
+  padding:12px 18px;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:var(--rl);
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+.select-mode-bar.active { display:flex; }
+.select-count {
+  font-family:'Rajdhani',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:.05em;
+}
+.skin-card.selectable { cursor:pointer; }
+.skin-card.selected {
+  outline:2px solid var(--valo-color);
+  outline-offset:2px;
+  box-shadow:0 0 20px rgba(255,70,85,.25);
+}
+.skin-card.selected::after {
+  content:'✓';
+  position:absolute;
+  top:8px;left:8px;
+  width:24px;height:24px;
+  background:var(--valo-color);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;
+  color:#fff;
+  font-weight:700;
+  z-index:20;
+}
+.ss-card.selected {
+  outline:2px solid var(--valo-color);
+  outline-offset:2px;
+  box-shadow:0 0 20px rgba(255,70,85,.25);
+}
+.ss-card.selected::after {
+  content:'✓';
+  position:absolute;
+  top:8px;left:8px;
+  width:24px;height:24px;
+  background:var(--valo-color);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;color:#fff;font-weight:700;z-index:20;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <h1>SKINVAULT</h1>
+      <span>Ma Collection</span>
+    </div>
+    <div class="sidebar-section">Collection</div>
+    <nav class="sidebar-nav">
+      <div class="nav-item" data-game="home" onclick="navigate('home')"><div class="nav-dot"></div>Accueil</div>
+      <div class="nav-item" data-game="fortnite" onclick="navigate('fortnite')"><div class="nav-dot"></div>Fortnite</div>
+      <div class="nav-item" data-game="lol" onclick="navigate('lol')"><div class="nav-dot"></div>League of Legends</div>
+      <div class="nav-item" data-game="tft" onclick="navigate('tft')"><div class="nav-dot"></div>TFT</div>
+      <div class="nav-item" data-game="dbd" onclick="navigate('dbd')"><div class="nav-dot"></div>Dead by Daylight</div>
+      <div class="nav-item" data-game="valo" onclick="navigate('valo')"><div class="nav-dot"></div>Valorant</div>
+      <div class="nav-item" data-game="festival" onclick="navigate('festival')"><div class="nav-dot" style="background:#ff6b35"></div>🎸 FN Festival</div>
+      <div class="nav-item" data-game="starstable" onclick="navigate('starstable')"><div class="nav-dot" style="background:#7ec8e3"></div>🐴 Star Stable</div>
+    </nav>
+    <div class="sidebar-section">Outils</div>
+    <nav class="sidebar-nav">
+      <div class="nav-item" data-game="random" onclick="navigate('random')"><div class="nav-dot"></div>🎲 Randomizer</div>
+      <div class="nav-item" data-game="add" onclick="navigate('add')"><div class="nav-dot"></div>➕ Ajouter</div>
+    </nav>
+        <div class="sidebar-bottom">
+      <button class="btn btn-ghost btn-sm" onclick="exportData()">⬇ Exporter</button>
+      <label class="btn btn-ghost btn-sm" style="cursor:pointer;justify-content:center;">⬆ Importer<input type="file" accept=".json" style="display:none" onchange="handleImport(event)"></label>
+    </div>
+  </aside>
+  <main id="main"><div id="page-content"></div></main>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Détail</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="" style="display:none">
+  <div class="lightbox-name" id="lightbox-name"></div>
+</div>
+
+<script>
+function openLightbox(src, name) {
+  if(!src) return;
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  const nm = document.getElementById('lightbox-name');
+  img.src = src;
+  img.style.display = 'block';
+  nm.textContent = name || '';
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Empêcher la propagation au modal en dessous
+  lb.onclick = (e) => { if(e.target === lb || e.target === img || e.target === nm) closeLightbox(); };
+}
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 300);
+}
+
+// ═══════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════
+const DB_KEY = 'skinvault_data';
+const LOL_ROLES = ['Top','Jungle','Mid','ADC','Support'];
+const FN_CATS = {
+  skin:       {label:'Skin',             icon:'👤'},
+  back_bling: {label:'Accessoire de dos',icon:'🎒'},
+  pickaxe:    {label:'Pioche',           icon:'⛏️'},
+  glider:     {label:'Planeur',          icon:'🪂'},
+  contrail:   {label:'Traînée',          icon:'✨'},
+  shoes:      {label:'Chaussures',       icon:'👟'},
+  aura:       {label:'Aura',             icon:'🌟'},
+  guitar:     {label:'Guitare',          icon:'🎸'},
+  bass:       {label:'Basse',            icon:'🎵'},
+  keytar:     {label:'Keytar',           icon:'🎹'},
+  drums:      {label:'Batterie',         icon:'🥁'},
+  mic:        {label:'Micro',            icon:'🎤'},
+};
+
+const DEFAULT_DATA = {
+  fortnite: {
+    series: ["Icon Series","Marvel Series","DC Series","Gaming Legends","Star Wars","Lego","Collab"],
+    items: {} // { skin: [], back_bling: [], pickaxe: [], ... }
+  },
+  lol:  { champions: [] },
+  tft:  { skins: [] },
+  dbd:  { survivors: [], killers: [] },
+  valo: { weapons: [], buddies: [] },
+  starstable: { horses: [] },
+  festival: {
+    songs: [],
+    // { id, name, instrument, difficulty, done100, points, notes }
+    instruments: ["Guitare","Basse","Batterie","Clavier","Micro","Pro Guitare","Pro Basse"]
+  }
+};
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(DB_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    const saved = JSON.parse(raw);
+    if (!saved.fortnite.items) saved.fortnite.items = {};
+    return saved;
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+}
+function saveData(d) { localStorage.setItem(DB_KEY, JSON.stringify(d)); }
+function generateId(p) { return p+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,7); }
+
+function exportData() {
+  const d = loadData();
+  const blob = new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url;
+  a.download=`skinvault_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
+}
+function importData(file) {
+  return new Promise((res,rej)=>{
+    const r = new FileReader();
+    r.onload = e => { try { const d=JSON.parse(e.target.result); saveData(d); res(d); } catch(err){rej(new Error('JSON invalide'));} };
+    r.readAsText(file);
+  });
+}
+async function handleImport(e) {
+  const f=e.target.files[0]; if(!f) return;
+  try { await importData(f); showToast('Import réussi ✓'); refresh(); }
+  catch(err) { showToast('Erreur : '+err.message,'error'); }
+  e.target.value='';
+}
+
+// ═══════════════════════════════════════════════════════
+//  APP
+// ═══════════════════════════════════════════════════════
+let currentPage = 'home';
+let DB = loadData();
+
+function navigate(page) {
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active', el.dataset.game===page));
+  const c = document.getElementById('page-content');
+  switch(page) {
+    case 'home':    c.innerHTML = renderHome(); break;
+    case 'fortnite':c.innerHTML = renderFN();   break;
+    case 'lol':     c.innerHTML = renderLoL();  break;
+    case 'tft':     c.innerHTML = renderTFT();  break;
+    case 'dbd':     c.innerHTML = renderDBD();  break;
+    case 'valo':    c.innerHTML = renderValo(); break;
+    case 'festival':    c.innerHTML = renderFestival(); break;
+    case 'starstable':  c.innerHTML = renderStarStable(); break;
+    case 'random':      c.innerHTML = renderRandom(); initRandom(); break;
+    case 'add':         c.innerHTML = renderAdd(); break;
+    default: c.innerHTML='<p>404</p>';
+  }
+  if(_selectMode) setTimeout(() => {
+    _updateSelectBar();
+    _injectSelectBar();
+  }, 30);
+}
+
+function _injectSelectBar() {
+  // Chercher un div #select-bar-container ou l'injecter au début du contenu
+  let container = document.getElementById('select-bar-container');
+  if(!container) {
+    const pageContent = document.getElementById('page-content');
+    if(!pageContent) return;
+    // Trouver le .page-header et insérer après
+    const header = pageContent.querySelector('.page-header');
+    if(header) {
+      container = document.createElement('div');
+      container.id = 'select-bar-container';
+      header.insertAdjacentElement('afterend', container);
+    }
+  }
+  if(!container) return;
+  container.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--bg2);border:1px solid rgba(255,70,85,.3);border-radius:var(--rl);margin-bottom:18px;flex-wrap:wrap">
+      <span style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--text)" id="select-count">0 sélectionné</span>
+      <button class="btn btn-ghost btn-sm" onclick="selectAll()">☑ Tout sélectionner</button>
+      <button class="btn btn-danger btn-sm" id="select-delete-btn" onclick="deleteSelected()">🗑 Supprimer la sélection</button>
+      <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('${_selectContext?.game||''}')">✕ Annuler</button>
+    </div>`;
+  _updateSelectBar();
+}
+function refresh() { DB=loadData(); navigate(currentPage); }
+
+// Modal
+function openModal(title, body) {
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=body;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }
+function closeModalOnBg(e) { if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+
+// Toast
+let _tt;
+function showToast(msg,type='success') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`show ${type}`;
+  clearTimeout(_tt); _tt=setTimeout(()=>{t.className='';},3000);
+}
+
+// Utils
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function imgHtml(url, cls='', alt='') {
+  if(url) return `<img src="${esc(url)}" alt="${esc(alt)}" class="${cls}" loading="lazy" onerror="this.style.display='none'">`;
+  return `<div class="no-img ${cls}">🎮</div>`;
+}
+function rand(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+function previewUrl(inputId, previewId) {
+  const url = document.getElementById(inputId)?.value.trim();
+  const img = document.getElementById(previewId);
+  if(!img) return;
+  if(url) { img.src=url; img.classList.add('show'); }
+  else { img.classList.remove('show'); }
+}
+
+// Delete
+function deleteSkin(game, id, extra={}) {
+  if(!confirm('Supprimer ?')) return;
+  DB = loadData();
+  if(game==='fn') {
+    const {cat} = extra;
+    if(DB.fortnite.items[cat]) DB.fortnite.items[cat] = DB.fortnite.items[cat].filter(x=>x.id!==id);
+  }
+  else if(game==='lol-skin') {
+    const {champId}=extra;
+    const c=DB.lol.champions.find(x=>x.id===champId);
+    if(c) c.skins=c.skins.filter(s=>s.id!==id);
+  }
+  else if(game==='lol-champ') {
+    DB.lol.champions=DB.lol.champions.filter(c=>c.id!==id);
+  }
+  else if(game==='tft') { DB.tft.skins=DB.tft.skins.filter(s=>s.id!==id); }
+  else if(game==='dbd-surv') { DB.dbd.survivors=DB.dbd.survivors.filter(c=>c.id!==id); }
+  else if(game==='dbd-kill') { DB.dbd.killers=DB.dbd.killers.filter(c=>c.id!==id); }
+  else if(game==='dbd-surv-skin') { const {cid}=extra; const c=DB.dbd.survivors.find(x=>x.id===cid); if(c) c.skins=c.skins.filter(s=>s.id!==id); }
+  else if(game==='dbd-kill-skin') { const {cid}=extra; const c=DB.dbd.killers.find(x=>x.id===cid); if(c) c.skins=c.skins.filter(s=>s.id!==id); }
+  else if(game==='valo-weapon') { DB.valo.weapons=DB.valo.weapons.filter(w=>w.id!==id); }
+  else if(game==='valo-wskin') { const {wid}=extra; const w=DB.valo.weapons.find(x=>x.id===wid); if(w) w.skins=w.skins.filter(s=>s.id!==id); }
+  else if(game==='valo-buddy') { DB.valo.buddies=DB.valo.buddies.filter(b=>b.id!==id); }
+  else if(game==='ss-horse') { DB.starstable.horses=DB.starstable.horses.filter(h=>h.id!==id); }
+
+  saveData(DB); showToast('Supprimé ✓'); refresh();
+}
+
+// ═══════════════════════════════════════════════════════
+//  HOME
+// ═══════════════════════════════════════════════════════
+function renderHome() {
+  const db=loadData();
+  const fnTotal = Object.values(db.fortnite.items||{}).reduce((a,arr)=>a+(arr?.length||0),0);
+  const lolTotal = db.lol.champions.reduce((a,c)=>a+c.skins.length,0);
+  const tftTotal = db.tft.skins.length;
+  const dbdTotal = db.dbd.survivors.reduce((a,c)=>a+c.skins.length,0)+db.dbd.killers.reduce((a,c)=>a+c.skins.length,0);
+  const valoTotal = db.valo.weapons.reduce((a,w)=>a+w.skins.length,0)+db.valo.buddies.length;
+  const total = fnTotal+lolTotal+tftTotal+dbdTotal+valoTotal;
+  return `
+    <div class="page-header"><div><div class="page-title" style="color:var(--text)">MA COLLECTION</div><div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">SKINVAULT · BLOODY</div></div><button class="btn btn-primary" onclick="navigate('add')">➕ Ajouter</button></div>
+    <div class="home-stats">
+      <div class="stat-block"><div class="stat-number">${total}</div><div class="stat-label">Skins total</div></div>
+      <div class="stat-block"><div class="stat-number">${db.lol.champions.length}</div><div class="stat-label">Champions LoL</div></div>
+      <div class="stat-block"><div class="stat-number">${db.dbd.survivors.length+db.dbd.killers.length}</div><div class="stat-label">Persos DBD</div></div>
+      <div class="stat-block"><div class="stat-number">${db.valo.weapons.length}</div><div class="stat-label">Armes Valo</div></div>
+    </div>
+    <div class="home-grid">
+      ${[
+        {k:'fortnite',c:'fn',n:'Fortnite',i:'⚡',cnt:fnTotal},
+        {k:'lol',c:'lol',n:'League of Legends',i:'⚔️',cnt:lolTotal},
+        {k:'tft',c:'tft',n:'TFT',i:'🎲',cnt:tftTotal},
+        {k:'dbd',c:'dbd',n:'Dead by Daylight',i:'🔪',cnt:dbdTotal},
+        {k:'valo',c:'valo',n:'Valorant',i:'🎯',cnt:valoTotal},
+        {k:'festival',c:'fn',n:'FN Festival',i:'🎸',cnt:db.festival?.songs?.length||0},
+        {k:'starstable',c:'tft',n:'Star Stable',i:'🐴',cnt:db.starstable?.horses?.length||0},
+        {k:'random',c:'rand',n:'Randomizer',i:'🎲',cnt:null},
+      ].map(g=>`
+        <div class="game-card ${g.c}" onclick="navigate('${g.k}')">
+          <div class="game-card-icon">${g.i}</div>
+          <div class="game-card-name">${g.n}</div>
+          <div class="game-card-count">${g.cnt===null?'Choix aléatoire':g.cnt+' skin'+(g.cnt!==1?'s':'')}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  FORTNITE
+// ═══════════════════════════════════════════════════════
+function renderFN() {
+  const db=loadData();
+  const items=db.fortnite.items||{};
+  const total=Object.values(items).reduce((a,arr)=>a+(arr?.length||0),0);
+  return `
+    <div class="page-header fn-page"><div class="page-title fn-accent">FORTNITE</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${total} items</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('fortnite',{cat:_fnCat})">☑ Sélectionner</button>
+      </div>
+    </div>
+    <div class="tabs" id="fn-cat-tabs">
+      ${Object.entries(FN_CATS).map(([k,v],i)=>`<button class="tab ${i===0?'active':''}" data-cat="${k}" onclick="fnSwitchCat(this,'${k}')">${v.icon} ${v.label}</button>`).join('')}
+    </div>
+    <div class="search-bar"><div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Rechercher…" id="fn-search" oninput="fnFilter()"></div></div>
+    <div class="filter-bar" id="fn-rarity-filter">
+      ${['all','Mythic','Legendary','Epic','Rare','Uncommon','Common'].map((r,i)=>`<button class="filter-btn ${i===0?'active':''}" data-rarity="${r}" onclick="fnRarFilter(this,'${r}')">${r==='all'?'Tous':r}</button>`).join('')}
+    </div>
+    <div class="skins-grid" id="fn-grid">${renderFnGrid('skin',items)}</div>`;
+}
+
+let _fnCat = 'skin';
+function fnSwitchCat(btn, cat) {
+  _fnCat=cat;
+  document.querySelectorAll('#fn-cat-tabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.cat===cat));
+  document.getElementById('fn-grid').innerHTML = renderFnGrid(cat, loadData().fortnite.items||{});
+}
+function renderFnGrid(cat, items) {
+  const list=items[cat]||[];
+  if(!list.length) return `<div class="empty-state"><div class="icon">${FN_CATS[cat]?.icon||'🎮'}</div><p>Aucun ${FN_CATS[cat]?.label||cat}.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p></div>`;
+  return list.map(s=>`
+    <div class="skin-card" data-rarity="${esc(s.rarity||'')}" data-name="${esc((s.name||'').toLowerCase())}" data-id="${esc(s.id)}"
+      onclick="fnCardClick(event,this,'${esc(s.id)}','${esc(s.image||'')}','${esc(s.name)}','${cat}')" style="cursor:pointer">
+      <div class="rarity-bar ${esc(s.rarity||'')}"></div>
+      <div class="skin-img-wrap">
+        ${s.image?`<img src="${esc(s.image)}" alt="${esc(s.name)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'no-img\'>🎮</div>'">`:`<div class="no-img">${FN_CATS[cat]?.icon||'🎮'}</div>`}
+      </div>
+      <div class="skin-info">
+        <div class="skin-name">${esc(s.name)}</div>
+        <div class="skin-meta"><span class="skin-rarity-label ${esc(s.rarity||'')}">${esc(s.rarity||'')}</span>${s.series?`<span class="skin-series-badge">${esc(s.series)}</span>`:''}</div>
+        ${cat==='skin'&&s.variants&&s.variants.length?`<div style="font-size:.63rem;color:var(--fn);margin-top:3px">${s.variants.length} variante${s.variants.length>1?'s':''}</div>`:''}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="fnEditItem('${esc(cat)}','${esc(s.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('fn','${esc(s.id)}',{cat:'${esc(cat)}'})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+
+function fnCardClick(e, card, id, image, name, cat) {
+  _cardClick(card, ()=>{
+    if(cat==='skin') fnOpenModal(id);
+    else if(image) openLightbox(image, name);
+  });
+}
+function fnOpenModal(id) {
+  const db=loadData();
+  const s=(db.fortnite.items['skin']||[]).find(x=>x.id===id);
+  if(!s) return;
+  const variants=s.variants||[];
+  const rarityColor={Mythic:'var(--mythic)',Legendary:'var(--legendary)',Epic:'var(--epic)',Rare:'var(--rare)',Uncommon:'var(--uncommon)',Common:'var(--common)'}[s.rarity]||'var(--text-muted)';
+
+  const varHTML = variants.length===0
+    ? `<p style="color:var(--text-muted);font-size:.82rem;margin-top:6px">Aucune variante enregistrée.</p>`
+    : `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(85px,1fr));gap:8px;margin-top:10px">
+        ${variants.map((v,i)=>`
+          <div class="vp-card" data-img="${esc(v.image||'')}" data-name="${esc(v.name)}"
+               style="background:var(--bg4);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:.2s;position:relative">
+            <div style="cursor:${v.image?'zoom-in':'default'}">
+              ${v.image
+                ? `<img src="${esc(v.image)}" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block" loading="lazy">`
+                : `<div style="width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:var(--bg5)">⚡</div>`}
+            </div>
+            <div style="padding:4px 5px;font-size:.6rem;color:var(--text-dim);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(v.name)}</div>
+            <!-- Actions edit/delete -->
+            <div class="vp-actions" data-idx="${i}" style="position:absolute;top:3px;right:3px;display:flex;gap:2px;opacity:0;transition:.2s">
+              <button class="vp-edit-btn" data-id="${esc(s.id)}" data-idx="${i}"
+                style="width:22px;height:22px;border-radius:4px;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)">✏</button>
+              <button class="vp-del-btn" data-id="${esc(s.id)}" data-idx="${i}"
+                style="width:22px;height:22px;border-radius:4px;border:none;background:rgba(204,34,34,.5);color:#fff;font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)">🗑</button>
+            </div>
+          </div>`).join('')}
+      </div>`;
+
+  openModal(s.name, `
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div class="fn-modal-main" data-img="${esc(s.image||'')}" data-name="${esc(s.name)}"
+           style="width:100%;background:var(--bg3);border-radius:var(--rl);overflow:hidden;cursor:${s.image?'zoom-in':'default'};position:relative;margin-bottom:20px">
+        ${s.image
+          ? `<img src="${esc(s.image)}" style="width:100%;max-height:380px;object-fit:contain;display:block">`
+          : `<div style="height:200px;display:flex;align-items:center;justify-content:center;font-size:4rem">⚡</div>`}
+        ${s.image?`<div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.6);border-radius:6px;padding:4px 8px;font-size:.65rem;color:var(--text-muted);backdrop-filter:blur(4px)">🔍 Agrandir</div>`:''}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+        ${s.rarity?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${rarityColor};border:1px solid ${rarityColor}40;background:rgba(0,0,0,.3)">${esc(s.rarity)}</span>`:''}
+        ${s.series?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:600;background:rgba(255,255,255,.05);color:var(--text-dim);border:1px solid var(--border2)">🏷 ${esc(s.series)}</span>`:''}
+      </div>
+      ${variants.length>0?`<div style="font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fn);font-weight:700;margin-bottom:4px">✨ Variantes · ${variants.length} <span style="color:var(--text-muted);font-weight:400;letter-spacing:.05em;text-transform:none;font-size:.7rem">· clique pour agrandir</span></div>`:''}
+      ${varHTML}
+    </div>
+  `);
+
+  // Attacher les events APRÈS que le modal est dans le DOM
+  setTimeout(() => {
+    // Image principale
+    const mainEl = document.querySelector('.fn-modal-main');
+    if(mainEl) mainEl.addEventListener('click', () => {
+      const src = mainEl.dataset.img;
+      const nm = mainEl.dataset.name;
+      if(src) openLightbox(src, nm);
+    });
+    // Variantes — hover + zoom + actions
+    document.querySelectorAll('.vp-card').forEach(card => {
+      const actions = card.querySelector('.vp-actions');
+      card.addEventListener('mouseover', () => {
+        card.style.borderColor='rgba(0,212,255,.45)';
+        card.style.transform='translateY(-3px)';
+        if(actions) actions.style.opacity='1';
+      });
+      card.addEventListener('mouseout', () => {
+        card.style.borderColor='var(--border)';
+        card.style.transform='none';
+        if(actions) actions.style.opacity='0';
+      });
+      // Clic sur l'image = zoom
+      const imgEl = card.querySelector('img, div[style*="aspect-ratio"]');
+      if(imgEl) imgEl.addEventListener('click', () => {
+        const src = card.dataset.img;
+        const nm = card.dataset.name;
+        if(src) openLightbox(src, nm);
+      });
+    });
+    // Boutons edit variante
+    document.querySelectorAll('.vp-edit-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const skinId = btn.dataset.id;
+        const idx = parseInt(btn.dataset.idx);
+        fnEditVariant(skinId, idx);
+      });
+    });
+    // Boutons delete variante
+    document.querySelectorAll('.vp-del-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const skinId = btn.dataset.id;
+        const idx = parseInt(btn.dataset.idx);
+        fnDeleteVariant(skinId, idx);
+      });
+    });
+  }, 50);
+}
+
+
+function fnEditItem(cat, id) {
+  navigate('add');
+  setTimeout(()=>{
+    document.getElementById('add-game-select').value='fortnite';
+    addGameChanged();
+    setTimeout(()=>{
+      const db=loadData();
+      const s=(db.fortnite.items[cat]||[]).find(x=>x.id===id);
+      if(!s) return;
+      const catEl=document.getElementById('fn-cat');
+      const nameEl=document.getElementById('fn-name');
+      const rarEl=document.getElementById('fn-rarity');
+      const serEl=document.getElementById('fn-series');
+      const imgEl=document.getElementById('fn-img-url');
+      const prev=document.getElementById('fn-img-preview');
+      if(catEl) catEl.value=cat;
+      if(nameEl) nameEl.value=s.name;
+      if(rarEl) rarEl.value=s.rarity||'';
+      if(serEl) serEl.value=s.series||'';
+      if(imgEl) imgEl.value=s.image||'';
+      if(prev&&s.image){prev.src=s.image;prev.classList.add('show');}
+      const festCheck=document.getElementById('fn-festival-check');
+      if(festCheck) festCheck.checked=s.forFestival||false;
+      const form=document.querySelector('#add-form-container form');
+      if(form){form.dataset.editId=id; form.dataset.editCat=cat;}
+      showToast('Item chargé pour modification');
+    },120);
+  },60);
+}
+function fnFilter() {
+  const q=document.getElementById('fn-search')?.value.toLowerCase()||'';
+  const r=document.querySelector('#fn-rarity-filter .filter-btn.active')?.dataset.rarity||'all';
+  document.querySelectorAll('#fn-grid .skin-card').forEach(c=>{
+    c.style.display=(!q||c.dataset.name.includes(q))&&(r==='all'||c.dataset.rarity===r)?'':'none';
+  });
+}
+function fnRarFilter(btn,r){
+  document.querySelectorAll('#fn-rarity-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const q=document.getElementById('fn-search')?.value.toLowerCase()||'';
+  document.querySelectorAll('#fn-grid .skin-card').forEach(c=>{
+    c.style.display=(!q||c.dataset.name.includes(q))&&(r==='all'||c.dataset.rarity===r)?'':'none';
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  LEAGUE OF LEGENDS
+// ═══════════════════════════════════════════════════════
+function renderLoL() {
+  const db=loadData();
+  const total=db.lol.champions.reduce((a,c)=>a+c.skins.length,0);
+  return `
+    <div class="page-header lol-page"><div class="page-title lol-accent">LEAGUE OF LEGENDS</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${db.lol.champions.length} champions · ${total} skins</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('lol-champions')">☑ Sélectionner champions</button>
+      </div>
+    </div>
+    <div class="search-bar"><div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Rechercher…" id="lol-search" oninput="lolFilter()"></div></div>
+    <div id="lol-content">${db.lol.champions.length===0?`<div class="empty-state"><div class="icon">⚔️</div><p>Aucun champion.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p></div>`:db.lol.champions.map(c=>lolChampSection(c)).join('')}</div>`;
+}
+function lolChampSection(c) {
+  const roles=(c.roles||[]).map(r=>`<span class="role-badge">${esc(r)}</span>`).join(' ');
+  return `
+    <div class="champion-section" data-champ="${esc((c.name||'').toLowerCase())}" data-id="${esc(c.id)}">
+      <div class="champion-header">
+        ${c.image?`<img src="${esc(c.image)}" class="champion-avatar" onerror="this.className='champion-avatar no-img';this.textContent='👤'">`:`<div class="champion-avatar no-img">👤</div>`}
+        <div><div class="champion-name">${esc(c.name)}</div><div>${roles}</div><div class="champion-skin-count">${c.skins.length} skin${c.skins.length!==1?'s':''}</div></div>
+        <div style="margin-left:auto;display:flex;gap:6px">
+          <button class="btn btn-danger btn-sm" onclick="deleteSkin('lol-champ','${esc(c.id)}')">🗑</button>
+        </div>
+      </div>
+      <div class="skins-grid">${c.skins.length===0?`<p style="color:var(--text-muted);font-size:.85rem;grid-column:1/-1">Aucun skin.</p>`:c.skins.map(s=>lolSkinCard(s,c.id)).join('')}</div>
+    </div><hr class="section-divider">`;
+}
+function lolSkinCard(s,champId) {
+  const hasChromas=s.chromas&&s.chromas.length>0;
+  return `
+    <div class="skin-card" data-name="${esc((s.name||'').toLowerCase())}">
+      <div class="rarity-bar" style="background:var(--lol);opacity:.5"></div>
+      <div class="skin-img-wrap">
+        ${s.image?`<img src="${esc(s.image)}" alt="${esc(s.name)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="no-img">⚔️</div>`}
+        ${hasChromas?`<div class="chromas-hover">${s.chromas.map(ch=>`<div class="chroma-dot" title="${esc(ch.name)}" style="${ch.color?`background:${esc(ch.color)}`:ch.image?`background:url(${esc(ch.image)}) center/cover`:'background:#444'}"></div>`).join('')}</div>`:''}
+      </div>
+      <div class="skin-info"><div class="skin-name">${esc(s.name)}</div>${hasChromas?`<div style="font-size:.63rem;color:var(--lol);margin-top:3px">${s.chromas.length} chroma${s.chromas.length>1?'s':''}</div>`:''}</div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="lolOpenSkinModal('${esc(champId)}','${esc(s.id)}')" title="Gérer les chromas">🎨</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('lol-skin','${esc(s.id)}',{champId:'${esc(champId)}'})">🗑</button>
+      </div>
+    </div>`;
+}
+function lolFilter() {
+  const q=document.getElementById('lol-search')?.value.toLowerCase()||'';
+  document.querySelectorAll('#lol-content .champion-section').forEach(sec=>{
+    const nm=sec.dataset.champ||'';
+    const cards=sec.querySelectorAll('.skin-card');
+    let any=!q||nm.includes(q);
+    cards.forEach(c=>{const m=!q||c.dataset.name?.includes(q)||nm.includes(q);c.style.display=m?'':'none';if(m)any=true;});
+    sec.style.display=any?'':'none';
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  TFT
+// ═══════════════════════════════════════════════════════
+const TFT_TYPES={tactician:'Tacticien',portal:'Portail',arena:'Arène',boom:'Explosion',chibi:'Chibi / Unbound'};
+const TFT_RARITIES=['Default','Epic','Legendary','Mythic'];
+const TFT_RARITY_COLORS={Default:'#888',Epic:'#9b30ff',Legendary:'#ff8c00',Mythic:'#ffd700'};
+const TFT_RARITY_GLOW={Default:'rgba(136,136,136,0.2)',Epic:'rgba(155,48,255,0.2)',Legendary:'rgba(255,140,0,0.2)',Mythic:'rgba(255,215,0,0.25)'};
+function renderTFT() {
+  const db=loadData();
+  const skins=db.tft.skins;
+  return `
+    <div class="page-header tft-page"><div class="page-title tft-accent">TFT</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${skins.length} skins</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('tft')">☑ Sélectionner</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px" id="tft-type-filter">
+      ${['all',...Object.keys(TFT_TYPES)].map((t,i)=>`<button class="filter-btn ${i===0?'active':''}" data-type="${t}" onclick="tftFilter(this,'${t}')">${t==='all'?'Tous':TFT_TYPES[t]}</button>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px" id="tft-rar-filter">
+      ${['all',...TFT_RARITIES].map((r,i)=>`<button class="filter-btn ${i===0?'active':''}" data-rar="${r}" onclick="tftRarFilter(this,'${r}')" ${r!=='all'?`style="color:${TFT_RARITY_COLORS[r]}"`:''}>${r==='all'?'Toutes raretés':r}</button>`).join('')}
+    </div>
+    <div class="skins-grid" id="tft-grid">
+      ${skins.length===0?`<div class="empty-state"><div class="icon">🎲</div><p>Aucun skin TFT.</p></div>`:skins.map(s=>tftCard(s)).join('')}
+    </div>`;
+}
+
+function tftCard(s) {
+  const col = TFT_RARITY_COLORS[s.rarity]||'var(--tft-color)';
+  const glow = TFT_RARITY_GLOW[s.rarity]||'rgba(11,196,227,0.12)';
+  const typeLabel = TFT_TYPES[s.type]||s.type;
+  const isChibi = s.type==='chibi';
+
+  // Étoiles : tacticien + boom = 1-3 étoiles, chibi = symbole ✦, autres = aucune
+  let starsHTML = '';
+  if((s.type==='tactician'||s.type==='boom') && s.level && s.level>0) {
+    starsHTML = `<div class="tft-level">${Array.from({length:Math.min(s.level,3)}).map(()=>'<span class="tft-star">⭐</span>').join('')}</div>`;
+  } else if(isChibi) {
+    starsHTML = `<div style="font-size:.7rem;color:#a78bfa;margin-top:3px">✦ Chibi / Unbound</div>`;
+  }
+
+  return `
+    <div class="skin-card" data-type="${esc(s.type||'')}" data-rar="${esc(s.rarity||'')}" data-id="${esc(s.id)}"
+         style="border-color:${col}33;--hover-glow:${glow}" onclick="_cardClick(this,()=>tftOpenDetail('${esc(s.id)}'))">
+      <div class="rarity-bar" style="background:linear-gradient(90deg,${col},${col}33)"></div>
+      <div class="skin-img-wrap">
+        ${s.image?`<img src="${esc(s.image)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="no-img">🎲</div>`}
+      </div>
+      <div class="skin-info">
+        <div class="skin-name">${esc(s.name)}</div>
+        <div class="skin-meta">
+          <span class="tft-type-badge" style="color:${col}">${typeLabel}</span>
+          ${s.rarity&&s.rarity!=='Default'?`<span style="font-size:.6rem;font-weight:700;color:${col}">${esc(s.rarity)}</span>`:''}
+        </div>
+        ${starsHTML}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="tftEditSkin('${esc(s.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('tft','${esc(s.id)}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+function tftOpenDetail(id) {
+  const db=loadData();
+  const s=db.tft.skins.find(x=>x.id===id); if(!s) return;
+  const col=TFT_RARITY_COLORS[s.rarity]||'var(--tft-color)';
+  openModal(s.name, `
+    ${s.image?`<img src="${esc(s.image)}" style="width:100%;max-height:360px;object-fit:contain;border-radius:var(--rl);background:var(--bg3);margin-bottom:20px;cursor:zoom-in" onclick="openLightbox('${esc(s.image)}','${esc(s.name)}')">`:''}
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${s.rarity?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${col};border:1px solid ${col}55;background:${col}15">${esc(s.rarity)}</span>`:''}
+      ${s.type?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:600;color:var(--text-dim);border:1px solid var(--border2);background:var(--bg3)">${TFT_TYPES[s.type]||s.type}</span>`:''}
+      ${(s.type==='tactician'||s.type==='boom')&&s.level?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;color:var(--text-dim);border:1px solid var(--border)">Niveau ${s.level}</span>`:''}
+      ${s.type==='chibi'?`<span style="padding:5px 14px;border-radius:20px;font-size:.72rem;color:#a78bfa;border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.1)">✦ Chibi / Unbound</span>`:''}
+    </div>
+  `);
+}
+
+function tftFilter(btn,type){
+  document.querySelectorAll('#tft-type-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const activeRar=document.querySelector('#tft-rar-filter .filter-btn.active')?.dataset.rar||'all';
+  tftApplyFilters(type,activeRar);
+}
+function tftRarFilter(btn,rar){
+  document.querySelectorAll('#tft-rar-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const activeType=document.querySelector('#tft-type-filter .filter-btn.active')?.dataset.type||'all';
+  tftApplyFilters(activeType,rar);
+}
+function tftApplyFilters(type,rar){
+  document.querySelectorAll('#tft-grid .skin-card').forEach(c=>{
+    const mt=(type==='all'||c.dataset.type===type);
+    const mr=(rar==='all'||c.dataset.rar===rar);
+    c.style.display=(mt&&mr)?'':'none';
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  DBD
+// ═══════════════════════════════════════════════════════
+let _dbdTab='survivors';
+function renderDBD() {
+  const db=loadData();
+  return `
+    <div class="page-header dbd-page"><div class="page-title dbd-accent">DEAD BY DAYLIGHT</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${db.dbd.survivors.length} survivants · ${db.dbd.killers.length} tueurs</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode(_dbdTab==='survivors'?'dbd-survivors':'dbd-killers')">☑ Sélectionner</button>
+      </div>
+    </div>
+    <div class="tabs"><button class="tab ${_dbdTab==='survivors'?'active':''}" onclick="dbdTab('survivors')">Survivants</button><button class="tab ${_dbdTab==='killers'?'active':''}" onclick="dbdTab('killers')">Tueurs</button></div>
+    <div id="dbd-content">${renderDbdTab(_dbdTab)}</div>`;
+}
+function dbdTab(tab){_dbdTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',(tab==='survivors'&&t.textContent==='Survivants')||(tab==='killers'&&t.textContent==='Tueurs')));document.getElementById('dbd-content').innerHTML=renderDbdTab(tab);}
+function renderDbdTab(tab){
+  const db=loadData();
+  const list=tab==='survivors'?db.dbd.survivors:db.dbd.killers;
+  const gameS=tab==='survivors'?'dbd-surv':'dbd-kill';
+  const gameSkin=tab==='survivors'?'dbd-surv-skin':'dbd-kill-skin';
+  if(!list.length) return `<div class="empty-state"><div class="icon">🔪</div><p>Aucun ${tab==='survivors'?'survivant':'tueur'}.</p></div>`;
+  return list.map(c=>`
+    <div class="champion-section">
+      <div class="champion-header">
+        ${c.image?`<img src="${esc(c.image)}" class="champion-avatar" onerror="this.className='champion-avatar no-img';this.textContent='👤'">`:`<div class="champion-avatar no-img">👤</div>`}
+        <div><div class="champion-name">${esc(c.name)}</div><div class="champion-skin-count">${c.skins.length} skin${c.skins.length!==1?'s':''}</div></div>
+        <div style="margin-left:auto"><button class="btn btn-danger btn-sm" onclick="deleteSkin('${gameS}','${esc(c.id)}')">🗑</button></div>
+      </div>
+      <div class="skins-grid">${c.skins.length===0?`<p style="color:var(--text-muted);font-size:.85rem;grid-column:1/-1">Aucun skin.</p>`:c.skins.map(s=>`
+        <div class="skin-card" style="cursor:default">
+          <div class="rarity-bar" style="background:var(--dbd);opacity:.6"></div>
+          <div class="skin-img-wrap">${s.image?`<img src="${esc(s.image)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="no-img">🔪</div>`}</div>
+          <div class="skin-info"><div class="skin-name">${esc(s.name)}</div></div>
+          <div class="card-actions" onclick="event.stopPropagation()"><button class="card-btn card-btn-delete" onclick="deleteSkin('${gameSkin}','${esc(s.id)}',{cid:'${esc(c.id)}'})">🗑</button></div>
+        </div>`).join('')}</div>
+    </div><hr class="section-divider">`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  VALORANT
+// ═══════════════════════════════════════════════════════
+let _valoTab='weapons';
+function renderValo(){
+  const db=loadData();
+  const total=db.valo.weapons.reduce((a,w)=>a+w.skins.length,0);
+  return `
+    <div class="page-header valo-page"><div class="page-title valo-accent">VALORANT</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${db.valo.weapons.length} armes · ${db.valo.buddies.length} buddies · ${total} skins</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode(_valoTab==='weapons'?'valo-weapons':'valo-buddies')">☑ Sélectionner</button>
+      </div>
+    </div>
+    <div class="tabs"><button class="tab ${_valoTab==='weapons'?'active':''}" onclick="valoTab('weapons')">Armes</button><button class="tab ${_valoTab==='buddies'?'active':''}" onclick="valoTab('buddies')">Buddies</button></div>
+    <div id="valo-content">${renderValoTab(_valoTab)}</div>`;
+}
+function valoTab(tab){_valoTab=tab;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',(tab==='weapons'&&t.textContent==='Armes')||(tab==='buddies'&&t.textContent==='Buddies')));document.getElementById('valo-content').innerHTML=renderValoTab(tab);}
+function renderValoTab(tab){
+  const db=loadData();
+  if(tab==='buddies'){
+    if(!db.valo.buddies.length) return `<div class="empty-state"><div class="icon">🎯</div><p>Aucun buddy.</p></div>`;
+    return `<div class="skins-grid">${db.valo.buddies.map(b=>`<div class="skin-card" style="cursor:default"><div class="rarity-bar" style="background:var(--valo);opacity:.6"></div><div class="skin-img-wrap">${b.image?`<img src="${esc(b.image)}" loading="lazy">`:`<div class="no-img">🎯</div>`}</div><div class="skin-info"><div class="skin-name">${esc(b.name)}</div></div><div class="card-actions" onclick="event.stopPropagation()"><button class="card-btn card-btn-delete" onclick="deleteSkin('valo-buddy','${esc(b.id)}')">🗑</button></div></div>`).join('')}</div>`;
+  }
+  if(!db.valo.weapons.length) return `<div class="empty-state"><div class="icon">🎯</div><p>Aucune arme.</p></div>`;
+  return db.valo.weapons.map(w=>`
+    <div class="champion-section">
+      <div class="champion-header">
+        ${w.image?`<img src="${esc(w.image)}" class="champion-avatar" style="border-radius:var(--r)" onerror="this.style.display='none'">`:`<div class="champion-avatar no-img">🔫</div>`}
+        <div><div class="champion-name">${esc(w.name)}</div><div class="champion-skin-count">${w.skins.length} skin${w.skins.length!==1?'s':''}</div></div>
+        <div style="margin-left:auto"><button class="btn btn-danger btn-sm" onclick="deleteSkin('valo-weapon','${esc(w.id)}')">🗑</button></div>
+      </div>
+      <div class="skins-grid">${w.skins.length===0?`<p style="color:var(--text-muted);font-size:.85rem;grid-column:1/-1">Aucun skin.</p>`:w.skins.map(s=>`
+        <div class="skin-card" style="cursor:default">
+          <div class="rarity-bar" style="background:var(--valo);opacity:.6"></div>
+          <div class="skin-img-wrap">${s.image?`<img src="${esc(s.image)}" loading="lazy">`:`<div class="no-img">🎯</div>`}</div>
+          <div class="skin-info"><div class="skin-name">${esc(s.name)}</div></div>
+          <div class="card-actions" onclick="event.stopPropagation()"><button class="card-btn card-btn-delete" onclick="deleteSkin('valo-wskin','${esc(s.id)}',{wid:'${esc(w.id)}'})">🗑</button></div>
+        </div>`).join('')}</div>
+    </div><hr class="section-divider">`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RANDOMIZER
+// ═══════════════════════════════════════════════════════
+let _randTab='fortnite';
+let _lolRandStep=1, _lolSelRoles=[], _lolSelChamps=[];
+
+
+// ════════════════════════════════════════════════
+//  FORTNITE FESTIVAL
+// ════════════════════════════════════════════════
+const FEST_INSTRUMENTS = ["Chant","Guitare","Basse","Batterie","Clavier","Pro Guitare","Pro Basse"];
+const FEST_DIFFS = [
+  {key:"easy",   label:"Facile", short:"F", color:"#00c060"},
+  {key:"medium", label:"Moyen",  short:"M", color:"#ffc800"},
+  {key:"hard",   label:"Difficile", short:"D", color:"#ff6b35"},
+  {key:"expert", label:"Expert", short:"E", color:"var(--epic)"},
+];
+
+function renderFestival() {
+  const db = loadData();
+  const songs = db.festival?.songs || [];
+  const total = songs.length;
+  const done100 = songs.filter(s=>s.done100_by_instrument && Object.values(s.done100_by_instrument).some(v=>v)).length;
+
+  return `
+    <div class="page-header fn-page" style="--fn-color:#ff6b35">
+      <div>
+        <div class="page-title" style="color:#ff6b35;text-shadow:0 0 40px rgba(255,107,53,.5)">FN FESTIVAL</div>
+        <div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">Ma progression musicale</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('festival')">☑ Sélectionner</button>
+        <button class="btn btn-primary" onclick="festOpenAdd()">➕ Ajouter un album</button>
+      </div>
+    </div>
+
+    <div class="festival-stat-bar">
+      <div class="festival-stat"><div class="festival-stat-num">${total}</div><div class="festival-stat-label">Albums</div></div>
+      <div class="festival-stat"><div class="festival-stat-num" style="color:#00c060">${songs.reduce((a,s)=>a+Object.values(s.done100_by_instrument||{}).filter(Boolean).length,0)}</div><div class="festival-stat-label">100% obtenus</div></div>
+      <div class="festival-stat"><div class="festival-stat-num" style="color:var(--epic)">${songs.reduce((a,s)=>a+Object.values(s.done100_by_instrument||{}).filter(v=>v==='E').length,0)}</div><div class="festival-stat-label">Expert 100%</div></div>
+    </div>
+
+    ${total===0
+      ? `<div class="empty-state"><div class="icon">🎸</div><p>Aucun album. Ajoute-en avec le bouton ci-dessus.</p></div>`
+      : `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px" id="fest-grid">
+          ${songs.map(s=>festAlbumCard(s)).join('')}
+        </div>`
+    }
+  `;
+}
+
+function festAlbumCard(s) {
+  const instruments = FEST_INSTRUMENTS;
+  const diffs = FEST_DIFFS;
+  // Résumé rapide : combien de 100% sur cet album
+  const done = Object.values(s.done100_by_instrument||{}).filter(Boolean).length;
+  const total = instruments.length * diffs.length;
+
+  return `
+    <div class="skin-card" style="cursor:pointer" data-id="${esc(s.id)}" onclick="_cardClick(this,function(){festOpenDetail('${esc(s.id)}')})">
+      <div class="rarity-bar" style="background:linear-gradient(90deg,#ff6b35,rgba(255,107,53,.2))"></div>
+      <div class="skin-img-wrap">
+        ${s.image
+          ? `<img src="${esc(s.image)}" loading="lazy" onerror="this.style.display='none'">`
+          : `<div class="no-img" style="font-size:3rem;flex-direction:column;gap:8px">🎵<span style="font-size:.7rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif;letter-spacing:.08em">${esc(s.artist||'')}</span></div>`}
+      </div>
+      <div class="skin-info">
+        <div class="skin-name">${esc(s.name)}</div>
+        <div style="font-size:.68rem;color:var(--text-muted);margin-top:3px">${esc(s.artist||'')}</div>
+        <div style="margin-top:6px;display:flex;align-items:center;gap:6px">
+          <div style="font-size:.65rem;color:#ff6b35;font-weight:700">${done} / ${total} 100%</div>
+          <div style="flex:1;height:3px;background:var(--bg4);border-radius:2px">
+            <div style="width:${total>0?Math.round(done/total*100):0}%;height:100%;background:#ff6b35;border-radius:2px;transition:.3s"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="festOpenEdit('${esc(s.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="festDelete('${esc(s.id)}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+function festOpenDetail(id) {
+  const db = loadData();
+  const s = db.festival?.songs?.find(x=>x.id===id); if(!s) return;
+  const diffs = FEST_DIFFS;
+  const instruments = FEST_INSTRUMENTS;
+  const d100 = s.done100_by_instrument || {};
+
+  const rows = instruments.map(inst => {
+    const cells = diffs.map(diff => {
+      const key = `${inst}_${diff.key}`;
+      const val = d100[key]; // true = 100%, false/undefined = non
+      return `<td style="text-align:center;padding:8px 10px">
+        <button onclick="festToggle100('${esc(id)}','${esc(key)}')"
+          style="width:32px;height:32px;border-radius:8px;border:1px solid ${val?diff.color+'88':'var(--border)'};
+          background:${val?diff.color+'22':'transparent'};color:${val?diff.color:'var(--text-muted)'};
+          cursor:pointer;font-size:.8rem;font-weight:700;font-family:'Rajdhani',sans-serif;transition:.2s"
+          title="${diff.label}">
+          ${diff.short}${val?'✓':''}
+        </button>
+      </td>`;
+    }).join('');
+    return `<tr>
+      <td style="padding:8px 14px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.88rem;color:var(--text-dim);white-space:nowrap">${inst}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  openModal(s.name, `
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px">
+      ${s.image?`<img src="${esc(s.image)}" style="width:100px;border-radius:var(--rl);object-fit:cover;flex-shrink:0;cursor:zoom-in" onclick="openLightbox('${esc(s.image)}','${esc(s.name)}')">`:''}
+      <div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700">${esc(s.name)}</div>
+        ${s.artist?`<div style="color:var(--text-muted);font-size:.85rem;margin-top:3px">${esc(s.artist)}</div>`:''}
+        <div style="margin-top:8px;font-size:.75rem;color:var(--text-muted)">Clique sur une lettre pour marquer 100% ✓</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)">
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:var(--bg3)">
+            <th style="padding:10px 14px;text-align:left;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Rajdhani',sans-serif">Instrument</th>
+            ${diffs.map(d=>`<th style="padding:10px 14px;text-align:center;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:${d.color};font-family:'Rajdhani',sans-serif">${d.label}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `);
+}
+
+function festToggle100(songId, key) {
+  const db = loadData();
+  const s = db.festival?.songs?.find(x=>x.id===songId); if(!s) return;
+  if(!s.done100_by_instrument) s.done100_by_instrument={};
+  s.done100_by_instrument[key] = !s.done100_by_instrument[key];
+  saveData(db);
+  // Refresh le modal
+  festOpenDetail(songId);
+}
+
+function festOpenAdd(editSong=null) {
+  const s = editSong;
+  openModal(s?'Modifier un album':'Ajouter un album', `
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-row">
+        <div class="form-group"><label>Nom de la musique / album *</label>
+          <input type="text" id="fest-name" value="${s?esc(s.name):''}" placeholder="ex: Levitating" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+        </div>
+        <div class="form-group"><label>Artiste</label>
+          <input type="text" id="fest-artist" value="${s?esc(s.artist||''):''}" placeholder="ex: Dua Lipa" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+        </div>
+      </div>
+      <div class="form-group"><label>URL image (pochette d'album)</label>
+        <div class="img-url-wrap">
+          <input type="url" id="fest-img" value="${s?esc(s.image||''):''}" placeholder="https://..." oninput="previewUrl('fest-img','fest-img-preview')" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+          <img id="fest-img-preview" class="img-url-preview ${s&&s.image?'show':''}" src="${s?esc(s.image||''):''}" alt="">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="festSave(${s?`'${esc(s.id)}'`:'null'})">💾 Enregistrer</button>
+        <button class="btn btn-ghost" onclick="closeModal()">✕ Annuler</button>
+      </div>
+    </div>
+  `);
+}
+
+function festOpenEdit(id) {
+  const db = loadData();
+  const s = db.festival?.songs?.find(x=>x.id===id); if(!s) return;
+  festOpenAdd(s);
+}
+
+function festSave(editId=null) {
+  const name = document.getElementById('fest-name')?.value.trim(); if(!name){showToast('Nom requis','error');return;}
+  const artist = document.getElementById('fest-artist')?.value.trim();
+  const image = document.getElementById('fest-img')?.value.trim();
+  const db = loadData();
+  if(!db.festival) db.festival = {songs:[]};
+  if(!db.festival.songs) db.festival.songs = [];
+  if(editId) {
+    const idx = db.festival.songs.findIndex(s=>s.id===editId);
+    if(idx!==-1) db.festival.songs[idx] = {...db.festival.songs[idx], name, artist, image:image||null};
+  } else {
+    db.festival.songs.unshift({id:generateId('fest'), name, artist, image:image||null, done100_by_instrument:{}});
+  }
+  saveData(db); showToast(editId?'Album modifié ✓':'Album ajouté ✓'); closeModal(); navigate('festival');
+}
+
+function festDelete(id) {
+  if(!confirm('Supprimer cet album ?')) return;
+  const db = loadData();
+  db.festival.songs = db.festival.songs.filter(s=>s.id!==id);
+  saveData(db); showToast('Supprimé ✓'); navigate('festival');
+}
+
+
+
+// ════════════════════════════════════════════════
+//  STAR STABLE
+// ════════════════════════════════════════════════
+function renderStarStable() {
+  const db = loadData();
+  const horses = db.starstable?.horses || [];
+  return `
+    <div class="page-header">
+      <div>
+        <div class="page-title ss-accent">STAR STABLE</div>
+        <div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">Ma collection de chevaux</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="count-badge">${horses.length} cheval${horses.length!==1?'x':''}</span>
+        <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode('starstable')">☑ Sélectionner</button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Rechercher un cheval…" id="ss-search" oninput="ssFilter()">
+      </div>
+    </div>
+
+    ${horses.length===0
+      ? `<div class="empty-state"><div class="icon">🐴</div><p>Aucun cheval.<br>Ajoute-en depuis <strong>Ajouter</strong>.</p></div>`
+      : `<div class="skins-grid" id="ss-grid">${horses.map(h=>ssHorseCard(h)).join('')}</div>`
+    }
+  `;
+}
+
+function ssHorseCard(h) {
+  return `
+    <div class="ss-card" data-name="${esc((h.name||'').toLowerCase())}" data-id="${esc(h.id)}" onclick="_cardClick(this,function(){ssOpenDetail('${esc(h.id)}')})">
+      <div class="rarity-bar" style="background:linear-gradient(90deg,#7ec8e3,rgba(126,200,227,.2))"></div>
+      <div class="skin-img-wrap">
+        ${h.image
+          ? `<img src="${esc(h.image)}" loading="lazy" onerror="this.style.display='none'">`
+          : `<div class="no-img">🐴</div>`}
+      </div>
+      <div class="ss-card-info">
+        <div class="ss-card-name">${esc(h.name)}</div>
+        ${h.breed?`<div class="ss-card-breed">${esc(h.breed)}</div>`:''}
+        ${h.coat?`<div class="ss-card-coat">🎨 ${esc(h.coat)}</div>`:''}
+      </div>
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="card-btn card-btn-edit" onclick="ssEditHorse('${esc(h.id)}')">✏</button>
+        <button class="card-btn card-btn-delete" onclick="deleteSkin('ss-horse','${esc(h.id)}')">🗑</button>
+      </div>
+    </div>`;
+}
+
+function ssFilter() {
+  const q = document.getElementById('ss-search')?.value.toLowerCase()||'';
+  document.querySelectorAll('#ss-grid .ss-card').forEach(c=>{
+    c.style.display = (!q||c.dataset.name.includes(q))?'':'none';
+  });
+}
+
+function ssOpenDetail(id) {
+  const db = loadData();
+  const h = db.starstable?.horses?.find(x=>x.id===id); if(!h) return;
+  openModal(h.name, `
+    ${h.image?`<img src="${esc(h.image)}" style="width:100%;max-height:360px;object-fit:contain;border-radius:var(--rl);background:var(--bg3);margin-bottom:20px;cursor:zoom-in" onclick="openLightbox('${esc(h.image)}','${esc(h.name)}')">`:''}
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${h.breed?`<div><span style="font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)">Race</span><div style="color:var(--text);font-size:.9rem;margin-top:2px">${esc(h.breed)}</div></div>`:''}
+      ${h.coat?`<div><span style="font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)">Robe</span><div style="color:#7ec8e3;font-size:.9rem;margin-top:2px">${esc(h.coat)}</div></div>`:''}
+      ${h.notes?`<div><span style="font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)">Notes</span><div style="color:var(--text-dim);font-size:.85rem;margin-top:2px">${esc(h.notes)}</div></div>`:''}
+    </div>
+  `);
+}
+
+function ssEditHorse(id) {
+  navigate('add');
+  setTimeout(()=>{
+    document.getElementById('add-game-select').value='starstable';
+    addGameChanged();
+    setTimeout(()=>{
+      const db=loadData();
+      const h=db.starstable?.horses?.find(x=>x.id===id); if(!h) return;
+      const f=document.getElementById('ss-form');
+      if(!f) return;
+      document.getElementById('ss-name').value=h.name||'';
+      document.getElementById('ss-breed').value=h.breed||'';
+      document.getElementById('ss-coat').value=h.coat||'';
+      document.getElementById('ss-img').value=h.image||'';
+      document.getElementById('ss-notes').value=h.notes||'';
+      if(h.image){const p=document.getElementById('ss-img-preview');if(p){p.src=h.image;p.classList.add('show');}}
+      f.dataset.editId=id;
+      showToast('Cheval chargé pour modification');
+    },100);
+  },60);
+}
+
+function renderRandom(){
+  return `
+    <div class="rand-page">
+      <div class="page-header" style="position:relative">
+        <div><div class="page-title" style="background:linear-gradient(135deg,var(--epic),var(--fn));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">RANDOMIZER</div><div style="color:var(--text-muted);font-size:.8rem;margin-top:4px;letter-spacing:.1em">CHOIX ALÉATOIRE</div></div>
+      </div>
+      <div class="rand-tabs">
+        ${[{k:'fortnite',l:'⚡ Fortnite'},{k:'lol',l:'⚔️ LoL'},{k:'tft',l:'🎲 TFT'},{k:'dbd',l:'🔪 DBD'},{k:'valo',l:'🎯 Valorant'},{k:'starstable',l:'🐴 Star Stable'}].map(t=>`<button class="rand-tab ${t.k===_randTab?'active':''}" onclick="randSwitchTab('${t.k}')">${t.l}</button>`).join('')}
+      </div>
+      <div id="rand-content"></div>
+    </div>`;
+}
+
+function initRandom(){ renderRandTab(_randTab); }
+
+function randSwitchTab(tab){
+  _randTab=tab;
+  _lolRandStep=1; _lolSelRoles=[]; _lolSelChamps=[];
+  document.querySelectorAll('.rand-tab').forEach(t=>t.classList.toggle('active',t.textContent.includes({fortnite:'Fortnite',lol:'LoL',tft:'TFT',dbd:'DBD',valo:'Valorant',starstable:'Star'}[tab]||tab)));
+  renderRandTab(tab);
+}
+
+function renderRandTab(tab){
+  const c=document.getElementById('rand-content');
+  if(!c) return;
+  if(tab==='fortnite') c.innerHTML=renderRandFN();
+  else if(tab==='lol')  c.innerHTML=renderRandLoL();
+  else if(tab==='tft')  c.innerHTML=renderRandTFT();
+  else if(tab==='dbd')  c.innerHTML=renderRandDBD();
+  else if(tab==='valo') c.innerHTML=renderRandValo();
+  else if(tab==='starstable') c.innerHTML=renderRandSS();
+}
+
+// — Fortnite randomizer
+function renderRandFN(){
+  return `
+    <div class="lol-rand-step">
+      <div class="lol-rand-step-title"><div class="step-num">1</div>Choisir les catégories à randomizer</div>
+      <div class="fn-cats-grid">
+        ${Object.entries(FN_CATS).map(([k,v])=>`
+          <label class="fn-cat-check">
+            <input type="checkbox" value="${k}" checked>
+            <div class="fn-cat-pill"><span class="cat-icon">${v.icon}</span>${v.label}</div>
+          </label>`).join('')}
+      </div>
+    </div>
+    <div class="lol-rand-step" style="padding:14px 20px">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <span style="font-size:.8rem;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600">Filtre :</span>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.88rem;color:var(--text-dim)">
+          <input type="checkbox" id="fn-rand-festival-only" style="accent-color:var(--festival);width:15px;height:15px">
+          <span>🎸 Skins Festival seulement</span>
+        </label>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:24px 0">
+      <button class="rand-btn" onclick="doRandFN()">🎲 Randomizer !</button>
+    </div>
+    <div class="rand-results" id="fn-rand-results"></div>`;
+}
+
+function doRandFN(){
+  const db=loadData();
+  const items=db.fortnite.items||{};
+  const checked=[...document.querySelectorAll('.fn-cat-check input:checked')].map(i=>i.value);
+  if(!checked.length){showToast('Coche au moins une catégorie','error');return;}
+  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn.classList.remove('spinning'),600);
+  const festOnly = document.getElementById('fn-rand-festival-only')?.checked;
+  const results=[];
+  for(const cat of checked){
+    let list=items[cat]||[];
+    if(cat==='skin' && festOnly) list=list.filter(s=>s.forFestival);
+    if(list.length) results.push({cat,item:rand(list)});
+  }
+  const c=document.getElementById('fn-rand-results');
+  if(!results.length){c.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="icon">😅</div><p>Aucun item dans les catégories sélectionnées.<br>Ajoute des skins d'abord !</p></div>`;return;}
+  c.innerHTML=results.map(({cat,item})=>{
+    // Si c'est un skin et qu'il a des variantes, on en choisit une au hasard
+    const hasVariants = cat==='skin' && item.variants && item.variants.length>0;
+    const variant = hasVariants ? rand(item.variants) : null;
+
+    const variantSection = hasVariants ? `
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div style="font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--fn);margin-bottom:8px;font-weight:600">✨ Variante suggérée</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          ${variant.image
+            ? `<img src="${esc(variant.image)}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border2)" loading="lazy" onerror="this.style.display='none'">`
+            : `<div style="width:70px;height:70px;border-radius:8px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:2rem">⚡</div>`}
+          <div>
+            <div style="font-size:.88rem;color:var(--text);font-weight:600">${esc(variant.name)}</div>
+            <div style="font-size:.7rem;color:var(--text-muted);margin-top:2px">${item.variants.length} variante${item.variants.length>1?'s':''} au total</div>
+          </div>
+          ${variant.image?``:''}
+        </div>
+      </div>` : '';
+
+    return `
+    <div class="rand-result-card" data-rarity="${esc(item.rarity||'')}" onclick="openLightbox('${esc(item.image||'')}','${esc(item.name)}')" style="${item.image?'cursor:zoom-in':''}">
+      ${item.image?`<img src="${esc(item.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">${FN_CATS[cat]?.icon||'🎮'}</div>`}
+      <div class="rand-result-info">
+        <div class="rand-result-cat">${FN_CATS[cat]?.label||cat}</div>
+        <div class="rand-result-name">${esc(item.name)}</div>
+        ${item.rarity?`<div class="rand-result-sub" style="color:var(--${item.rarity.toLowerCase()})">${esc(item.rarity)}</div>`:''}
+        ${item.series?`<div class="rand-result-sub">${esc(item.series)}</div>`:''}
+        ${variantSection}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// — LoL randomizer
+function renderRandLoL(){
+  return `
+    <div class="lol-rand-step">
+      <div class="lol-rand-step-title"><div class="step-num">✦</div>Mode de randomization</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="lol-role-btn selected" id="lol-mode-full" onclick="lolSetMode('full')">🎲 Complet (Rôles + Champs + Skins)</button>
+        <button class="lol-role-btn" id="lol-mode-co" onclick="lolSetMode('co')">👤 Champion + Skin seulement</button>
+      </div>
+    </div>
+    <div id="lol-full-block">
+      <div class="lol-rand-step" id="lol-step-1">
+        <div class="lol-rand-step-title"><div class="step-num">1</div>Choisis 2 rôles</div>
+        <div class="lol-roles-grid">
+          ${LOL_ROLES.map(r=>`<button class="lol-role-btn" id="lolrole-${r}" onclick="lolRandSelectRole('${r}')">${r}</button>`).join('')}
+        </div>
+        <div style="color:var(--text-muted);font-size:.8rem;margin-top:10px" id="lol-role-hint">Sélectionne exactement 2 rôles</div>
+      </div>
+      <div class="lol-rand-step" id="lol-step-2" style="display:none">
+        <div class="lol-rand-step-title"><div class="step-num">2</div>Choisis 2 champions par rôle <span id="lol-step2-label" style="color:var(--lol);margin-left:6px"></span></div>
+        <div id="lol-champ-pick"></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;margin:24px 0;flex-wrap:wrap">
+        <button class="rand-btn" onclick="doRandLoLFull()">🎲 Randomizer (avec mes choix)</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:0 0 24px">
+      <button class="rand-btn" style="background:linear-gradient(135deg,rgba(200,155,60,.2),rgba(200,155,60,.1));border-color:rgba(200,155,60,.4)" onclick="doRandLoLAuto()">⚡ Tout auto — sans rien choisir !</button>
+    </div>
+    <div id="lol-co-block" style="display:none">
+      <div class="lol-rand-step">
+        <div class="lol-rand-step-title"><div class="step-num">1</div>Filtre par rôle (optionnel)</div>
+        <div class="lol-roles-grid">
+          <button class="lol-role-btn selected" id="co-all" onclick="lolCoRole('all')">Tous</button>
+          ${LOL_ROLES.map(r=>`<button class="lol-role-btn" id="co-${r}" onclick="lolCoRole('${r}')">${r}</button>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;margin:24px 0">
+        <button class="rand-btn" onclick="doRandLoLCO()">🎲 Randomizer !</button>
+      </div>
+    </div>
+    <div class="lol-rand-result-grid" id="lol-rand-results"></div>`;
+}
+
+let _lolMode='full', _lolCoRoleFilter='all';
+
+function lolSetMode(m){
+  _lolMode=m;
+  document.getElementById('lol-mode-full').classList.toggle('selected',m==='full');
+  document.getElementById('lol-mode-co').classList.toggle('selected',m==='co');
+  document.getElementById('lol-full-block').style.display=m==='full'?'':'none';
+  document.getElementById('lol-co-block').style.display=m==='co'?'':'none';
+}
+
+function lolCoRole(role){
+  _lolCoRoleFilter=role;
+  document.querySelectorAll('[id^="co-"]').forEach(b=>b.classList.remove('selected'));
+  document.getElementById(`co-${role}`)?.classList.add('selected');
+}
+
+function lolRandSelectRole(role){
+  const idx=_lolSelRoles.indexOf(role);
+  if(idx===-1){
+    if(_lolSelRoles.length>=2){showToast('Max 2 rôles','error');return;}
+    _lolSelRoles.push(role);
+  } else { _lolSelRoles.splice(idx,1); }
+  LOL_ROLES.forEach(r=>{document.getElementById(`lolrole-${r}`)?.classList.toggle('selected',_lolSelRoles.includes(r));});
+  const hint=document.getElementById('lol-role-hint');
+  if(_lolSelRoles.length===2){
+    if(hint) hint.textContent='✓ 2 rôles — choisis tes champions ci-dessous';
+    document.getElementById('lol-step-2').style.display='';
+    renderLolChampPick();
+  } else {
+    if(hint) hint.textContent=`${_lolSelRoles.length}/2 rôles`;
+    document.getElementById('lol-step-2').style.display='none';
+  }
+}
+
+function renderLolChampPick(){
+  const db=loadData();
+  const label=document.getElementById('lol-step2-label');
+  if(label) label.textContent=`(${_lolSelRoles.join(' & ')})`;
+  const container=document.getElementById('lol-champ-pick'); if(!container) return;
+  let html='';
+  for(const role of _lolSelRoles){
+    const champs=db.lol.champions.filter(c=>(c.roles||[]).includes(role));
+    html+=`<div style="margin-bottom:18px"><div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--lol);margin-bottom:10px;font-weight:600">${role} — choisis 2 champions</div>
+      ${champs.length===0?`<p style="color:var(--text-muted);font-size:.83rem">Aucun champion avec ce rôle.</p>`:`
+      <div class="lol-champ-select-grid">${champs.map(c=>`
+        <div class="lol-champ-btn" data-role="${role}" data-id="${esc(c.id)}" onclick="lolPickChamp(this,'${role}','${esc(c.id)}')">
+          ${c.image?`<img src="${esc(c.image)}" onerror="this.style.display='none'">`:`<div style="width:44px;height:44px;border-radius:50%;background:var(--bg4);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem">👤</div>`}
+          ${esc(c.name)}</div>`).join('')}
+      </div>`}</div>`;
+  }
+  container.innerHTML=html;
+}
+
+function lolPickChamp(btn,role,id){
+  const already=_lolSelChamps.find(x=>x.id===id);
+  if(already){_lolSelChamps=_lolSelChamps.filter(x=>x.id!==id);btn.classList.remove('selected');return;}
+  if(_lolSelChamps.filter(x=>x.role===role).length>=2){showToast('Max 2 champs par rôle','error');return;}
+  _lolSelChamps.push({role,id}); btn.classList.add('selected');
+}
+
+function doRandLoLFull(){
+  if(_lolSelRoles.length<2){showToast('Choisis 2 rôles','error');return;}
+  if(_lolSelChamps.length===0){showToast('Choisis des champions','error');return;}
+  _showLolResults(_lolSelChamps);
+}
+
+function doRandLoLAuto(){
+  // Tout auto : on pioche 2 rôles aléatoires parmi ceux qui ont des champions, puis 2 champs par rôle
+  const db=loadData();
+  if(!db.lol.champions.length){showToast('Aucun champion enregistré','error');return;}
+
+  // Trouver les rôles qui ont au moins 1 champion
+  const rolesDispos=LOL_ROLES.filter(r=>db.lol.champions.some(c=>(c.roles||[]).includes(r)));
+
+  let roles;
+  if(rolesDispos.length===0){
+    // Pas de rôles assignés — on prend juste 4 champs au hasard toutes catégories
+    const shuffled=[...db.lol.champions].sort(()=>Math.random()-.5).slice(0,4);
+    const sel=shuffled.map(c=>({role:'Random',id:c.id}));
+    _showLolResults(sel);
+    return;
+  } else if(rolesDispos.length===1){
+    roles=[rolesDispos[0],rolesDispos[0]];
+  } else {
+    // Mélanger et prendre 2 rôles aléatoires
+    roles=[...rolesDispos].sort(()=>Math.random()-.5).slice(0,2);
+  }
+
+  const sel=[];
+  for(const role of roles){
+    const pool=db.lol.champions.filter(c=>(c.roles||[]).includes(role));
+    const picked=[...pool].sort(()=>Math.random()-.5).slice(0,2);
+    picked.forEach(c=>sel.push({role,id:c.id}));
+  }
+  _showLolResults(sel);
+}
+
+function doRandLoLCO(){
+  const db=loadData();
+  const pool=_lolCoRoleFilter==='all'?db.lol.champions:db.lol.champions.filter(c=>(c.roles||[]).includes(_lolCoRoleFilter));
+  if(!pool.length){showToast('Aucun champion','error');return;}
+  const champ=rand(pool);
+  const skin=champ.skins.length?rand(champ.skins):null;
+  document.getElementById('lol-rand-results').innerHTML=_lolResultCard('',champ,skin);
+  document.querySelector('.rand-btn').classList.add('spinning');
+  setTimeout(()=>document.querySelector('.rand-btn')?.classList.remove('spinning'),600);
+}
+
+function _showLolResults(list){
+  const db=loadData();
+  document.querySelector('.rand-btn').classList.add('spinning');
+  setTimeout(()=>document.querySelector('.rand-btn')?.classList.remove('spinning'),600);
+  const results=list.map(({role,id})=>{
+    const champ=db.lol.champions.find(c=>c.id===id); if(!champ) return null;
+    const skin=champ.skins.length?rand(champ.skins):null;
+    return {role,champ,skin};
+  }).filter(Boolean);
+  if(!results.length){document.getElementById('lol-rand-results').innerHTML=`<div class="empty-state"><div class="icon">😅</div><p>Aucun résultat.</p></div>`;return;}
+  document.getElementById('lol-rand-results').innerHTML=results.map(({role,champ,skin})=>_lolResultCard(role,champ,skin)).join('');
+}
+
+function _lolResultCard(role,champ,skin){
+  // Si le skin a des chromas, on en choisit un au hasard
+  const hasChromas = skin && skin.chromas && skin.chromas.length > 0;
+  const chroma = hasChromas ? rand(skin.chromas) : null;
+
+  const chromaSection = hasChromas ? `
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--lol);margin-bottom:10px;font-weight:600">🎨 Chroma suggéré</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:48px;height:48px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.3);box-shadow:0 0 12px rgba(0,0,0,.4);${chroma.color?`background:${esc(chroma.color)}`:chroma.image?`background:url(${esc(chroma.image)}) center/cover`:'background:#555'}"></div>
+        <div>
+          <div style="font-size:.9rem;color:var(--text);font-weight:600">${esc(chroma.name)}</div>
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:2px">${skin.chromas.length} chroma${skin.chromas.length>1?'s':''} disponible${skin.chromas.length>1?'s':''}</div>
+        </div>
+      </div>
+    </div>` : '';
+
+  const zoomSrc = skin?.image || champ.image || null;
+  return `<div class="rand-result-card" onclick="openLightbox('${esc(zoomSrc||'')}','${esc((skin?.name||champ.name))}')" style="${zoomSrc?'cursor:zoom-in':''}">
+    ${skin?.image?`<img src="${esc(skin.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:champ.image?`<img src="${esc(champ.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">⚔️</div>`}
+    ${zoomSrc?``:''}
+    <div class="rand-result-info">
+      <div class="rand-result-cat">${role?esc(role):(champ.roles||[]).join(' · ')||'Champion'}</div>
+      <div class="rand-result-name">${esc(champ.name)}</div>
+      <div class="rand-result-sub">${skin?esc(skin.name):'Skin de base'}</div>
+      ${chromaSection}
+    </div>
+  </div>`;
+}
+
+// — TFT randomizer
+function tftEditSkin(id) {
+  const db=loadData();
+  const s=db.tft.skins.find(x=>x.id===id);
+  if(!s) return;
+
+  const showLevel = s.type==='tactician'||s.type==='boom';
+  const levelRow = showLevel ? `
+    <div class="form-group" style="margin-top:12px">
+      <label style="font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600">Niveau</label>
+      <select id="tft-edit-level" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%;margin-top:6px">
+        <option value="0" ${!s.level||s.level===0?'selected':''}>— Aucune étoile</option>
+        <option value="1" ${s.level===1?'selected':''}>⭐ Niveau 1</option>
+        <option value="2" ${s.level===2?'selected':''}>⭐⭐ Niveau 2</option>
+        <option value="3" ${s.level===3?'selected':''}>⭐⭐⭐ Niveau 3</option>
+      </select>
+    </div>` : '';
+
+  const inputStyle = `background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%;margin-top:6px`;
+  const labelStyle = 'font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600';
+
+  openModal(`Modifier : ${s.name}`, `
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-group">
+        <label style="${labelStyle}">Nom *</label>
+        <input type="text" id="tft-edit-name" value="${esc(s.name)}" style="${inputStyle}">
+      </div>
+      <div class="form-group">
+        <label style="${labelStyle}">Type *</label>
+        <select id="tft-edit-type" style="${inputStyle}">
+          ${Object.entries(TFT_TYPES).map(([k,v])=>`<option value="${k}" ${s.type===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label style="${labelStyle}">Rareté</label>
+        <select id="tft-edit-rarity" style="${inputStyle}">
+          ${TFT_RARITIES.map(r=>`<option value="${r}" ${s.rarity===r?'selected':''}>${r}</option>`).join('')}
+        </select>
+      </div>
+      ${levelRow}
+      <div class="form-group">
+        <label style="${labelStyle}">URL image</label>
+        <input type="url" id="tft-edit-img" value="${esc(s.image||'')}" placeholder="https://..." style="${inputStyle}" oninput="const p=document.getElementById('tft-edit-prev');if(this.value){p.src=this.value;p.style.display='block';}else{p.style.display='none';}">
+        <img id="tft-edit-prev" src="${esc(s.image||'')}" style="width:80px;height:80px;object-fit:contain;border-radius:8px;margin-top:8px;background:var(--bg3);${s.image?'':'display:none'}">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button class="btn btn-primary" onclick="tftSaveEdit('${esc(s.id)}')">💾 Enregistrer</button>
+        <button class="btn btn-ghost" onclick="closeModal()">✕ Annuler</button>
+      </div>
+    </div>
+  `);
+}
+
+function tftSaveEdit(id) {
+  const name   = document.getElementById('tft-edit-name')?.value.trim();
+  const type   = document.getElementById('tft-edit-type')?.value;
+  const rarity = document.getElementById('tft-edit-rarity')?.value || 'Default';
+  const level  = parseInt(document.getElementById('tft-edit-level')?.value || '0');
+  const image  = document.getElementById('tft-edit-img')?.value.trim();
+  if(!name||!type) { showToast('Nom et type requis','error'); return; }
+  const db = loadData();
+  const idx = db.tft.skins.findIndex(s=>s.id===id);
+  if(idx===-1) return;
+  db.tft.skins[idx] = {...db.tft.skins[idx], name, type, rarity, level, image:image||null};
+  saveData(db);
+  showToast('Skin TFT modifié ✓');
+  closeModal();
+  navigate('tft');
+}
+
+function renderRandTFT(){
+  return `
+    <div class="lol-rand-step">
+      <div class="lol-rand-step-title"><div class="step-num">1</div>Choisir le type</div>
+      <div class="filter-bar">
+        <button class="filter-btn active" data-tft="all" onclick="tftRandFilter(this,'all')">Tous</button>
+        ${Object.entries(TFT_TYPES).map(([k,v])=>`<button class="filter-btn" data-tft="${k}" onclick="tftRandFilter(this,'${k}')">${v}</button>`).join('')}
+        <button class="filter-btn" data-tft="tacticien_chibi" onclick="tftRandFilter(this,'tacticien_chibi')">🐧 Tacticiens + Chibi</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:24px 0"><button class="rand-btn" onclick="doRandTFT()">🎲 Randomizer !</button></div>
+    <div class="rand-results" id="tft-rand-results"></div>`;
+}
+let _tftRandType='all';
+function tftRandFilter(btn,type){_tftRandType=type;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function doRandTFT(){
+  const db=loadData();
+  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn?.classList.remove('spinning'),600);
+  const list=_tftRandType==='all'?db.tft.skins:_tftRandType==='tacticien_chibi'?db.tft.skins.filter(s=>s.type==='tactician'||s.type==='chibi'):db.tft.skins.filter(s=>s.type===_tftRandType);
+  if(!list.length){showToast('Aucun skin TFT','error');return;}
+  const item=rand(list);
+  const col=TFT_RARITY_COLORS[item.rarity]||'var(--tft-color)';
+  const isChibi=item.type==='chibi';
+  const levelStr=(item.type==='tactician'||item.type==='boom')&&item.level>0
+    ?`<div class="rand-result-sub">${'⭐'.repeat(item.level)} Niveau ${item.level}</div>`
+    :isChibi?`<div class="rand-result-sub" style="color:#a78bfa">✦ Chibi / Unbound</div>`:'';
+  document.getElementById('tft-rand-results').innerHTML=`
+    <div class="rand-result-card" onclick="openLightbox('${esc(item.image||'')}','${esc(item.name)}')" style="${item.image?'cursor:zoom-in':''}">
+      ${item.image?`<img src="${esc(item.image)}" class="rand-result-img" loading="lazy">`:`<div class="rand-result-img no-img-big">🎲</div>`}
+      <div class="rand-result-info">
+        <div class="rand-result-cat" style="color:${col}">${TFT_TYPES[item.type]||item.type}${item.rarity&&item.rarity!=='Default'?` · ${item.rarity}`:''}</div>
+        <div class="rand-result-name">${esc(item.name)}</div>
+        ${levelStr}
+      </div>
+    </div>`;
+}
+
+function renderRandDBD(){
+  return `
+    <div class="lol-rand-step">
+      <div class="lol-rand-step-title"><div class="step-num">1</div>Choisir le type</div>
+      <div class="filter-bar">
+        <button class="filter-btn active" data-dbd="all" onclick="dbdRandFilter(this,'all')">Tous</button>
+        <button class="filter-btn" data-dbd="survivor" onclick="dbdRandFilter(this,'survivor')">Survivant</button>
+        <button class="filter-btn" data-dbd="killer" onclick="dbdRandFilter(this,'killer')">Tueur</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:24px 0"><button class="rand-btn" onclick="doRandDBD()">🎲 Randomizer !</button></div>
+    <div class="rand-results" id="dbd-rand-results"></div>`;
+}
+let _dbdRandType='all';
+function dbdRandFilter(btn,type){_dbdRandType=type;document.querySelectorAll('[data-dbd]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function doRandDBD(){
+  const db=loadData();
+  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn.classList.remove('spinning'),600);
+  let pool=[];
+  if(_dbdRandType!=='killer') db.dbd.survivors.forEach(c=>c.skins.forEach(s=>pool.push({char:c,skin:s,type:'Survivant'})));
+  if(_dbdRandType!=='survivor') db.dbd.killers.forEach(c=>c.skins.forEach(s=>pool.push({char:c,skin:s,type:'Tueur'})));
+  if(!pool.length){showToast('Aucun skin DBD','error');return;}
+  const item=rand(pool);
+  document.getElementById('dbd-rand-results').innerHTML=`
+    <div class="rand-result-card" onclick="openLightbox('${esc(item.skin.image||'')}','${esc(item.skin.name)}')" style="${item.skin.image?'cursor:zoom-in':''}">
+      ${item.skin.image?`<img src="${esc(item.skin.image)}" class="rand-result-img" loading="lazy">`:`<div class="rand-result-img no-img-big">🔪</div>`}
+      <div class="rand-result-info">
+        <div class="rand-result-cat">${item.type} · ${esc(item.char.name)}</div>
+        <div class="rand-result-name">${esc(item.skin.name)}</div>
+      </div>
+    </div>`;
+}
+
+// — Valo randomizer
+function renderRandValo(){
+  return `
+    <div class="lol-rand-step">
+      <div class="lol-rand-step-title"><div class="step-num">1</div>Mode</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="lol-role-btn selected" id="valo-mode-all" onclick="valoRandMode('all')">🔫 Un skin par arme</button>
+        <button class="lol-role-btn" id="valo-mode-one" onclick="valoRandMode('one')">🎲 1 skin aléatoire</button>
+        <button class="lol-role-btn" id="valo-mode-buddy" onclick="valoRandMode('buddy')">🎯 Buddy seulement</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:24px 0">
+      <button class="rand-btn" onclick="doRandValo()">🎲 Randomizer !</button>
+    </div>
+    <div class="rand-results" id="valo-rand-results"></div>`;
+}
+let _valoRandMode2='all';
+function valoRandMode(m){
+  _valoRandMode2=m;
+  ['all','one','buddy'].forEach(x=>document.getElementById(`valo-mode-${x}`)?.classList.toggle('selected',x===m));
+}
+function doRandValo(){
+  const db=loadData();
+  document.querySelector('.rand-btn').classList.add('spinning');
+  setTimeout(()=>document.querySelector('.rand-btn')?.classList.remove('spinning'),600);
+  const c=document.getElementById('valo-rand-results');
+
+  if(_valoRandMode2==='all'){
+    // Un skin aléatoire pour CHAQUE arme qui a des skins
+    const results=db.valo.weapons.filter(w=>w.skins.length>0).map(w=>({weapon:w,skin:rand(w.skins)}));
+    if(!results.length){showToast('Aucun skin Valorant','error');return;}
+    c.innerHTML=results.map(({weapon,skin})=>`
+      <div class="rand-result-card">
+        ${skin.image?`<img src="${esc(skin.image)}" class="rand-result-img landscape" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">🔫</div>`}
+        <div class="rand-result-info">
+          <div class="rand-result-cat">${esc(weapon.name)}</div>
+          <div class="rand-result-name">${esc(skin.name)}</div>
+        </div>
+      </div>`).join('');
+  }
+  else if(_valoRandMode2==='one'){
+    const pool=[];
+    db.valo.weapons.forEach(w=>w.skins.forEach(s=>pool.push({weapon:w,skin:s})));
+    if(!pool.length){showToast('Aucun skin Valorant','error');return;}
+    const {weapon,skin}=rand(pool);
+    c.innerHTML=`<div class="rand-result-card">
+      ${skin.image?`<img src="${esc(skin.image)}" class="rand-result-img landscape" loading="lazy">`:`<div class="rand-result-img no-img-big">🔫</div>`}
+      <div class="rand-result-info"><div class="rand-result-cat">${esc(weapon.name)}</div><div class="rand-result-name">${esc(skin.name)}</div></div>
+    </div>`;
+  }
+  else {
+    if(!db.valo.buddies.length){showToast('Aucun buddy','error');return;}
+    const b=rand(db.valo.buddies);
+    c.innerHTML=`<div class="rand-result-card">
+      ${b.image?`<img src="${esc(b.image)}" class="rand-result-img" loading="lazy">`:`<div class="rand-result-img no-img-big">🎯</div>`}
+      <div class="rand-result-info"><div class="rand-result-cat">Buddy</div><div class="rand-result-name">${esc(b.name)}</div></div>
+    </div>`;
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  ADD PAGE
+// ═══════════════════════════════════════════════════════
+function renderAdd(){
+  return `
+    <div class="page-header"><div class="page-title" style="color:var(--text)">AJOUTER</div></div>
+    <div class="form-section">
+      <div class="form-group">
+        <label>Jeu</label>
+        <select id="add-game-select" onchange="addGameChanged()">
+          <option value="">-- Choisir un jeu --</option>
+          <option value="fortnite">Fortnite</option>
+          <option value="lol">League of Legends</option>
+          <option value="tft">TFT</option>
+          <option value="dbd">Dead by Daylight</option>
+          <option value="valo">Valorant</option>
+          <option value="starstable">Star Stable</option>
+        </select>
+      </div>
+    </div>
+    <div id="add-form-container"></div>`;
+}
+
+function addGameChanged(){
+  const game=document.getElementById('add-game-select').value;
+  const c=document.getElementById('add-form-container');
+  switch(game){
+    case 'fortnite': c.innerHTML=renderAddFN(); setTimeout(_populateFNSkinSelect,50); break;
+    case 'lol':      c.innerHTML=renderAddLoL(); break;
+    case 'tft':      c.innerHTML=renderAddTFT(); break;
+    case 'dbd':      c.innerHTML=renderAddDBD(); break;
+    case 'valo':     c.innerHTML=renderAddValo(); break;
+    case 'starstable': c.innerHTML=renderAddSS(); break;
+    default: c.innerHTML='';
+  }
+}
+
+// ── FN Add
+function renderAddFN(){
+  const db=loadData();
+  const seriesOpts=db.fortnite.series.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
+  return `
+    <div class="form-section">
+      <div class="form-section-title">⚡ Ajouter un item Fortnite</div>
+      <form onsubmit="saveFNItem(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Catégorie *</label>
+            <select id="fn-cat" required>
+              ${Object.entries(FN_CATS).map(([k,v])=>`<option value="${k}">${v.icon} ${v.label}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rareté</label>
+            <select id="fn-rarity">
+              <option value="">-- Rareté --</option>
+              ${['Mythic','Legendary','Epic','Rare','Uncommon','Common'].map(r=>`<option value="${r}">${r}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom *</label>
+            <input type="text" id="fn-name" placeholder="ex: Skull Trooper" required>
+          </div>
+          <div class="form-group">
+            <label>Série</label>
+            <select id="fn-series">
+              <option value="">Aucune série</option>
+              ${seriesOpts}
+            </select>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Ajouter une nouvelle série</label>
+            <div style="display:flex;gap:8px"><input type="text" id="fn-new-series" placeholder="Nom de la série"><button type="button" class="btn btn-ghost btn-sm" onclick="addFNSeries()">+</button></div>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:10px">
+              Fortnite Festival
+              <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.85rem;text-transform:none;letter-spacing:0;font-weight:400;color:var(--text-dim)">
+                <input type="checkbox" id="fn-festival-check" style="width:15px;height:15px;cursor:pointer;accent-color:var(--festival)">
+                <span>🎸 Utiliser ce skin en Festival</span>
+              </label>
+            </label>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label>URL de l'image</label>
+            <div class="img-url-wrap">
+              <input type="url" id="fn-img-url" placeholder="https://raw.githubusercontent.com/Bloodypainty/skinvault/main/images/fortnite/..." oninput="previewUrl('fn-img-url','fn-img-preview')">
+              <img id="fn-img-preview" class="img-url-preview" alt="Aperçu">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Section variantes FN -->
+    <div class="form-section">
+      <div class="form-section-title">🔗 Ajouter une variante à un Skin existant</div>
+      <p style="color:var(--text-muted);font-size:.83rem;margin-bottom:16px">Les variantes sont affichées dans le détail du skin (accessoire de dos assorti, version colorée, etc.)</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Skin parent (catégorie Skin)</label>
+          <select id="fn-var-parent">
+            <option value="">-- Choisir un skin --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nom de la variante *</label>
+          <input type="text" id="fn-var-name" placeholder="ex: Version Fantôme">
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group">
+          <label>URL image de la variante</label>
+          <div class="img-url-wrap">
+            <input type="url" id="fn-var-img" placeholder="https://..." oninput="previewUrl('fn-var-img','fn-var-preview')">
+            <img id="fn-var-preview" class="img-url-preview" alt="Aperçu">
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" onclick="saveFNVariant()">➕ Ajouter la variante</button>
+      </div>
+    </div>`;
+}
+function _populateFNSkinSelect(){
+  const db=loadData();
+  const sel=document.getElementById('fn-var-parent'); if(!sel) return;
+  const skins=db.fortnite.items['skin']||[];
+  sel.innerHTML='<option value="">-- Choisir un skin --</option>'+skins.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
+}
+function saveFNVariant(){
+  const parentId=document.getElementById('fn-var-parent')?.value;
+  const name=document.getElementById('fn-var-name')?.value.trim();
+  const image=document.getElementById('fn-var-img')?.value.trim();
+  if(!parentId||!name){showToast('Choisis un skin et donne un nom','error');return;}
+  const db=loadData();
+  const skin=(db.fortnite.items['skin']||[]).find(s=>s.id===parentId);
+  if(!skin){showToast('Skin introuvable','error');return;}
+  if(!skin.variants) skin.variants=[];
+  skin.variants.push({id:generateId('fnv'),name,image:image||null});
+  saveData(db); showToast('Variante ajoutée ✓');
+  document.getElementById('fn-var-name').value='';
+  document.getElementById('fn-var-img').value='';
+  document.getElementById('fn-var-preview').classList.remove('show');
+}
+function addFNSeries(){
+  const val=document.getElementById('fn-new-series')?.value.trim(); if(!val) return;
+  const db=loadData();
+  if(!db.fortnite.series.includes(val)){db.fortnite.series.push(val);saveData(db);}
+  const sel=document.getElementById('fn-series');
+  const opt=document.createElement('option'); opt.value=val; opt.textContent=val; sel.appendChild(opt); sel.value=val;
+  document.getElementById('fn-new-series').value='';
+  showToast('Série ajoutée ✓');
+}
+function saveFNItem(e){
+  e.preventDefault();
+  const cat=document.getElementById('fn-cat').value;
+  const name=document.getElementById('fn-name').value.trim();
+  const rarity=document.getElementById('fn-rarity').value;
+  const series=document.getElementById('fn-series').value;
+  const image=document.getElementById('fn-img-url').value.trim();
+  if(!name) return;
+  const db=loadData();
+  const form=e.target;
+  const editId=form.dataset.editId;
+  const editCat=form.dataset.editCat;
+  if(editId&&editCat){
+    // Mode édition
+    const list=db.fortnite.items[editCat]||[];
+    const idx=list.findIndex(x=>x.id===editId);
+    if(idx!==-1){
+      const old=list[idx];
+      const forFestival2=document.getElementById('fn-festival-check')?.checked||false;
+      list[idx]={...old,name,rarity,series:series||null,image:image||old.image,forFestival:forFestival2};
+      // Si changement de catégorie
+      if(editCat!==cat){
+        list.splice(idx,1);
+        if(!db.fortnite.items[cat]) db.fortnite.items[cat]=[];
+        db.fortnite.items[cat].push({...old,name,rarity,series:series||null,image:image||old.image});
+      }
+    }
+    saveData(db); showToast('Item modifié ✓'); addGameChanged();
+  } else {
+    if(!db.fortnite.items[cat]) db.fortnite.items[cat]=[];
+    const forFestival = document.getElementById('fn-festival-check')?.checked || false;
+    db.fortnite.items[cat].unshift({id:generateId('fn'),name,rarity,series:series||null,image:image||null,variants:[],forFestival});
+    saveData(db); showToast('Item Fortnite ajouté ✓'); addGameChanged();
+  }
+}
+
+// ── LoL Add
+let _lolChromas=[];
+function renderAddLoL(){
+  const db=loadData();
+  const champOpts=db.lol.champions.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+  return `
+    <div class="tabs" style="margin-bottom:0">
+      <button type="button" class="tab active" id="lol-tab-champ" onclick="lolAddTab('champ')">+ Champion</button>
+      <button type="button" class="tab" id="lol-tab-skin" onclick="lolAddTab('skin')">+ Skin</button>
+    </div>
+    <div class="form-section" id="lol-form-champ">
+      <div class="form-section-title">⚔️ Ajouter un Champion</div>
+      <form onsubmit="saveLolChamp(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom *</label>
+            <input type="text" id="lol-champ-name" placeholder="ex: Jinx" required>
+          </div>
+          <div class="form-group">
+            <label>URL portrait</label>
+            <div class="img-url-wrap">
+              <input type="url" id="lol-champ-img" placeholder="https://..." oninput="previewUrl('lol-champ-img','lol-champ-preview')">
+              <img id="lol-champ-preview" class="img-url-preview" alt="Aperçu">
+            </div>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Rôle(s)</label>
+            <div class="roles-wrap">
+              ${LOL_ROLES.map(r=>`<label class="role-check"><input type="checkbox" value="${r}" name="lol-roles"><div class="role-pill">${r}</div></label>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕</button>
+        </div>
+      </form>
+    </div>
+    <div class="form-section" id="lol-form-skin" style="display:none">
+      <div class="form-section-title">⚔️ Ajouter un Skin</div>
+      <form onsubmit="saveLolSkin(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom du skin *</label>
+            <input type="text" id="lol-skin-name" placeholder="ex: Star Guardian Jinx" required>
+          </div>
+          <div class="form-group">
+            <label>Champion *</label>
+            <select id="lol-skin-champ" required><option value="">-- Choisir --</option>${champOpts}</select>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label>URL image du skin</label>
+            <div class="img-url-wrap">
+              <input type="url" id="lol-skin-img" placeholder="https://..." oninput="previewUrl('lol-skin-img','lol-skin-preview')">
+              <img id="lol-skin-preview" class="img-url-preview" alt="Aperçu">
+            </div>
+          </div>
+        </div>
+        <div class="form-section-title" style="margin-top:16px">Chromas</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;align-items:end;margin-bottom:8px">
+          <div class="form-group" style="margin:0"><label>Nom</label><input type="text" id="lol-chroma-name" placeholder="ex: Ruby"></div>
+          <div class="form-group" style="margin:0"><label>Couleur</label><input type="color" id="lol-chroma-color" value="#ff0000" style="height:42px;padding:4px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);cursor:pointer;width:100%"></div>
+          <div class="form-group" style="margin:0"><label>URL image chroma</label><input type="url" id="lol-chroma-img" placeholder="https://..."></div>
+          <button type="button" class="btn btn-ghost btn-sm" style="align-self:end" onclick="addLolChroma()">+</button>
+        </div>
+        <div class="variant-list-preview" id="lol-chromas-list"></div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕</button>
+        </div>
+      </form>
+    </div>`;
+}
+function lolAddTab(tab){
+  document.getElementById('lol-tab-champ').classList.toggle('active',tab==='champ');
+  document.getElementById('lol-tab-skin').classList.toggle('active',tab==='skin');
+  document.getElementById('lol-form-champ').style.display=tab==='champ'?'':'none';
+  document.getElementById('lol-form-skin').style.display=tab==='skin'?'':'none';
+}
+function saveLolChamp(e){
+  e.preventDefault();
+  const name=document.getElementById('lol-champ-name').value.trim(); if(!name) return;
+  const image=document.getElementById('lol-champ-img').value.trim();
+  const roles=[...document.querySelectorAll('input[name="lol-roles"]:checked')].map(i=>i.value);
+  const db=loadData();
+  db.lol.champions.push({id:generateId('lolc'),name,image:image||null,roles,skins:[]});
+  saveData(db); showToast('Champion ajouté ✓'); addGameChanged();
+}
+function addLolChroma(){
+  const name=document.getElementById('lol-chroma-name')?.value.trim(); if(!name){showToast('Donne un nom au chroma','error');return;}
+  const color=document.getElementById('lol-chroma-color')?.value;
+  const img=document.getElementById('lol-chroma-img')?.value.trim();
+  _lolChromas.push({id:generateId('chroma'),name,color,image:img||null});
+  renderLolChromaChips();
+  document.getElementById('lol-chroma-name').value='';
+  document.getElementById('lol-chroma-img').value='';
+}
+function renderLolChromaChips(){
+  const c=document.getElementById('lol-chromas-list'); if(!c) return;
+  c.innerHTML=_lolChromas.map((ch,i)=>`<div class="variant-chip"><div class="chroma-dot" style="background:${esc(ch.color)};width:20px;height:20px;flex-shrink:0"></div>${esc(ch.name)}<button type="button" class="variant-chip-remove" onclick="_lolChromas.splice(${i},1);renderLolChromaChips()">✕</button></div>`).join('');
+}
+function saveLolSkin(e){
+  e.preventDefault();
+  const name=document.getElementById('lol-skin-name').value.trim();
+  const champId=document.getElementById('lol-skin-champ').value;
+  const image=document.getElementById('lol-skin-img').value.trim();
+  if(!name||!champId) return;
+  const db=loadData();
+  const champ=db.lol.champions.find(c=>c.id===champId); if(!champ) return;
+  champ.skins.push({id:generateId('lols'),name,image:image||null,chromas:[..._lolChromas]});
+  _lolChromas=[];
+  saveData(db); showToast('Skin LoL ajouté ✓'); addGameChanged();
+}
+
+// ── TFT Add
+function renderAddTFT(){
+  return `
+    <div class="form-section">
+      <div class="form-section-title">🎲 Ajouter / Modifier un Skin TFT</div>
+      <form id="tft-skin-form" onsubmit="saveTFT(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Nom *</label>
+            <input type="text" id="tft-name" placeholder="ex: Pengu" required></div>
+          <div class="form-group"><label>Type *</label>
+            <select id="tft-type" required onchange="tftTypeChanged()">
+              <option value="">-- Type --</option>
+              ${Object.entries(TFT_TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Rareté</label>
+            <select id="tft-rarity">
+              ${TFT_RARITIES.map(r=>`<option value="${r}" ${r==='Default'?'selected':''}>${r}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group" id="tft-level-row" style="display:none">
+            <label>Niveau (0 = aucune étoile)</label>
+            <select id="tft-level">
+              <option value="0">— Aucune étoile</option>
+              <option value="1">⭐ Niveau 1</option>
+              <option value="2">⭐⭐ Niveau 2</option>
+              <option value="3">⭐⭐⭐ Niveau 3</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group"><label>URL image</label>
+            <div class="img-url-wrap">
+              <input type="url" id="tft-img" placeholder="https://..." oninput="previewUrl('tft-img','tft-preview')">
+              <img id="tft-preview" class="img-url-preview" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>`;
+}
+
+function tftTypeChanged(){
+  const type=document.getElementById('tft-type')?.value;
+  // Étoiles pour tacticien et boom uniquement
+  document.getElementById('tft-level-row').style.display=(type==='tactician'||type==='boom')?'':'none';
+}
+
+function saveTFT(e){
+  e.preventDefault();
+  const name=document.getElementById('tft-name').value.trim();
+  const type=document.getElementById('tft-type').value;
+  const rarity=document.getElementById('tft-rarity').value||'Default';
+  const level=parseInt(document.getElementById('tft-level')?.value||'0');
+  const image=document.getElementById('tft-img').value.trim();
+  const editId=document.getElementById('tft-skin-form').dataset.editId;
+  if(!name||!type) return;
+  const db=loadData();
+  const obj={name,type,rarity,level,image:image||null};
+  if(editId){
+    const idx=db.tft.skins.findIndex(s=>s.id===editId);
+    if(idx!==-1) db.tft.skins[idx]={...db.tft.skins[idx],...obj};
+  } else {
+    db.tft.skins.unshift({id:generateId('tft'),...obj});
+  }
+  saveData(db); showToast(editId?'Skin TFT modifié ✓':'Skin TFT ajouté ✓');
+  delete document.getElementById('tft-skin-form').dataset.editId;
+  addGameChanged();
+}
+
+// ── DBD Add
+function renderAddDBD(){
+  const db=loadData();
+  const survOpts=db.dbd.survivors.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+  const killOpts=db.dbd.killers.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+  return `
+    <div class="tabs" style="margin-bottom:0">
+      <button type="button" class="tab active" id="dbd-tab-char" onclick="dbdAddTab('char')">+ Personnage</button>
+      <button type="button" class="tab" id="dbd-tab-skin" onclick="dbdAddTab('skin')">+ Skin</button>
+    </div>
+    <div class="form-section" id="dbd-form-char">
+      <div class="form-section-title">🔪 Ajouter un Personnage</div>
+      <form onsubmit="saveDBDChar(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Type *</label><select id="dbd-type" required><option value="">-- Type --</option><option value="survivor">Survivant</option><option value="killer">Tueur</option></select></div>
+          <div class="form-group"><label>Nom *</label><input type="text" id="dbd-char-name" placeholder="ex: Meg Thomas" required></div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group"><label>URL image portrait</label>
+            <div class="img-url-wrap">
+              <input type="url" id="dbd-char-img" placeholder="https://..." oninput="previewUrl('dbd-char-img','dbd-char-preview')">
+              <img id="dbd-char-preview" class="img-url-preview" alt="Aperçu">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn-primary">💾 Enregistrer</button><button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕</button></div>
+      </form>
+    </div>
+    <div class="form-section" id="dbd-form-skin" style="display:none">
+      <div class="form-section-title">🔪 Ajouter un Skin</div>
+      <form onsubmit="saveDBDSkin(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Survivant</label><select id="dbd-skin-surv"><option value="">-- Survivant --</option>${survOpts}</select></div>
+          <div class="form-group"><label>Tueur</label><select id="dbd-skin-kill"><option value="">-- Tueur --</option>${killOpts}</select></div>
+        </div>
+        <p style="color:var(--text-muted);font-size:.8rem;margin-bottom:12px">Choisis l'un OU l'autre.</p>
+        <div class="form-row">
+          <div class="form-group"><label>Nom du skin *</label><input type="text" id="dbd-skin-name" placeholder="ex: Sporty Spice" required></div>
+          <div class="form-group"><label>URL image</label>
+            <div class="img-url-wrap">
+              <input type="url" id="dbd-skin-img" placeholder="https://..." oninput="previewUrl('dbd-skin-img','dbd-skin-preview')">
+              <img id="dbd-skin-preview" class="img-url-preview" alt="Aperçu">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn-primary">💾 Enregistrer</button><button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕</button></div>
+      </form>
+    </div>`;
+}
+function dbdAddTab(tab){
+  document.getElementById('dbd-tab-char').classList.toggle('active',tab==='char');
+  document.getElementById('dbd-tab-skin').classList.toggle('active',tab==='skin');
+  document.getElementById('dbd-form-char').style.display=tab==='char'?'':'none';
+  document.getElementById('dbd-form-skin').style.display=tab==='skin'?'':'none';
+}
+function saveDBDChar(e){
+  e.preventDefault();
+  const type=document.getElementById('dbd-type').value;
+  const name=document.getElementById('dbd-char-name').value.trim();
+  const image=document.getElementById('dbd-char-img').value.trim();
+  if(!type||!name) return;
+  const db=loadData();
+  const list=type==='survivor'?db.dbd.survivors:db.dbd.killers;
+  list.unshift({id:generateId('dbd'),name,image:image||null,skins:[]});
+  saveData(db); showToast('Personnage ajouté ✓'); addGameChanged();
+}
+function saveDBDSkin(e){
+  e.preventDefault();
+  const survId=document.getElementById('dbd-skin-surv').value;
+  const killId=document.getElementById('dbd-skin-kill').value;
+  const name=document.getElementById('dbd-skin-name').value.trim();
+  const image=document.getElementById('dbd-skin-img').value.trim();
+  if(!name||(!survId&&!killId)){showToast('Choisis un personnage','error');return;}
+  const db=loadData();
+  const list=survId?db.dbd.survivors:db.dbd.killers;
+  const char=list.find(c=>c.id===(survId||killId)); if(!char) return;
+  char.skins.unshift({id:generateId('dbdsk'),name,image:image||null});
+  saveData(db); showToast('Skin DBD ajouté ✓'); addGameChanged();
+}
+
+// ── Valo Add
+function renderAddValo(){
+  const db=loadData();
+  const weapOpts=db.valo.weapons.map(w=>`<option value="${esc(w.id)}">${esc(w.name)}</option>`).join('');
+  return `
+    <div class="tabs" style="margin-bottom:0">
+      <button type="button" class="tab active" id="valo-tab-weap" onclick="valoAddTab('weap')">+ Arme</button>
+      <button type="button" class="tab" id="valo-tab-wskin" onclick="valoAddTab('wskin')">+ Skin d'arme</button>
+      <button type="button" class="tab" id="valo-tab-buddy" onclick="valoAddTab('buddy')">+ Buddy</button>
+    </div>
+    <div class="form-section" id="valo-form-weap">
+      <div class="form-section-title">🎯 Ajouter une Arme</div>
+      <form onsubmit="saveValoWeap(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Nom *</label><input type="text" id="valo-weap-name" placeholder="ex: Phantom" required></div>
+          <div class="form-group"><label>URL image</label>
+            <div class="img-url-wrap">
+              <input type="url" id="valo-weap-img" placeholder="https://..." oninput="previewUrl('valo-weap-img','valo-weap-preview')">
+              <img id="valo-weap-preview" class="img-url-preview" alt="Aperçu">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn-primary">💾 Enregistrer</button><button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕</button></div>
+      </form>
+    </div>
+    <div class="form-section" id="valo-form-wskin" style="display:none">
+      <div class="form-section-title">🎯 Ajouter un Skin d'Arme</div>
+      <form onsubmit="saveValoWSkin(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Arme *</label><select id="valo-wskin-weap" required><option value="">-- Arme --</option>${weapOpts}</select></div>
+          <div class="form-group"><label>Nom du skin *</label><input type="text" id="valo-wskin-name" placeholder="ex: Prime Phantom" required></div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group"><label>URL image</label>
+            <div class="img-url-wrap">
+              <input type="url" id="valo-wskin-img" placeholder="https://..." oninput="previewUrl('valo-wskin-img','valo-wskin-preview')">
+              <img id="valo-wskin-preview" class="img-url-preview" alt="Aperçu">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn-primary">💾 Enregistrer</button></div>
+      </form>
+    </div>
+    <div class="form-section" id="valo-form-buddy" style="display:none">
+      <div class="form-section-title">🎯 Ajouter un Buddy</div>
+      <form onsubmit="saveValoBuddy(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Nom *</label><input type="text" id="valo-buddy-name" placeholder="ex: Radianite Bobby" required></div>
+          <div class="form-group"><label>URL image</label>
+            <div class="img-url-wrap">
+              <input type="url" id="valo-buddy-img" placeholder="https://..." oninput="previewUrl('valo-buddy-img','valo-buddy-preview')">
+              <img id="valo-buddy-preview" class="img-url-preview" alt="Aperçu">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row"><button type="submit" class="btn btn-primary">💾 Enregistrer</button><button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕</button></div>
+      </form>
+    </div>`;
+}
+function valoAddTab(tab){
+  ['weap','wskin','buddy'].forEach(t=>{
+    document.getElementById(`valo-tab-${t}`)?.classList.toggle('active',t===tab);
+    document.getElementById(`valo-form-${t}`)?.style.setProperty('display',t===tab?'':'none');
+  });
+}
+
+function renderAddSS(){
+  return `
+    <div class="form-section">
+      <div class="form-section-title">🐴 Ajouter un Cheval</div>
+      <form id="ss-form" onsubmit="saveSS(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Nom *</label>
+            <input type="text" id="ss-name" placeholder="ex: Starshine" required></div>
+          <div class="form-group"><label>Race</label>
+            <input type="text" id="ss-breed" placeholder="ex: Fjord, Arabe, Frisian..."></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Robe / Couleur</label>
+            <input type="text" id="ss-coat" placeholder="ex: Palomino, Gris pommelé..."></div>
+          <div class="form-group"><label>Notes</label>
+            <input type="text" id="ss-notes" placeholder="ex: Mon cheval principal..."></div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group"><label>URL image</label>
+            <div class="img-url-wrap">
+              <input type="url" id="ss-img" placeholder="https://..." oninput="previewUrl('ss-img','ss-img-preview')">
+              <img id="ss-img-preview" class="img-url-preview" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+          <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
+        </div>
+      </form>
+    </div>`;
+}
+
+function saveSS(e){
+  e.preventDefault();
+  const name=document.getElementById('ss-name').value.trim(); if(!name) return;
+  const breed=document.getElementById('ss-breed').value.trim();
+  const coat=document.getElementById('ss-coat').value.trim();
+  const notes=document.getElementById('ss-notes').value.trim();
+  const image=document.getElementById('ss-img').value.trim();
+  const editId=document.getElementById('ss-form').dataset.editId;
+  const db=loadData();
+  if(!db.starstable) db.starstable={horses:[]};
+  if(editId){
+    const idx=db.starstable.horses.findIndex(h=>h.id===editId);
+    if(idx!==-1) db.starstable.horses[idx]={...db.starstable.horses[idx],name,breed,coat,notes,image:image||null};
+  } else {
+    db.starstable.horses.unshift({id:generateId('ssh'),name,breed,coat,notes,image:image||null});
+  }
+  saveData(db); showToast(editId?'Cheval modifié ✓':'Cheval ajouté ✓'); addGameChanged();
+}
+
+function saveValoWeap(e){
+  e.preventDefault();
+  const name=document.getElementById('valo-weap-name').value.trim(); if(!name) return;
+  const image=document.getElementById('valo-weap-img').value.trim();
+  const db=loadData();
+  db.valo.weapons.unshift({id:generateId('valow'),name,image:image||null,skins:[]});
+  saveData(db); showToast('Arme ajoutée ✓'); addGameChanged();
+}
+function saveValoWSkin(e){
+  e.preventDefault();
+  const wid=document.getElementById('valo-wskin-weap').value;
+  const name=document.getElementById('valo-wskin-name').value.trim();
+  const image=document.getElementById('valo-wskin-img').value.trim();
+  if(!wid||!name) return;
+  const db=loadData();
+  const w=db.valo.weapons.find(x=>x.id===wid); if(!w) return;
+  w.skins.unshift({id:generateId('valoski'),name,image:image||null});
+  saveData(db); showToast('Skin Valorant ajouté ✓'); addGameChanged();
+}
+function saveValoBuddy(e){
+  e.preventDefault();
+  const name=document.getElementById('valo-buddy-name').value.trim(); if(!name) return;
+  const image=document.getElementById('valo-buddy-img').value.trim();
+  const db=loadData();
+  db.valo.buddies.unshift({id:generateId('valob'),name,image:image||null});
+  saveData(db); showToast('Buddy ajouté ✓'); addGameChanged();
+}
+
+
+// ══════════════════════════════════════════════
+//  VARIANTES FORTNITE — modifier / supprimer
+// ══════════════════════════════════════════════
+
+
+function fnToggleFestival(id, val) {
+  const db = loadData();
+  const skin = (db.fortnite.items['skin']||[]).find(s=>s.id===id);
+  if(skin) { skin.forFestival = val; saveData(db); showToast(val?'Marqué pour Festival 🎸':'Retiré du Festival'); }
+}
+function fnDeleteVariant(skinId, idx) {
+  if(!confirm('Supprimer cette variante ?')) return;
+  const db = loadData();
+  const skin = (db.fortnite.items['skin']||[]).find(s=>s.id===skinId);
+  if(!skin||!skin.variants) return;
+  skin.variants.splice(idx, 1);
+  saveData(db);
+  showToast('Variante supprimée ✓');
+  fnOpenModal(skinId); // Recharger le modal
+}
+
+function fnEditVariant(skinId, idx) {
+  const db = loadData();
+  const skin = (db.fortnite.items['skin']||[]).find(s=>s.id===skinId);
+  if(!skin||!skin.variants||!skin.variants[idx]) return;
+  const v = skin.variants[idx];
+
+  // Ouvrir un mini modal d'édition par-dessus
+  const editHtml = `
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-group">
+        <label>Nom de la variante</label>
+        <input type="text" id="edit-var-name" value="${esc(v.name)}" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+      </div>
+      <div class="form-group">
+        <label>URL image</label>
+        <input type="url" id="edit-var-img" value="${esc(v.image||'')}" placeholder="https://..." style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="fnSaveVariantEdit('${esc(skinId)}',${idx})">💾 Enregistrer</button>
+        <button class="btn btn-ghost" onclick="fnOpenModal('${esc(skinId)}')">✕ Annuler</button>
+      </div>
+    </div>`;
+  openModal(`Modifier : ${esc(v.name)}`, editHtml);
+}
+
+function fnSaveVariantEdit(skinId, idx) {
+  const name = document.getElementById('edit-var-name')?.value.trim();
+  const image = document.getElementById('edit-var-img')?.value.trim();
+  if(!name) { showToast('Le nom est requis','error'); return; }
+  const db = loadData();
+  const skin = (db.fortnite.items['skin']||[]).find(s=>s.id===skinId);
+  if(!skin||!skin.variants||!skin.variants[idx]) return;
+  skin.variants[idx].name = name;
+  skin.variants[idx].image = image||null;
+  saveData(db);
+  showToast('Variante modifiée ✓');
+  fnOpenModal(skinId);
+}
+
+// ══════════════════════════════════════════════
+//  CHROMAS LOL — modifier / supprimer
+//  (depuis la page collection, hover sur skin card)
+// ══════════════════════════════════════════════
+
+function lolOpenSkinModal(champId, skinId) {
+  const db = loadData();
+  const champ = db.lol.champions.find(c=>c.id===champId);
+  if(!champ) return;
+  const skin = champ.skins.find(s=>s.id===skinId);
+  if(!skin) return;
+  const chromas = skin.chromas||[];
+
+  const chromaList = chromas.length===0
+    ? `<p style="color:var(--text-muted);font-size:.82rem">Aucun chroma.</p>`
+    : `<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        ${chromas.map((ch,i)=>`
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r)">
+            <div style="width:32px;height:32px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.2);${ch.color?`background:${esc(ch.color)}`:ch.image?`background:url(${esc(ch.image)}) center/cover`:'background:#444'}"></div>
+            <span style="flex:1;font-size:.88rem;color:var(--text)">${esc(ch.name)}</span>
+            <button onclick="lolEditChroma('${esc(champId)}','${esc(skinId)}',${i})"
+              style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border2);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;font-size:.75rem">✏</button>
+            <button onclick="lolDeleteChroma('${esc(champId)}','${esc(skinId)}',${i})"
+              style="width:28px;height:28px;border-radius:6px;border:1px solid rgba(204,34,34,.3);background:rgba(204,34,34,.2);color:#ff7777;cursor:pointer;font-size:.75rem">🗑</button>
+          </div>`).join('')}
+      </div>`;
+
+  openModal(skin.name, `
+    <div style="display:flex;flex-direction:column;gap:0">
+      ${skin.image?`<img src="${esc(skin.image)}" style="width:100%;max-height:320px;object-fit:contain;border-radius:var(--rl);background:var(--bg3);margin-bottom:20px;cursor:zoom-in" onclick="openLightbox('${esc(skin.image)}','${esc(skin.name)}')">`:''}
+      <div style="font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--lol);font-weight:700;margin-bottom:6px">🎨 Chromas · ${chromas.length}</div>
+      ${chromaList}
+      <hr style="border:none;border-top:1px solid var(--border);margin:18px 0">
+      <div style="font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--lol);font-weight:700;margin-bottom:10px">+ Ajouter un chroma</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;align-items:end">
+        <div class="form-group" style="margin:0"><label>Nom</label><input type="text" id="modal-chroma-name" placeholder="ex: Ruby"></div>
+        <div class="form-group" style="margin:0"><label>Couleur</label><input type="color" id="modal-chroma-color" value="#ff0000" style="height:42px;padding:4px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);cursor:pointer;width:100%"></div>
+        <div class="form-group" style="margin:0"><label>URL image</label><input type="url" id="modal-chroma-img" placeholder="https://..."></div>
+        <button class="btn btn-ghost btn-sm" style="align-self:end" onclick="lolAddChromaFromModal('${esc(champId)}','${esc(skinId)}')">+ Ajouter</button>
+      </div>
+    </div>
+  `);
+}
+
+function lolDeleteChroma(champId, skinId, idx) {
+  if(!confirm('Supprimer ce chroma ?')) return;
+  const db = loadData();
+  const champ = db.lol.champions.find(c=>c.id===champId);
+  if(!champ) return;
+  const skin = champ.skins.find(s=>s.id===skinId);
+  if(!skin||!skin.chromas) return;
+  skin.chromas.splice(idx,1);
+  saveData(db);
+  showToast('Chroma supprimé ✓');
+  lolOpenSkinModal(champId, skinId);
+}
+
+function lolEditChroma(champId, skinId, idx) {
+  const db = loadData();
+  const champ = db.lol.champions.find(c=>c.id===champId);
+  if(!champ) return;
+  const skin = champ.skins.find(s=>s.id===skinId);
+  if(!skin||!skin.chromas||!skin.chromas[idx]) return;
+  const ch = skin.chromas[idx];
+
+  openModal(`Modifier : ${esc(ch.name)}`, `
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-group">
+        <label>Nom</label>
+        <input type="text" id="edit-chroma-name" value="${esc(ch.name)}" style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+      </div>
+      <div class="form-group">
+        <label>Couleur</label>
+        <input type="color" id="edit-chroma-color" value="${esc(ch.color||'#ff0000')}" style="height:42px;padding:4px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);cursor:pointer;width:100%">
+      </div>
+      <div class="form-group">
+        <label>URL image</label>
+        <input type="url" id="edit-chroma-img" value="${esc(ch.image||'')}" placeholder="https://..." style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%">
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="lolSaveChromaEdit('${esc(champId)}','${esc(skinId)}',${idx})">💾 Enregistrer</button>
+        <button class="btn btn-ghost" onclick="lolOpenSkinModal('${esc(champId)}','${esc(skinId)}')">✕ Annuler</button>
+      </div>
+    </div>`);
+}
+
+function lolSaveChromaEdit(champId, skinId, idx) {
+  const name = document.getElementById('edit-chroma-name')?.value.trim();
+  const color = document.getElementById('edit-chroma-color')?.value;
+  const image = document.getElementById('edit-chroma-img')?.value.trim();
+  if(!name) { showToast('Nom requis','error'); return; }
+  const db = loadData();
+  const champ = db.lol.champions.find(c=>c.id===champId);
+  const skin = champ?.skins.find(s=>s.id===skinId);
+  if(!skin||!skin.chromas||!skin.chromas[idx]) return;
+  skin.chromas[idx] = {id:skin.chromas[idx].id||generateId('chroma'), name, color, image:image||null};
+  saveData(db);
+  showToast('Chroma modifié ✓');
+  lolOpenSkinModal(champId, skinId);
+}
+
+function lolAddChromaFromModal(champId, skinId) {
+  const name = document.getElementById('modal-chroma-name')?.value.trim();
+  const color = document.getElementById('modal-chroma-color')?.value;
+  const image = document.getElementById('modal-chroma-img')?.value.trim();
+  if(!name) { showToast('Nom requis','error'); return; }
+  const db = loadData();
+  const champ = db.lol.champions.find(c=>c.id===champId);
+  const skin = champ?.skins.find(s=>s.id===skinId);
+  if(!skin) return;
+  if(!skin.chromas) skin.chromas=[];
+  skin.chromas.push({id:generateId('chroma'), name, color, image:image||null});
+  saveData(db);
+  showToast('Chroma ajouté ✓');
+  lolOpenSkinModal(champId, skinId);
+}
+
+
+function renderRandSS(){
+  return `
+    <div style="display:flex;justify-content:center;margin:24px 0">
+      <button class="rand-btn" onclick="doRandSS()">🎲 Cheval aléatoire !</button>
+    </div>
+    <div class="rand-results" id="ss-rand-results"></div>`;
+}
+
+function doRandSS(){
+  const db=loadData();
+  const horses=db.starstable?.horses||[];
+  if(!horses.length){showToast('Aucun cheval enregistré','error');return;}
+  const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn?.classList.remove('spinning'),600);
+  const h=rand(horses);
+  document.getElementById('ss-rand-results').innerHTML=`
+    <div class="rand-result-card" onclick="openLightbox('${esc(h.image||'')}','${esc(h.name)}')" style="${h.image?'cursor:zoom-in':''}">
+      ${h.image?`<img src="${esc(h.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">🐴</div>`}
+      <div class="rand-result-info">
+        <div class="rand-result-cat">Star Stable</div>
+        <div class="rand-result-name">${esc(h.name)}</div>
+        ${h.breed?`<div class="rand-result-sub">${esc(h.breed)}</div>`:''}
+        ${h.coat?`<div class="rand-result-sub" style="color:#7ec8e3">🎨 ${esc(h.coat)}</div>`:''}
+      </div>
+    </div>`;
+}
+
+
+// ════════════════════════════════════════════════
+//  SÉLECTION MULTIPLE
+// ════════════════════════════════════════════════
+let _selectMode = false;
+let _selectedIds = new Set();
+let _selectContext = null;
+
+function toggleSelectMode(game, context={}) {
+  if(_selectMode && _selectContext?.game === game) {
+    _exitSelectMode();
+  } else {
+    _selectMode = true;
+    _selectedIds.clear();
+    _selectContext = { game, ...context };
+    navigate(currentPage);
+  }
+}
+
+function _exitSelectMode() {
+  _selectMode = false;
+  _selectedIds.clear();
+  _selectContext = null;
+  navigate(currentPage);
+}
+
+function _cardClick(el, defaultAction) {
+  if(_selectMode) {
+    const id = el.dataset.id;
+    if(!id) return;
+    if(_selectedIds.has(id)) {
+      _selectedIds.delete(id);
+      el.classList.remove('selected');
+    } else {
+      _selectedIds.add(id);
+      el.classList.add('selected');
+    }
+    // Mettre à jour la barre
+    const countEl = document.getElementById('select-count');
+    if(countEl) countEl.textContent = `${_selectedIds.size} sélectionné${_selectedIds.size>1?'s':''}`;
+    const btn = document.getElementById('select-delete-btn');
+    if(btn) { btn.disabled=_selectedIds.size===0; btn.style.opacity=_selectedIds.size===0?'0.4':'1'; }
+  } else {
+    if(typeof defaultAction === 'function') defaultAction();
+    else if(typeof defaultAction === 'string') eval(defaultAction);
+  }
+}
+
+function selectAll() {
+  document.querySelectorAll('.skin-card[data-id], .ss-card[data-id]').forEach(c=>{
+    _selectedIds.add(c.dataset.id);
+    c.classList.add('selected');
+  });
+  const countEl = document.getElementById('select-count');
+  if(countEl) countEl.textContent = `${_selectedIds.size} sélectionné${_selectedIds.size>1?'s':''}`;
+  const btn = document.getElementById('select-delete-btn');
+  if(btn) { btn.disabled=false; btn.style.opacity='1'; }
+}
+
+function deleteSelected() {
+  const n = _selectedIds.size;
+  if(n===0) return;
+  if(!confirm(`Supprimer ${n} élément${n>1?'s':''} ?`)) return;
+  const db = loadData();
+  const ids = [..._selectedIds];
+  const g = _selectContext?.game;
+  const cat = _selectContext?.cat;
+
+  if(g==='fortnite') {
+    if(!db.fortnite.items[cat]) db.fortnite.items[cat]=[];
+    db.fortnite.items[cat] = db.fortnite.items[cat].filter(s=>!ids.includes(s.id));
+  }
+  else if(g==='tft')           { db.tft.skins = db.tft.skins.filter(s=>!ids.includes(s.id)); }
+  else if(g==='lol-champions') { db.lol.champions = db.lol.champions.filter(c=>!ids.includes(c.id)); }
+  else if(g==='dbd-survivors') { db.dbd.survivors = db.dbd.survivors.filter(c=>!ids.includes(c.id)); }
+  else if(g==='dbd-killers')   { db.dbd.killers   = db.dbd.killers.filter(c=>!ids.includes(c.id)); }
+  else if(g==='valo-weapons')  { db.valo.weapons  = db.valo.weapons.filter(w=>!ids.includes(w.id)); }
+  else if(g==='valo-buddies')  { db.valo.buddies  = db.valo.buddies.filter(b=>!ids.includes(b.id)); }
+  else if(g==='festival')      { db.festival.songs=(db.festival.songs||[]).filter(s=>!ids.includes(s.id)); }
+  else if(g==='starstable')    { db.starstable.horses=(db.starstable.horses||[]).filter(h=>!ids.includes(h.id)); }
+
+  saveData(db);
+  showToast(`${n} élément${n>1?'s':''} supprimé${n>1?'s':''} ✓`);
+  _exitSelectMode();
+}
+
+function _injectSelectBar() {
+  if(!_selectMode) return;
+  const pageContent = document.getElementById('page-content');
+  if(!pageContent) return;
+  const header = pageContent.querySelector('.page-header');
+  if(!header) return;
+  let bar = document.getElementById('select-bar-container');
+  if(!bar) {
+    bar = document.createElement('div');
+    bar.id = 'select-bar-container';
+    header.insertAdjacentElement('afterend', bar);
+  }
+  bar.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--bg2);border:1px solid rgba(255,70,85,.35);border-radius:var(--rl);margin-bottom:18px;flex-wrap:wrap">
+    <span style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--text)" id="select-count">0 sélectionné</span>
+    <button class="btn btn-ghost btn-sm" onclick="selectAll()">☑ Tout sélectionner</button>
+    <button class="btn btn-danger btn-sm" id="select-delete-btn" disabled style="opacity:.4" onclick="deleteSelected()">🗑 Supprimer la sélection</button>
+    <button class="btn btn-ghost btn-sm" onclick="_exitSelectMode()">✕ Annuler</button>
+  </div>`;
+  // Marquer les cards comme sélectionnables
+  document.querySelectorAll('.skin-card[data-id], .ss-card[data-id]').forEach(c=>{
+    c.classList.add('selectable');
+    c.querySelectorAll('.card-actions').forEach(a=>a.style.display='none');
+  });
+}
+
+
+
+
+// ═══ INIT ═══
+window.addEventListener('keydown', e => { if(e.key==='Escape'){closeModal();closeLightbox();} });
+navigate('home');
+</script>
+</body>
+</html>
