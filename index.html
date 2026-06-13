@@ -415,6 +415,30 @@ select option{background:var(--bg3)}
   display:flex;align-items:center;justify-content:center;
   font-size:.8rem;color:#fff;font-weight:700;z-index:20;
 }
+
+/* ── Poids / Probabilité ── */
+.weight-wrap {
+  display:flex;align-items:center;gap:8px;margin-top:6px;
+}
+.weight-label {
+  font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--text-muted);font-weight:600;white-space:nowrap;
+}
+.weight-slider {
+  flex:1;height:4px;accent-color:var(--epic);cursor:pointer;
+}
+.weight-value {
+  font-size:.8rem;font-family:'Rajdhani',sans-serif;font-weight:700;
+  color:var(--epic);min-width:22px;text-align:center;
+}
+.weight-bar-row {
+  display:flex;gap:3px;align-items:center;margin-top:2px;
+}
+.weight-pip {
+  width:8px;height:8px;border-radius:2px;background:var(--bg4);
+  border:1px solid var(--border);transition:.15s;flex-shrink:0;
+}
+.weight-pip.on { background:var(--epic); border-color:var(--epic); }
 </style>
 </head>
 <body>
@@ -637,6 +661,19 @@ function imgHtml(url, cls='', alt='') {
   return `<div class="no-img ${cls}">🎮</div>`;
 }
 function rand(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+
+// Rand pondéré — utilise le champ 'weight' (1-10) de chaque item
+// weight=1 = très rare, weight=5 = normal (défaut), weight=10 = très fréquent
+function randWeighted(arr) {
+  if(!arr || !arr.length) return null;
+  const total = arr.reduce((s,x) => s + (x.weight||5), 0);
+  let r = Math.random() * total;
+  for(const item of arr) {
+    r -= (item.weight||5);
+    if(r <= 0) return item;
+  }
+  return arr[arr.length-1];
+}
 function previewUrl(inputId, previewId) {
   const url = document.getElementById(inputId)?.value.trim();
   const img = document.getElementById(previewId);
@@ -756,6 +793,7 @@ function renderFnGrid(cat, items) {
         <div class="skin-name">${esc(s.name)}</div>
         <div class="skin-meta"><span class="skin-rarity-label ${esc(s.rarity||'')}">${esc(s.rarity||'')}</span>${s.series?`<span class="skin-series-badge">${esc(s.series)}</span>`:''}</div>
         ${cat==='skin'&&s.variants&&s.variants.length?`<div style="font-size:.63rem;color:var(--fn);margin-top:3px">${s.variants.length} variante${s.variants.length>1?'s':''}</div>`:''}
+        ${s.weight&&s.weight!==5?`<div style="font-size:.58rem;color:var(--epic);margin-top:2px">🎲 ×${s.weight}</div>`:''}
       </div>
       <div class="card-actions" onclick="event.stopPropagation()">
         <button class="card-btn card-btn-edit" onclick="fnEditItem('${esc(cat)}','${esc(s.id)}')">✏</button>
@@ -1028,6 +1066,7 @@ function tftCard(s) {
           ${s.rarity&&s.rarity!=='Default'?`<span style="font-size:.6rem;font-weight:700;color:${col}">${esc(s.rarity)}</span>`:''}
         </div>
         ${starsHTML}
+      ${s.weight&&s.weight!==5?`<div style="font-size:.58rem;color:var(--epic);margin-top:2px">🎲 ×${s.weight}</div>`:''}
       </div>
       <div class="card-actions" onclick="event.stopPropagation()">
         <button class="card-btn card-btn-edit" onclick="tftEditSkin('${esc(s.id)}')">✏</button>
@@ -1222,6 +1261,7 @@ function festAlbumCard(s) {
       <div class="skin-info">
         <div class="skin-name">${esc(s.name)}</div>
         <div style="font-size:.68rem;color:var(--text-muted);margin-top:3px">${esc(s.artist||'')}</div>
+        ${s.weight&&s.weight!==5?`<div style="font-size:.6rem;color:var(--epic);margin-top:2px">🎲 ×${s.weight}</div>`:''}
         <div style="margin-top:6px;display:flex;align-items:center;gap:6px">
           <div style="font-size:.65rem;color:#ff6b35;font-weight:700">${done} / ${total} 100%</div>
           <div style="flex:1;height:3px;background:var(--bg4);border-radius:2px">
@@ -1314,6 +1354,7 @@ function festOpenAdd(editSong=null) {
           <img id="fest-img-preview" class="img-url-preview ${s&&s.image?'show':''}" src="${s?esc(s.image||''):''}" alt="">
         </div>
       </div>
+      ${weightWidget('fest-weight', 5)}
       <div class="btn-row">
         <button class="btn btn-primary" onclick="festSave(${s?`'${esc(s.id)}'`:'null'})">💾 Enregistrer</button>
         <button class="btn btn-ghost" onclick="closeModal()">✕ Annuler</button>
@@ -1339,7 +1380,7 @@ function festSave(editId=null) {
     const idx = db.festival.songs.findIndex(s=>s.id===editId);
     if(idx!==-1) db.festival.songs[idx] = {...db.festival.songs[idx], name, artist, image:image||null};
   } else {
-    db.festival.songs.unshift({id:generateId('fest'), name, artist, image:image||null, done100_by_instrument:{}});
+    db.festival.songs.unshift({id:generateId('fest'), name, artist, image:image||null, done100_by_instrument:{}, weight:getWeight('fest-weight')});
   }
   saveData(db); showToast(editId?'Album modifié ✓':'Album ajouté ✓'); closeModal(); navigate('festival');
 }
@@ -1398,6 +1439,7 @@ function ssHorseCard(h) {
         <div class="ss-card-name">${esc(h.name)}</div>
         ${h.breed?`<div class="ss-card-breed">${esc(h.breed)}</div>`:''}
         ${h.coat?`<div class="ss-card-coat">🎨 ${esc(h.coat)}</div>`:''}
+        ${h.weight&&h.weight!==5?`<div style="font-size:.6rem;color:var(--epic);margin-top:2px">🎲 ×${h.weight}</div>`:''}
       </div>
       <div class="card-actions" onclick="event.stopPropagation()">
         <button class="card-btn card-btn-edit" onclick="ssEditHorse('${esc(h.id)}')">✏</button>
@@ -1520,7 +1562,7 @@ function doRandFN(){
   for(const cat of checked){
     let list=items[cat]||[];
     if(cat==='skin' && festOnly) list=list.filter(s=>s.forFestival);
-    if(list.length) results.push({cat,item:rand(list)});
+    if(list.length) results.push({cat,item:randWeighted(list)});
   }
   const c=document.getElementById('fn-rand-results');
   if(!results.length){c.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="icon">😅</div><p>Aucun item dans les catégories sélectionnées.<br>Ajoute des skins d'abord !</p></div>`;return;}
@@ -1703,8 +1745,8 @@ function doRandLoLCO(){
   const db=loadData();
   const pool=_lolCoRoleFilter==='all'?db.lol.champions:db.lol.champions.filter(c=>(c.roles||[]).includes(_lolCoRoleFilter));
   if(!pool.length){showToast('Aucun champion','error');return;}
-  const champ=rand(pool);
-  const skin=champ.skins.length?rand(champ.skins):null;
+  const champ=randWeighted(pool);
+  const skin=champ.skins.length?randWeighted(champ.skins):null;
   document.getElementById('lol-rand-results').innerHTML=_lolResultCard('',champ,skin);
   document.querySelector('.rand-btn').classList.add('spinning');
   setTimeout(()=>document.querySelector('.rand-btn')?.classList.remove('spinning'),600);
@@ -1716,7 +1758,7 @@ function _showLolResults(list){
   setTimeout(()=>document.querySelector('.rand-btn')?.classList.remove('spinning'),600);
   const results=list.map(({role,id})=>{
     const champ=db.lol.champions.find(c=>c.id===id); if(!champ) return null;
-    const skin=champ.skins.length?rand(champ.skins):null;
+    const skin=champ.skins.length?randWeighted(champ.skins):null;
     return {role,champ,skin};
   }).filter(Boolean);
   if(!results.length){document.getElementById('lol-rand-results').innerHTML=`<div class="empty-state"><div class="icon">😅</div><p>Aucun résultat.</p></div>`;return;}
@@ -1794,6 +1836,17 @@ function tftEditSkin(id) {
       </div>
       ${levelRow}
       <div class="form-group">
+        <label style="${labelStyle}">🎲 Probabilité</label>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+          <span style="font-size:.62rem;color:var(--text-muted)">Rare</span>
+          <input type="range" id="tft-edit-weight" min="1" max="10" value="${s.weight||5}"
+            oninput="updateWeightPips('tft-edit-weight')"
+            style="flex:1;accent-color:var(--epic);cursor:pointer">
+          <span style="font-size:.62rem;color:var(--text-muted)">Fréquent</span>
+          <span id="tft-edit-weight-val" style="font-size:.8rem;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--epic);min-width:22px">${s.weight||5}</span>
+        </div>
+      </div>
+      <div class="form-group">
         <label style="${labelStyle}">URL image</label>
         <input type="url" id="tft-edit-img" value="${esc(s.image||'')}" placeholder="https://..." style="${inputStyle}" oninput="const p=document.getElementById('tft-edit-prev');if(this.value){p.src=this.value;p.style.display='block';}else{p.style.display='none';}">
         <img id="tft-edit-prev" src="${esc(s.image||'')}" style="width:80px;height:80px;object-fit:contain;border-radius:8px;margin-top:8px;background:var(--bg3);${s.image?'':'display:none'}">
@@ -1812,11 +1865,12 @@ function tftSaveEdit(id) {
   const rarity = document.getElementById('tft-edit-rarity')?.value || 'Default';
   const level  = parseInt(document.getElementById('tft-edit-level')?.value || '0');
   const image  = document.getElementById('tft-edit-img')?.value.trim();
+  const weight  = parseInt(document.getElementById('tft-edit-weight')?.value||5);
   if(!name||!type) { showToast('Nom et type requis','error'); return; }
   const db = loadData();
   const idx = db.tft.skins.findIndex(s=>s.id===id);
   if(idx===-1) return;
-  db.tft.skins[idx] = {...db.tft.skins[idx], name, type, rarity, level, image:image||null};
+  db.tft.skins[idx] = {...db.tft.skins[idx], name, type, rarity, level, image:image||null, weight};
   saveData(db);
   showToast('Skin TFT modifié ✓');
   closeModal();
@@ -1843,7 +1897,7 @@ function doRandTFT(){
   const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn?.classList.remove('spinning'),600);
   const list=_tftRandType==='all'?db.tft.skins:_tftRandType==='tacticien_chibi'?db.tft.skins.filter(s=>s.type==='tactician'||s.type==='chibi'):db.tft.skins.filter(s=>s.type===_tftRandType);
   if(!list.length){showToast('Aucun skin TFT','error');return;}
-  const item=rand(list);
+  const item=randWeighted(list);
   const col=TFT_RARITY_COLORS[item.rarity]||'var(--tft-color)';
   const isChibi=item.type==='chibi';
   const levelStr=(item.type==='tactician'||item.type==='boom')&&item.level>0
@@ -1882,7 +1936,7 @@ function doRandDBD(){
   if(_dbdRandType!=='killer') db.dbd.survivors.forEach(c=>c.skins.forEach(s=>pool.push({char:c,skin:s,type:'Survivant'})));
   if(_dbdRandType!=='survivor') db.dbd.killers.forEach(c=>c.skins.forEach(s=>pool.push({char:c,skin:s,type:'Tueur'})));
   if(!pool.length){showToast('Aucun skin DBD','error');return;}
-  const item=rand(pool);
+  const item=randWeighted(pool);
   document.getElementById('dbd-rand-results').innerHTML=`
     <div class="rand-result-card" onclick="openLightbox('${esc(item.skin.image||'')}','${esc(item.skin.name)}')" style="${item.skin.image?'cursor:zoom-in':''}">
       ${item.skin.image?`<img src="${esc(item.skin.image)}" class="rand-result-img" loading="lazy">`:`<div class="rand-result-img no-img-big">🔪</div>`}
@@ -1922,7 +1976,7 @@ function doRandValo(){
 
   if(_valoRandMode2==='all'){
     // Un skin aléatoire pour CHAQUE arme qui a des skins
-    const results=db.valo.weapons.filter(w=>w.skins.length>0).map(w=>({weapon:w,skin:rand(w.skins)}));
+    const results=db.valo.weapons.filter(w=>w.skins.length>0).map(w=>({weapon:w,skin:randWeighted(w.skins)}));
     if(!results.length){showToast('Aucun skin Valorant','error');return;}
     c.innerHTML=results.map(({weapon,skin})=>`
       <div class="rand-result-card">
@@ -1937,7 +1991,7 @@ function doRandValo(){
     const pool=[];
     db.valo.weapons.forEach(w=>w.skins.forEach(s=>pool.push({weapon:w,skin:s})));
     if(!pool.length){showToast('Aucun skin Valorant','error');return;}
-    const {weapon,skin}=rand(pool);
+    const {weapon,skin}=randWeighted(pool);
     c.innerHTML=`<div class="rand-result-card">
       ${skin.image?`<img src="${esc(skin.image)}" class="rand-result-img landscape" loading="lazy">`:`<div class="rand-result-img no-img-big">🔫</div>`}
       <div class="rand-result-info"><div class="rand-result-cat">${esc(weapon.name)}</div><div class="rand-result-name">${esc(skin.name)}</div></div>
@@ -1945,7 +1999,7 @@ function doRandValo(){
   }
   else {
     if(!db.valo.buddies.length){showToast('Aucun buddy','error');return;}
-    const b=rand(db.valo.buddies);
+    const b=randWeighted(db.valo.buddies);
     c.innerHTML=`<div class="rand-result-card">
       ${b.image?`<img src="${esc(b.image)}" class="rand-result-img" loading="lazy">`:`<div class="rand-result-img no-img-big">🎯</div>`}
       <div class="rand-result-info"><div class="rand-result-cat">Buddy</div><div class="rand-result-name">${esc(b.name)}</div></div>
@@ -2053,6 +2107,9 @@ function renderAddFN(){
             </div>
           </div>
         </div>
+        <div class="form-row single">
+          ${weightWidget('fn-weight', 5)}
+        </div>
         <div class="btn-row">
           <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
           <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
@@ -2151,7 +2208,8 @@ function saveFNItem(e){
   } else {
     if(!db.fortnite.items[cat]) db.fortnite.items[cat]=[];
     const forFestival = document.getElementById('fn-festival-check')?.checked || false;
-    db.fortnite.items[cat].unshift({id:generateId('fn'),name,rarity,series:series||null,image:image||null,variants:[],forFestival});
+    const weight=getWeight('fn-weight');
+    db.fortnite.items[cat].unshift({id:generateId('fn'),name,rarity,series:series||null,image:image||null,variants:[],forFestival,weight});
     saveData(db); showToast('Item Fortnite ajouté ✓'); addGameChanged();
   }
 }
@@ -2314,6 +2372,7 @@ function renderAddTFT(){
             </div>
           </div>
         </div>
+        ${weightWidget('tft-weight', 5)}
         <div class="btn-row">
           <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
           <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
@@ -2343,7 +2402,8 @@ function saveTFT(e){
     const idx=db.tft.skins.findIndex(s=>s.id===editId);
     if(idx!==-1) db.tft.skins[idx]={...db.tft.skins[idx],...obj};
   } else {
-    db.tft.skins.unshift({id:generateId('tft'),...obj});
+    obj.weight=getWeight('tft-weight');
+  db.tft.skins.unshift({id:generateId('tft'),...obj});
   }
   saveData(db); showToast(editId?'Skin TFT modifié ✓':'Skin TFT ajouté ✓');
   delete document.getElementById('tft-skin-form').dataset.editId;
@@ -2395,6 +2455,8 @@ function renderAddDBD(){
             </div>
           </div>
         </div>
+        ${weightWidget('dbd-weight', 5)}
+      ${weightWidget('dbd-skin-weight', 5)}
         <div class="btn-row"><button type="submit" class="btn btn-primary">💾 Enregistrer</button><button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕</button></div>
       </form>
     </div>`;
@@ -2413,7 +2475,7 @@ function saveDBDChar(e){
   if(!type||!name) return;
   const db=loadData();
   const list=type==='survivor'?db.dbd.survivors:db.dbd.killers;
-  list.unshift({id:generateId('dbd'),name,image:image||null,skins:[]});
+  list.unshift({id:generateId('dbd'),name,image:image||null,skins:[],weight:getWeight('dbd-weight')});
   saveData(db); showToast('Personnage ajouté ✓'); addGameChanged();
 }
 function saveDBDSkin(e){
@@ -2426,7 +2488,7 @@ function saveDBDSkin(e){
   const db=loadData();
   const list=survId?db.dbd.survivors:db.dbd.killers;
   const char=list.find(c=>c.id===(survId||killId)); if(!char) return;
-  char.skins.unshift({id:generateId('dbdsk'),name,image:image||null});
+  char.skins.unshift({id:generateId('dbdsk'),name,image:image||null,weight:getWeight('dbd-skin-weight')});
   saveData(db); showToast('Skin DBD ajouté ✓'); addGameChanged();
 }
 
@@ -2521,6 +2583,9 @@ function renderAddSS(){
             </div>
           </div>
         </div>
+        ${weightWidget('valo-wskin-weight', 5)}
+        ${weightWidget('valo-buddy-weight', 5)}
+        ${weightWidget('ss-weight', 5)}
         <div class="btn-row">
           <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
           <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
@@ -2543,7 +2608,7 @@ function saveSS(e){
     const idx=db.starstable.horses.findIndex(h=>h.id===editId);
     if(idx!==-1) db.starstable.horses[idx]={...db.starstable.horses[idx],name,breed,coat,notes,image:image||null};
   } else {
-    db.starstable.horses.unshift({id:generateId('ssh'),name,breed,coat,notes,image:image||null});
+    db.starstable.horses.unshift({id:generateId('ssh'),name,breed,coat,notes,image:image||null,weight:getWeight('ss-weight')});
   }
   saveData(db); showToast(editId?'Cheval modifié ✓':'Cheval ajouté ✓'); addGameChanged();
 }
@@ -2564,7 +2629,7 @@ function saveValoWSkin(e){
   if(!wid||!name) return;
   const db=loadData();
   const w=db.valo.weapons.find(x=>x.id===wid); if(!w) return;
-  w.skins.unshift({id:generateId('valoski'),name,image:image||null});
+  w.skins.unshift({id:generateId('valoski'),name,image:image||null,weight:getWeight('valo-wskin-weight')});
   saveData(db); showToast('Skin Valorant ajouté ✓'); addGameChanged();
 }
 function saveValoBuddy(e){
@@ -2572,7 +2637,7 @@ function saveValoBuddy(e){
   const name=document.getElementById('valo-buddy-name').value.trim(); if(!name) return;
   const image=document.getElementById('valo-buddy-img').value.trim();
   const db=loadData();
-  db.valo.buddies.unshift({id:generateId('valob'),name,image:image||null});
+  db.valo.buddies.unshift({id:generateId('valob'),name,image:image||null,weight:getWeight('valo-buddy-weight')});
   saveData(db); showToast('Buddy ajouté ✓'); addGameChanged();
 }
 
@@ -2768,7 +2833,7 @@ function doRandSS(){
   const horses=db.starstable?.horses||[];
   if(!horses.length){showToast('Aucun cheval enregistré','error');return;}
   const btn=document.querySelector('.rand-btn'); btn.classList.add('spinning'); setTimeout(()=>btn?.classList.remove('spinning'),600);
-  const h=rand(horses);
+  const h=randWeighted(horses);
   document.getElementById('ss-rand-results').innerHTML=`
     <div class="rand-result-card" onclick="openLightbox('${esc(h.image||'')}','${esc(h.name)}')" style="${h.image?'cursor:zoom-in':''}">
       ${h.image?`<img src="${esc(h.image)}" class="rand-result-img" loading="lazy" onerror="this.style.display='none'">`:`<div class="rand-result-img no-img-big">🐴</div>`}
@@ -2895,6 +2960,40 @@ function _injectSelectBar() {
 
 
 
+
+// ── Widget probabilité ──
+function weightWidget(fieldId, defaultVal=5) {
+  return `<div class="form-group">
+    <label>🎲 Probabilité dans le randomizer</label>
+    <div class="weight-wrap">
+      <span class="weight-label">Rare</span>
+      <input type="range" class="weight-slider" id="${fieldId}" min="1" max="10" value="${defaultVal}"
+        oninput="updateWeightPips('${fieldId}')">
+      <span class="weight-label">Fréquent</span>
+      <span class="weight-value" id="${fieldId}-val">${defaultVal}</span>
+    </div>
+    <div class="weight-bar-row" id="${fieldId}-pips">
+      ${Array.from({length:10},(_,i)=>`<div class="weight-pip ${i<defaultVal?'on':''}" id="${fieldId}-pip-${i+1}"></div>`).join('')}
+    </div>
+    <div style="font-size:.68rem;color:var(--text-muted);margin-top:4px">
+      1 = très rare · 5 = normal · 10 = très fréquent
+    </div>
+  </div>`;
+}
+
+function updateWeightPips(fieldId) {
+  const val = parseInt(document.getElementById(fieldId)?.value||5);
+  const valEl = document.getElementById(fieldId+'-val');
+  if(valEl) { valEl.textContent=val; valEl.style.color=val<=3?'#00c060':val<=6?'var(--epic)':'var(--legendary)'; }
+  for(let i=1;i<=10;i++) {
+    const pip = document.getElementById(fieldId+'-pip-'+i);
+    if(pip) pip.classList.toggle('on', i<=val);
+  }
+}
+
+function getWeight(fieldId) {
+  return parseInt(document.getElementById(fieldId)?.value||5);
+}
 // ═══ INIT ═══
 window.addEventListener('keydown', e => { if(e.key==='Escape'){closeModal();closeLightbox();} });
 navigate('home');
