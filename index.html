@@ -1469,25 +1469,69 @@ function ssOpenDetail(id) {
 }
 
 function ssEditHorse(id) {
-  navigate('add');
-  setTimeout(()=>{
-    document.getElementById('add-game-select').value='starstable';
-    addGameChanged();
-    setTimeout(()=>{
-      const db=loadData();
-      const h=db.starstable?.horses?.find(x=>x.id===id); if(!h) return;
-      const f=document.getElementById('ss-form');
-      if(!f) return;
-      document.getElementById('ss-name').value=h.name||'';
-      document.getElementById('ss-breed').value=h.breed||'';
-      document.getElementById('ss-coat').value=h.coat||'';
-      document.getElementById('ss-img').value=h.image||'';
-      document.getElementById('ss-notes').value=h.notes||'';
-      if(h.image){const p=document.getElementById('ss-img-preview');if(p){p.src=h.image;p.classList.add('show');}}
-      f.dataset.editId=id;
-      showToast('Cheval chargé pour modification');
-    },100);
-  },60);
+  const db = loadData();
+  const h = db.starstable?.horses?.find(x=>x.id===id); if(!h) return;
+  const w = h.weight||5;
+  const inp = (fid, label, val, ph='') =>
+    `<div class="form-group" style="margin-bottom:12px">
+      <label style="font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600">${label}</label>
+      <input type="text" id="sse-${fid}" value="${esc(val||'')}" placeholder="${ph}"
+        style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%;margin-top:6px">
+    </div>`;
+
+  openModal(`Modifier : ${h.name}`, `
+    <div style="display:flex;flex-direction:column;gap:0">
+      ${inp('name','Nom *', h.name, 'ex: Starshine')}
+      ${inp('breed','Race', h.breed, 'ex: Fjord, Arabe...')}
+      ${inp('coat','Robe / Couleur', h.coat, 'ex: Palomino...')}
+      ${inp('notes','Notes', h.notes, '...')}
+      <div class="form-group" style="margin-bottom:12px">
+        <label style="font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600">URL image</label>
+        <input type="url" id="sse-img" value="${esc(h.image||'')}" placeholder="https://..."
+          style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.9rem;outline:none;width:100%;margin-top:6px"
+          oninput="const p=document.getElementById('sse-img-prev');if(this.value){p.src=this.value;p.style.display='block';}else{p.style.display='none';}">
+        <img id="sse-img-prev" src="${esc(h.image||'')}" style="width:80px;height:80px;object-fit:contain;border-radius:8px;margin-top:8px;background:var(--bg3);${h.image?'':'display:none'}">
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <label style="font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);font-weight:600">🎲 Probabilité dans le randomizer</label>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <span style="font-size:.62rem;color:var(--text-muted)">Rare</span>
+          <input type="range" id="sse-weight" min="1" max="10" value="${w}"
+            oninput="updateWeightPips('sse-weight')"
+            style="flex:1;accent-color:var(--epic);cursor:pointer">
+          <span style="font-size:.62rem;color:var(--text-muted)">Fréquent</span>
+          <span id="sse-weight-val" style="font-size:.8rem;font-family:'Rajdhani',sans-serif;font-weight:700;color:var(--epic);min-width:22px">${w}</span>
+        </div>
+        <div style="display:flex;gap:3px;margin-top:6px">
+          ${Array.from({length:10},(_,i)=>`<div style="width:8px;height:8px;border-radius:2px;background:${i<w?'var(--epic)':'var(--bg4)'};border:1px solid ${i<w?'var(--epic)':'var(--border)'}" id="sse-weight-pip-${i+1}"></div>`).join('')}
+        </div>
+        <div style="font-size:.66rem;color:var(--text-muted);margin-top:4px">1 = très rare · 5 = normal · 10 = très fréquent</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="ssSaveEdit('${esc(h.id)}')">💾 Enregistrer</button>
+        <button class="btn btn-danger btn-sm" onclick="if(confirm('Supprimer ce cheval ?')){deleteSkin('ss-horse','${esc(h.id)}');closeModal();}">🗑 Supprimer</button>
+        <button class="btn btn-ghost" onclick="closeModal()">✕ Annuler</button>
+      </div>
+    </div>
+  `);
+}
+
+function ssSaveEdit(id) {
+  const name  = document.getElementById('sse-name')?.value.trim();
+  const breed = document.getElementById('sse-breed')?.value.trim();
+  const coat  = document.getElementById('sse-coat')?.value.trim();
+  const notes = document.getElementById('sse-notes')?.value.trim();
+  const image = document.getElementById('sse-img')?.value.trim();
+  const weight = parseInt(document.getElementById('sse-weight')?.value||5);
+  if(!name){showToast('Nom requis','error');return;}
+  const db = loadData();
+  const idx = db.starstable.horses.findIndex(h=>h.id===id);
+  if(idx===-1) return;
+  db.starstable.horses[idx] = {...db.starstable.horses[idx], name, breed, coat, notes, image:image||null, weight};
+  saveData(db);
+  showToast('Cheval modifié ✓');
+  closeModal();
+  navigate('starstable');
 }
 
 function renderRandom(){
