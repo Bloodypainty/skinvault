@@ -1441,9 +1441,9 @@ function ssHorseCard(h) {
         ${h.coat?`<div class="ss-card-coat">🎨 ${esc(h.coat)}</div>`:''}
         ${h.weight&&h.weight!==5?`<div style="font-size:.6rem;color:var(--epic);margin-top:2px">🎲 ×${h.weight}</div>`:''}
       </div>
-      <div class="card-actions" onclick="event.stopPropagation()">
-        <button class="card-btn card-btn-edit" onclick="ssEditHorse('${esc(h.id)}')">✏</button>
-        <button class="card-btn card-btn-delete" onclick="deleteSkin('ss-horse','${esc(h.id)}')">🗑</button>
+      <div style="display:flex;gap:5px;padding:8px 12px 10px" onclick="event.stopPropagation()">
+        <button class="btn btn-ghost btn-sm" style="flex:1;padding:6px" onclick="ssEditHorse('${esc(h.id)}')">✏ Modifier</button>
+        <button class="btn btn-danger btn-sm" style="padding:6px 10px" onclick="if(confirm('Supprimer ce cheval ?')){deleteSkin('ss-horse','${esc(h.id)}');}">🗑</button>
       </div>
     </div>`;
 }
@@ -2629,7 +2629,6 @@ function renderAddSS(){
         </div>
         ${weightWidget('valo-wskin-weight', 5)}
         ${weightWidget('valo-buddy-weight', 5)}
-        ${weightWidget('ss-weight', 5)}
         <div class="btn-row">
           <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
           <button type="button" class="btn btn-ghost" onclick="addGameChanged()">✕ Annuler</button>
@@ -2652,7 +2651,7 @@ function saveSS(e){
     const idx=db.starstable.horses.findIndex(h=>h.id===editId);
     if(idx!==-1) db.starstable.horses[idx]={...db.starstable.horses[idx],name,breed,coat,notes,image:image||null};
   } else {
-    db.starstable.horses.unshift({id:generateId('ssh'),name,breed,coat,notes,image:image||null,weight:getWeight('ss-weight')});
+    db.starstable.horses.unshift({id:generateId('ssh'),name,breed,coat,notes,image:image||null,weight:5});
   }
   saveData(db); showToast(editId?'Cheval modifié ✓':'Cheval ajouté ✓'); addGameChanged();
 }
